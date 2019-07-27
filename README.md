@@ -3,7 +3,7 @@
 ![WideImg](https://fictizia.com/img/github/Fictizia-plan-estudios-github.jpg)
 
 # [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
-### Big Data, Machine Learning, Tensor FLow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
+### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
 Los grandes volúmenes de datos han inundado nuestro mundo. La utilización de manera eficiente y ética de estos datos nos permiten mejorar nuestro negocio, conocer a nuestro clientes y obtener valor a toda la información que recogemos con el fin de mejorar la experiencia de nuestros usuarios y producir nuevas funcionalidades derivadas de sus necesidades.
 
