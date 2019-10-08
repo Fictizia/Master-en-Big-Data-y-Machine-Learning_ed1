@@ -18,10 +18,9 @@ Información sobre el Curso
 * Dias festivos:
     * 23/12/19 - 06/01/20 Navidad
 
-
-Distribución del calendario: Teoría y Recursos
+[Distribución del calendario: Teoría y Recursos]
 =================
-Fecha | Capitulo | Contenido | Recurso | Descripción
+Fecha | Captulo | Contenido | Recurso | Descripción
 ------------ | ---------- | ------------ | --------------- | -------------
 08/10/19 | 0 | [Clase 01](capitulo_0/clase1.md) | [Recurso 01](capitulo_0/recursos/clase1.md) | Introducción al curso
 10/10/19 | 1 | Clase 02 | Recurso 02 | Introducción al Big Data - Parte I
@@ -29,41 +28,40 @@ Fecha | Capitulo | Contenido | Recurso | Descripción
 17/10/19 | 2 | Clase 04 | Recurso 04 | Contenedores - Creación, uso, depligue
 22/10/19 | 2 | Clase 05 | Recurso 05 | Contenedores - Desplegando una infraestructura
 24/10/19 | 2 | Clase 06 | Recurso 06 | Apificación - Parte I
-29/10/19 | Capítulo 2 | Clase 07 | Recurso 07 | Apificación - Parte II
-31/10/19 | Capítulo 3 | Clase 08 | Recurso 08 | Representación de la información - Formatos y tipos
-05/11/19 | Capítulo 3 | Clase 09 | Recurso 09 | Representación de la información - Bases de datos relacionales
-07/11/19 | Capítulo 3 | Clase 10 | Recurso 10 | Representación de la información - Bases columnares y documentales
-12/11/19 | Capítulo 3 | Clase 11 | Recurso 11 | Representación de la información - Bases en grafo
-14/11/19 | Capítulo 3 | Clase 12 | Recurso 12 | Representación de la información - Almacenando ficheros
-19/11/19 | Capítulo 4 | Clase 13 | Recurso 13 | Arquitecturas Big Data
-21/11/19 | Capítulo 4 | Clase 14 | Recurso 14 | Arquitecturas - Procesamiento batch
-26/11/19 | Capítulo 4 | Clase 15 | Recurso 15 | Arquitecturas - Procesamiento streaming
-28/11/19 | Capítulo 5 | Clase 16 | Recurso 16 | Ingestión de datos
-03/12/19 | Capítulo 5 | Clase 17 | Recurso 17 | Ingestión - Scrapeando datos
-05/12/19 | Capítulo 5 | Clase 18 | Recurso 18 | Ingestión - Almacenando los datos ingeridos
-10/12/19 | Capítulo 6 | Clase 19 | Recurso 19 | Procesamiento - Analizando datos
-12/12/19 | Capítulo 6 | Clase 20 | Recurso 20 | Procesamiento - Multiplicando nuestros datos. 
-17/12/19 | Capítulo 6 | Clase 21 | Recurso 21 | Procesamiento - Orquestación de procesos de ingestión y procesamiento
-19/12/19 | Capítulo 6 | Clase 22 | Recurso 22 | Procesamiento - Creación de mi primera ETL
-07/01/20 | Capítulo 6 | Clase 23 | Recurso 22 | Procesamiento - ETL & colas
-09/01/20 | Capítulo 7 | Clase 24 | Recurso 24 | Manipulación - Introducción al aprendizaje automático
-14/01/20 | Capítulo 7 | Clase 25 | Recurso 25 | Manipulación - Aprendizaje de modelos
-16/01/20 | Capítulo 7 | Clase 26 | Recurso 26 | Manipulación - Creando modelos con datos en TensorFlow - Parte I
-21/01/20 | Capítulo 7 | Clase 27 | Recurso 27 | Manipulación - Creando modelos con datos en TensorFlow - Parte II
-23/01/20 | Capítulo 7 | Clase 28 | Recurso 28 | Manipulación - Creando modelos con keras 
-21/01/20 | Capítulo 7 | Clase 29 | Recurso 29 | Manipulación - Apache Spark para el procesamiento de datos
-30/01/20 | Capítulo 8 | Clase 30 | Recurso 30 | Administración - Administración de infraestructuras Big Data
-04/02/20 | Capítulo 8 | Clase 30 | Recurso 30 | Administración - Diseñando nuestros sistemas Big Data
-06/02/20 | Capítulo 8 | Clase 31 | Recurso 31 | Administración 
-11/02/20 | Capítulo 9 | Clase 32 | Recurso 32 | Plataformas Cloud - Conociendo al cloud
-13/02/20 | Capítulo 9 | Clase 33 | Recurso 33 | Plataformas Cloud - Desplegando servicios
-18/02/20 | Capítulo 9 | Clase 34 | Recurso 34 | Plataformas Cloud - Kubernetes
-20/02/20 | Capítulo 9 | Clase 35 | Recurso 35 | Plataformas Cloud - Orquestando procesos en cloud
-25/02/20 | Capítulo 10 | Clase 36 | Recurso 36 | Visualización
-27/02/20 | Capítulo 10 | Clase 37 | Recurso 37 | Visualización - Visualizando datos mediante un sistema de BI
-03/03/20 | Capítulo 10 | Clase 38 | Recurso 38 | Visualización - Visualizando datos en la web
-05/05/20 | Capítulo 10 | Clase 39 | Recurso 39 | Visualización 
-
+29/10/19 | 2 | Clase 07 | Recurso 07 | Apificación - Parte II
+31/10/19 | 3 | Clase 08 | Recurso 08 | Representación de la información - Formatos y tipos
+05/11/19 | 3 | Clase 09 | Recurso 09 | Representación de la información - Bases de datos relacionales
+07/11/19 | 3 | Clase 10 | Recurso 10 | Representación de la información - Bases columnares y documentales
+12/11/19 | 3 | Clase 11 | Recurso 11 | Representación de la información - Bases en grafo
+14/11/19 | 3 | Clase 12 | Recurso 12 | Representación de la información - Almacenando ficheros
+19/11/19 | 4 | Clase 13 | Recurso 13 | Arquitecturas Big Data
+21/11/19 | 4 | Clase 14 | Recurso 14 | Arquitecturas - Procesamiento batch
+26/11/19 | 4 | Clase 15 | Recurso 15 | Arquitecturas - Procesamiento streaming
+28/11/19 | 5 | Clase 16 | Recurso 16 | Ingestión de datos
+03/12/19 | 5 | Clase 17 | Recurso 17 | Ingestión - Scrapeando datos
+05/12/19 | 5 | Clase 18 | Recurso 18 | Ingestión - Almacenando los datos ingeridos
+10/12/19 | 6 | Clase 19 | Recurso 19 | Procesamiento - Analizando datos
+12/12/19 | 6 | Clase 20 | Recurso 20 | Procesamiento - Multiplicando nuestros datos. 
+17/12/19 | 6 | Clase 21 | Recurso 21 | Procesamiento - Orquestación de procesos de ingestión y procesamiento
+19/12/19 | 6 | Clase 22 | Recurso 22 | Procesamiento - Creación de mi primera ETL
+07/01/20 | 6 | Clase 23 | Recurso 22 | Procesamiento - ETL & colas
+09/01/20 | 7 | Clase 24 | Recurso 24 | Manipulación - Introducción al aprendizaje automático
+14/01/20 | 7 | Clase 25 | Recurso 25 | Manipulación - Aprendizaje de modelos
+16/01/20 | 7 | Clase 26 | Recurso 26 | Manipulación - Creando modelos con datos en TensorFlow - Parte I
+21/01/20 | 7 | Clase 27 | Recurso 27 | Manipulación - Creando modelos con datos en TensorFlow - Parte II
+23/01/20 | 7 | Clase 28 | Recurso 28 | Manipulación - Creando modelos con keras 
+21/01/20 | 7 | Clase 29 | Recurso 29 | Manipulación - Apache Spark para el procesamiento de datos
+30/01/20 | 8 | Clase 30 | Recurso 30 | Administración - Administración de infraestructuras Big Data
+04/02/20 | 8 | Clase 30 | Recurso 30 | Administración - Diseñando nuestros sistemas Big Data
+06/02/20 | 8 | Clase 31 | Recurso 31 | Administración 
+11/02/20 | 9 | Clase 32 | Recurso 32 | Plataformas Cloud - Conociendo al cloud
+13/02/20 | 9 | Clase 33 | Recurso 33 | Plataformas Cloud - Desplegando servicios
+18/02/20 | 9 | Clase 34 | Recurso 34 | Plataformas Cloud - Kubernetes
+20/02/20 | 9 | Clase 35 | Recurso 35 | Plataformas Cloud - Orquestando procesos en cloud
+25/02/20 | 10 | Clase 36 | Recurso 36 | Visualización
+27/02/20 | 10 | Clase 37 | Recurso 37 | Visualización - Visualizando datos mediante un sistema de BI
+03/03/20 | 10 | Clase 38 | Recurso 38 | Visualización - Visualizando datos en la web
+05/05/20 | 10 | Clase 39 | Recurso 39 | Visualización 
 
 [Programa de estudios]
 =================
