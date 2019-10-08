@@ -28,7 +28,7 @@ En esta primera clase se describen la estructura organizativa del máster, así 
 
 **Moisés Martínez**
 
-[](https://www.fictizia.com/app/images/moises-martinez.jpeg)
+[Moisip](https://www.fictizia.com/app/images/moises-martinez.jpeg)
 
 **Bio:**
 "Soy Doctor en Inteligencia Artificial especializado en las áreas de robótica, planificación automática y aprendizaje automático. | AI & BigData Architect in @Sngular | #Python, #Java, #BigData, #ML, #AI, #Robotics | Co-organizador de [@t3chfest](http://https://t3chfest.uc3m.es/2020/) | Co-organizador de Madrid Google Cloud Developer group | Profe en [@fictiziaescuela](http://www.fictizia.com/profesores/) | Profe en [@UNIRuniversidad](https://www.unir.net/) | Google Developer Expert en Machine Learning
