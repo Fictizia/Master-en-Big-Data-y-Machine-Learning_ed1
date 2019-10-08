@@ -20,7 +20,7 @@ Información sobre el Curso
 
 [Distribución del calendario: Teoría y Recursos]
 =================
-Fecha | Captulo | Contenido | Recurso | Descripción
+Fecha | Cap | Contenido | Recurso | Descripción
 ------------ | ---------- | ------------ | --------------- | -------------
 08/10/19 | 0 | [Clase 01](capitulo_0/clase1.md) | [Recurso 01](capitulo_0/recursos/clase1.md) | Introducción al curso
 10/10/19 | 1 | Clase 02 | Recurso 02 | Introducción al Big Data - Parte I
