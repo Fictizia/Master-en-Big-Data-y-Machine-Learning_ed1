@@ -22,7 +22,7 @@ Información sobre el Curso
 =================
 Fecha | Cap | Contenido | Recurso | Descripción
 ------------ | ---------- | ------------ | --------------- | -------------
-08/10/19 | 0 | [Clase 01](capitulo_0/clase1.md) | [Recurso 01](capitulo_0/recursos/clase1.md) | Introducción al curso
+08/10/19 | 0 | [Clase 01](capitulo_0/clase_1.md) | [Recurso 01](capitulo_0/recursos/clase_1.md) | Introducción al curso
 10/10/19 | 1 | Clase 02 | Recurso 02 | Introducción al Big Data - Parte I
 15/10/19 | 1 | Clase 03 | Recurso 03 | Introducción al Big Data - Parte II
 17/10/19 | 2 | Clase 04 | Recurso 04 | Contenedores - Creación, uso, depligue
