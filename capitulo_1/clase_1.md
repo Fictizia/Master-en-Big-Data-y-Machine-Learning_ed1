@@ -187,11 +187,7 @@ con las diferentes ramas añadiendo, borrando, mezclando o incluso eliminando la
     git reset HEAD nombre_archivo
     ```    
 
-**GIT Working flow (local) - Avanzado (Conduzcamos un delorean)**
-
-
-![img](./img/git-flow2.png)
-
+**GIT Working flow (local) - Avanzado **
 
 - log
     - Hacemos una copia de seguridad de nuestros commits.
@@ -201,7 +197,7 @@ con las diferentes ramas añadiendo, borrando, mezclando o incluso eliminando la
 
 - checkout
 
-    - Encendemos el delorean
+    - Nos colocamos en el commit
     ```
     git checkout id_commit
     ```
@@ -566,8 +562,110 @@ Si has llegado hasta aquí ya lo sabes todo acerca de git. Podemos pasar a crear
 
 ### 1.2 Creando mis primeros programas en python
 
+Python es un lenguaje de programación en scripting. Es un lenguje interpretado, orientado a objetos con tipado dinámico, que  permite el desarrollo de algoritmos sencillos basados en un scripting, así como algoritmos complejos desarrollados con múltiples clases. 
+
+**Instalación**
+
+Instalamos [python 3.7]()
+ 
+**Comprobando nuestra versión de python**
+
+Comprobando la versión de python 
+
+```
+python --version
+```
+
+**Creando mi primer programa python**
+
+Los archivos que incluyen código python utilizan la extensión .py. A pesar de ser un lenguaje interpretado se debe realizar una compilación, está se realiza cada vez que se produce un cambio en archivo python de modo que se produce una compilación que generar un archivo con extensión .pyc (Si borramos este tipo de archivos se vuelve a producir una nueva compilación)
 
 
+```
+#!/usr/bin/env python
+
+print('Holaaaa')
+
+```
+
+Creando la estructura básica del main. Los programas suelen tener un método main, para poder utilizarlo en python. Para ello, se utiliza la variable __name__, que es una variable especial de python que define como se ejecuta el script. 
+
+```
+#!/usr/bin/env python
+
+if __name__ == "__main__":
+    print('Holaaaa')
+
+```
+
+***IMPORTANTE***
+
+El indentado un tipo de notación secundaria utilizado para mejorar la legibilidad del código fuente, pero en python tiene 
+una mayor importancia ya que define el flujo de ejecución del programa. Es decir, que define como el código es interpretado. 
 
 
-  
+```
+#!/usr/bin/env python
+
+def my_function():
+    for i in [0, 1, 2, 3]:
+        print("Hola " + i)
+    print("adios")
+
+print("Bye")
+
+if __name__ == "__main__":
+    my_function()
+```
+
+Resultado será:
+
+Hola 0
+Hola 1
+Hola 2
+Hola 3
+Adios
+
+**Funciones**
+
+Las funciones nos permiten crear métodos reutilizables que pueden ser ejecutados multiples veces. Las funciones se definen 
+utilizando la palabra reservada def seguido del nombre de la función y unos parentesis donde se incluyen los parámetros, finalizando con :. A continuación se introduce el código de la función utilizando el indentado 
+
+```
+#!/usr/bin/env python
+
+def my_function():
+    print('Holaaaa')
+
+if __name__ == "__main__":
+    my_function()
+
+```
+
+**Variables (locales y globales)**
+
+Las variables son contenedores de información que permiten almacenar información que es construida a partir de tipos de datos. Los tipos de datos estándar disponibles por defecto en python, como los tipos numéricos, secuencias, mapas y conjuntos usados para agrupar otros valores.
+
+***Tipos de datos***
+
+Los tipos de datos compuestos estándar se pueden clasificar como los dos siguientes:
+
+- Mutable: su contenido (valor) puede cambiarse en tiempo de ejecución.
+- Inmutable: su contenido (valor) no puede cambiarse en tiempo de ejecución.
+
+Categoría |	Nombre | Descripción
+------------ | ---------- | ------------
+Números inmutables | int | entero
+Números inmutables | long | entero largo
+Números inmutables | float | coma flotante
+Números inmutables | complex | complejo
+Números inmutables | bool | booleano
+Secuencias inmutables | str | cadena de caracteres
+Secuencias inmutables | unicode | cadena de caracteres Unicode
+Secuencias inmutables | tuple | tupla
+Secuencias inmutables | xrange | rango inmutable
+Secuencias mutables | list | lista
+Secuencias mutables | range | rango mutable
+Secuencias mutables | Mapas | dict(diccionario)
+Conjuntos mutables | set | conjunto mutable
+Conjuntos inmutables | frozenset | conjunto inmutable
