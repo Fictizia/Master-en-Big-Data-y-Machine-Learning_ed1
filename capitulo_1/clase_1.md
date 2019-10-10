@@ -99,7 +99,7 @@ git config --list
 El funcionamiento de git se basa en la creación de ramas sobre los repositorios de elementos de manera que podremos interactuar 
 con las diferentes ramas añadiendo, borrando, mezclando o incluso eliminando las ramas. 
 
-![img](../img/flow-ramas.png)
+![img](./img/git-flow2.png)
 
 
 - help (ayuda)
