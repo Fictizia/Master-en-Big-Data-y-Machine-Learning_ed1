@@ -189,6 +189,10 @@ con las diferentes ramas añadiendo, borrando, mezclando o incluso eliminando la
 
 **GIT Working flow (local) - Avanzado (Conduzcamos un delorean)**
 
+
+![img](./img/git-flow2.png)
+
+
 - log
     - Hacemos una copia de seguridad de nuestros commits.
     ```
