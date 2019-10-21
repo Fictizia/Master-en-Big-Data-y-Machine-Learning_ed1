@@ -8,9 +8,6 @@
 En esta primera clase del capítulo uno se describe como utilizar GIT la herramiento de gestión de código fuente que ser utilizada durante el Máster. Esta herramienta será utilizada para el almacenamiento de todos los contenidos del máster, así
 como los diferentes ejemplos de código fuente que serán utilizados.
 
-
-
-
 ### 1.1 Gestión del código fuente mediante repositorios (GIT)
 
 **Funcionamiento de GIT**
