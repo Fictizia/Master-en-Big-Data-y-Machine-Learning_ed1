@@ -42,7 +42,7 @@ Instalamos [Git - Source Code Management](http://git-scm.com/)
 
 **Comandos básicos**
 
-![Lo que nunca debemos hacer es un git -f](./img/git-force.png)
+![Lo que nunca debemos hacer es un git -f](./img/git_force.png)
 
 versión
 ```
