@@ -8,11 +8,14 @@
 En esta segunda clase del capítulo 1 se describirán como construir nuestros primeros programas en python con el fin de 
 poder realizar los diferentes trabajos del máster. 
 
-[2.1 Instalación][1]
-[2.2 Elementos básicos en python][2]
-[2.3 Creando mi primer programa python][3]
-[2.4 El flujo de ejecución][4]
-[2.5 Funciones][5]
+2.1 Instalación
+2.2 Elementos básicos en python
+2.3 Creando mi primer programa python
+2.4 El flujo de ejecución
+2.5 Funciones
+2.6 Variables (locales y globales)
+2.7 Clases y objetos
+2.8 Tipos de datos básicos
 
 
 ### Creando mis primeros programas en python
@@ -21,12 +24,12 @@ Python es un lenguaje de programación en scripting. Es un lenguje interpretado,
 que  permite el desarrollo de algoritmos sencillos basados en un scripting, así como algoritmos complejos desarrollados 
 con múltiples clases. 
 
-**[1]2.1 Instalación**
+**2.1 Instalación**
 
 Instalamos [python 3.7]()
 
 
-**[2]2.2 Elementos básicos en python: La consola**
+**2.2 Elementos básicos en python: La consola**
 
 Python puede ejecutar mediante scripts desarrollados en uno o varios ficheros que interactuan entre sí o directamente en 
 el terminal del sistema operativo. Actualmente python ofrece dos versión
@@ -100,7 +103,7 @@ cualquier momento. Si queremos informar del tipo de salida que se ha producido, 
 ejemplo exit(10) generando como salida el valor 10. El valor 10 puede tener un significado específico permitiendo que nuestro 
 programa termine de diferentes maneras utilizando diferentes valores (códigos). 
 
-**[3]2.3 Creando mi primer programa python**
+**2.3 Creando mi primer programa python**
 
 Los archivos que incluyen código python utilizan la extensión .py. A pesar de ser un lenguaje interpretado es necesario 
 compilar el código cada vez que se produce un cambio en el archivo de código fuente python (*.py) de modo que se produce 
@@ -151,7 +154,7 @@ esta cabecera indicará al interprete de comando (terminal) el programa que debe
   
   ```
 
-**[4]El flujo de ejecución**
+**El flujo de ejecución**
 
 Los programas en python siguen el flujo de ejecución en base al orden en el que se hayan escrito los comando en el script, 
 aunque es posible definir un punto de inicio con el fin de construir un código con piezas reutilizables. Para ello, tenemos 
@@ -203,7 +206,7 @@ Adios
 El inteprete de comando ha ejecutado los cómandos básicos como el print("Bye") y luego a comenzado la ejecución a través del 
 método main llamando a la función. ¿Pero qué es una función?
 
-**[5]2.5 Funciones**
+**2.5 Funciones**
 
 Las funciones nos permiten crear métodos reutilizables que pueden ser ejecutados multiples veces. Las funciones se definen 
 utilizando la palabra reservada def seguido del nombre de la función y unos parentesis donde se incluyen los parámetros, 
@@ -228,7 +231,7 @@ Hola
 Adios
 ```
 
-**Variables (locales y globales)**
+**2.6 Variables (locales y globales)**
 
 Las variables son contenedores que permiten almacenar información mediante un nombre univoco. La denominación de las variables debe realizarse en base a cuatro reglas básicas
 
@@ -301,7 +304,7 @@ o asignadoles el mismo valor a ambas variables
 
 ```
 
-**Clases u objetos**
+**2.7 Clases y objetos**
 
 Los objetos son los elementos básicos de cualquier lenguaje de Programación Orientado a Objetos (POO). En el caso de python cualquier cosa es un objeto, eso quiere decir que nuestras variables son objetos. 
 
@@ -353,7 +356,7 @@ print(p.get_a())
 
 Pero .... ¿Qué es la función __init__ ?, ¿Qué es la variable self?. Todo esto lo veremos más adelante. 
 
-**Tipos de datos básicos**
+**2.8 Tipos de datos básicos**
 
 Los tipos de datos definen la clase que se ha utilizado para definir el objeto. Para conocer el tipo de un variable en python, se puede utilizar la función type(), que nos indica el tipo del objeto, es decir la clase utilizada para definir el objeto. 
 
@@ -428,14 +431,78 @@ Se pueden convertir en enteros mediante la utilización del método creador de l
 >>> print(a)
 1
 >>> 
+```
 
 **** Enteros ****
 
-Los enteros representan valores enteros con signo que no tienen decimales, es decir pueden utilizarse para almacenar valores positivos y negativos (además del cero). En Python se pueden representar números enteros mediante el tipo int (para enteros ) o el tipo long (largo). 
+Los enteros representan valores enteros con signo que no tienen decimales, es decir pueden utilizarse para almacenar valores positivos y negativos (además del cero). En Python se pueden representar números enteros de dos tipos: (1) el tipo int (para enteros de -2.147.483.648 a 2.147.483.647 en plataformas de 32 bits y -9.223.372.036.854.775.808 hasta 9.223.372.036.854.775.807 en plataformas de 64 bits); y (2) el tipo long (para enteros de cualquier precisión) que sólo está disponible en python 2.7.
+
+Las variables de tipo entero se puede definir de manera directa asignando un número entero a una variable o bien utilizando la clase "int". 
+
+```
+>>> a = 2
+>>> b = int(2)
+>>> print(type(a))
+<class 'int'>
+>>> print(type(b))
+<class 'int'>
+>>> 
+```
+
+El long (entero largo) se puede definir de manera directa asignando un número entero con la letra mayuscula L al final o utilizando la clase "long". 
+
+
+```
+>>> a = 2L
+>>> b = long(24)
+>>> print(type(a))
+<class 'long'>
+>>> print(type(b))
+<class 'long'>
+>>> 
+```
 
 **** Reales ****
 
+Los reales representan números reales con signo. La mayoría de los lenguajes de programación permiten la definición de número reales mediante dos tipos de datos (float y double), pero en el caso de python los números decimales se almacenan siempre con doble precisión. En python, los números reales se escriben separando la parte entera de la decimal mediante un punto. Al igual que los enteros, las variables de tipo real pueden ser definidas de manera directa asignando un número decimal o utilizando la clase float. 
+
+```
+>>> a = 2.4
+>>> b = long(.65)
+>>> print(type(a))
+<class 'float'>
+>>> print(type(b))
+<class 'float'>
+>>> 
+```
+
 **** Complejos ****
+
+Los complejos representan números reales con parte imaginaria. Python, es uno de los pocos lenguajes que posee un tipo de dato de tipo complejo, principalmente para utilizarnos en aplicaciones de caracter científico. Los números complejos se pueden definir mediante un suma entre la parte real y la parte imaginario se la siguiente manera. 
+
+
+```
+>>> a = 2.4 + 23.4j
+>>> print(type(a))
+<class 'complex'>
+>>> 
+```
+
+**** Operaciones entre números ****
+
+Todos los operadores matemáticos pueden ser aplicados entre número de diferente tipo siendo como resultado un nuevo número cuyo tipo se corresponde con el de mayor tipo de los implicados en la operación matemática, siendo la jerarquía de tipos la siguiente:
+
+int << long << float << complex
+
+Las operaciones mátemáticas disponibles en python son las siguientes:
+
+* Suma: a + b
+* Resta: a - b
+* Multiplicación: a * b
+* División: a / b 
+* Cociente de la división: a // b 
+* Resto de la división: a % b
+* Potencia: a ** b
 
 *** Cadenas de caracteres ***
 
