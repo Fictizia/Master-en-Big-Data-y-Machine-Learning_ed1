@@ -223,16 +223,148 @@ Adios
 
 **Variables (locales y globales)**
 
-Las variables son contenedores que permiten almacenar información que es construida a partir de tipos de datos. Los tipos 
-de datos estándar disponibles por defecto en python, como los tipos numéricos, secuencias, mapas y conjuntos usados para 
-agrupar otros valores
+Las variables son contenedores que permiten almacenar información mediante un nombre univoco. La denominación de las variables debe realizarse en base a cuatro reglas básicas
 
-***Tipos de datos***
+* No pueden comenzar por un número --> 1nombre
+* No pueden contener espacios --> variable prueba
+* No pueden contener operadores (+, -, *, /, etc) ni el símbolo ? --> my_var?
+* No pueden llamarse como la palabras reservadas (True, for, ...) --> True
 
-Los tipos de datos estándar se pueden clasificar en dos grupos:
+Además es posible comprobar si una cadena de texto es un nombre válido para una varible de Python mediante la función :
 
-- Mutable: su contenido (valor) puede cambiarse en tiempo de ejecución.
-- Inmutable: su contenido (valor) no puede cambiarse en tiempo de ejecución.
+```
+'סְפִירוֹת'.isidentifier()
+```
+
+***Operaciones básicas con variables***
+
+La asignación de las variables se realiza mediante el operador de asignación '='
+
+```
+mi_variable_1 = 23
+mi_variable_2 = 'Nombre'
+
+```
+El acceso al valor de la variables que hemos asignado previamente se realiza mediante el llamada a la variable
+
+```
+mi_variable_1 = 23
+print(mi_variable_1)
+mi_variable_2 = 'Nombre'
+a = mi_variable_2
+print(a)
+```
+Aúnque si intentamos acceder al valor de una variable a la que se le ha asignado un valor previamente obtendremos un error en tiempo de ejecución:
+
+```
+>>> print(a)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'a' is not defined
+>>>
+```
+La asignación en python nos permite asignar el valor de múltiples variables mediante la misma operación. Este sistema de 
+asignación múltiple es denominado como 'asignación desestructurada'. 
+
+```
+>>> a,b = 1, 2
+>>> print(b)
+2
+>>>
+```
+
+Incluso es posible realizar la asignacón desestructurada con tipos de datos diferentes
+
+```
+>>> a, b = 1, 'prueba'
+>>> print(a)
+1
+>>> print(b)
+prueba
+>>>
+```
+
+o asignadoles el mismo valor a ambas variables
+
+```
+>>> a, b = 1
+>>> print(b)
+1
+>>> 
+
+```
+
+**Clases u objetos**
+
+Los objetos son los elementos básicos de cualquier lenguaje de Programación Orientado a Objetos (POO). En el caso de python cualquier cosa es un objeto, eso quiere decir que nuestras variables son objetos. 
+
+Pero, ¿Qué es un objeto?
+
+Un objeto puede definirse como un ente abstracto utilizado en POO que permite definir los diferentes componentes de un programa. Los objetos se define en base a una clase que permite la definición de un estructura y un conjunto de funciones o métodos que pueden aplicarse una vez que se ha creado el objeto. 
+
+¿Los objetos se crean?
+
+Si, se deben crear de manera explícita, pero hay algunas excepciones. Los llamados "tipos básicos" crean automaticamente un objeto al realizarse la asignación de su valor:
+
+```
+>>> a = 1
+>>> print(type(a))
+<class 'int'>
+>>> a = int(1)
+>>> print(type(a))
+<class 'int'>
+>>> b = [1, 2, 3] #¿Qué es esto?
+>>> print(type(b))
+<class 'list'>
+>>>
+
+```
+
+¿Cómo defino una clase?
+
+Las clases se definen de forma similar a las funciones, pero dentro de si mismas contienen funciones y varibles (Objetos).
+
+```
+#!/usr/bin/env python3
+
+class prueba:
+  def __init__(self, a, b):
+    self.__a = a 
+    self.__b = b
+
+  def get_a(self):
+    return self.__a
+
+  def get_b(self):
+    return self.__b
+
+
+p = prueba(1, 10)
+print(p.get_a())
+
+```
+
+Pero .... ¿Qué es la función __init__ ?, ¿Qué es la variable self?. Todo esto lo veremos más adelante. 
+
+**Tipos de datos básicos**
+
+Los tipos de datos definen la clase que se ha utilizado para definir el objeto. Para conocer el tipo de un variable en python, se puede utilizar la función type(), que nos indica el tipo del objeto, es decir la clase utilizada para definir el objeto. 
+
+```
+>>> a = 1
+>>> print(type(a))
+<class 'int'>
+>>> a = 'Prueba'
+>>> print(type(a))
+<class 'str'>
+>>> 
+
+```
+
+Los tipos estándar en python se pueden clasificar en dos grupos dependiendo de si su valor puede cambiarse en tiempo de ejecución. 
+
+* Mutable: su contenido (valor) puede cambiarse en tiempo de ejecución.
+* Inmutable: su contenido (valor) no puede cambiarse en tiempo de ejecución. En caso de querer cambiar el valor, es necesario reasignar la variable (objeto).
 
 Categoría |	Nombre | Descripción
 ------------ | ---------- | ------------
@@ -250,3 +382,58 @@ Secuencias mutables | range | rango mutable
 Secuencias mutables | Mapas | dict(diccionario)
 Conjuntos mutables | set | conjunto mutable
 Conjuntos inmutables | frozenset | conjunto inmutable
+------------ | ---------- | ------------
+
+*** Números ***
+
+Los tipos numéricos en Python se agrupan en tres categorías o número dependiendo de su tamaño y su representación: (1) enteros, (2) reales y (3) complejos. 
+
+Clase	| Tipo | Descripción | Ejemplo
+------------ | ---------- | ------------ | ------------ 
+bool | Número entero	| Número entero binario (0, 1) | True es 1, False es 0
+int	| Número entero	| Número entero con precisión fija | 21
+long |	Números	entero | Número entero con overflow (Super grande) |	42L ó 456966786151987643L
+float	| Números real | 	Coma flotante de doble precisión | 3.1415927
+complex	| Números	complejo | Parte real y parte imaginaria j |(1.25 + 5j)
+------------ | ---------- | ------------ | ------------ 
+
+**** Boleanos ****
+
+Los boleanos representan un entero de tipo binario que puede tomar dos tipos de valores (False = 0 y True = 1). Se define mediante la utilización de las palabras reservadas False y True. Este tipo de objetos se utilizan normalmente para la creación de variables de control de bucles o de variables de comprobación. 
+
+```
+>>> a = True
+>>> print(type(a))
+<class 'bool'>
+>>> print(a)
+True
+>>> 
+
+```
+
+Se pueden convertir en enteros mediante la utilización del método creador de la clase de enteros "int". 
+
+
+```
+>>> a = int(True)
+>>> print(type(a))
+<class 'int'>
+>>> print(a)
+1
+>>> 
+
+**** Enteros ****
+
+Los enteros representan valores enteros con signo que no tienen decimales, es decir pueden utilizarse para almacenar valores positivos y negativos (además del cero). En Python se pueden representar números enteros mediante el tipo int (para enteros ) o el tipo long (largo). 
+
+**** Reales ****
+
+**** Complejos ****
+
+*** Cadenas de caracteres ***
+
+*** Tuplas ***
+
+*** Listas ***
+
+*** Diccionarios ***
