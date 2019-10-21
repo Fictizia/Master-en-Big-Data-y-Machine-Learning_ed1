@@ -5,8 +5,11 @@
 
 ## Capítulo 1 - Clase 01
 
-En esta primera clase del capítulo uno se comenzarán describiendo las diferentes tecnologas que utilizaremos a lo largo del 
-máster para realizar los diferentes trabajos prácticas y utilizar las diferesnte tecnologías. 
+En esta primera clase del capítulo uno se describe como utilizar GIT la herramiento de gestión de código fuente que ser utilizada durante el Máster. Esta herramienta será utilizada para el almacenamiento de todos los contenidos del máster, así
+como los diferentes ejemplos de código fuente que serán utilizados.
+
+
+
 
 ### 1.1 Gestión del código fuente mediante repositorios (GIT)
 
@@ -17,7 +20,7 @@ que se realizan sobre los elementos de un software. El objetivo del control de v
 del software con el objetivo de conocer su evolución y saber __quien y __como se han realizado los cambios en los diferente 
 elementos que conformar el software. 
 
-![img](./img/git-flow.png)
+![Funcionamiento básico de GIT](./img/git-flow.png)
 
 ***Caractersticas básicas***
 
@@ -39,7 +42,7 @@ Instalamos [Git - Source Code Management](http://git-scm.com/)
 
 **Comandos básicos**
 
-![data transport commands](../assets/clase2/9e578e2c-7800-4d59-b936-21208d12fa2a.png)
+![Lo que nunca debemos hacer es un git -f](./img/git-force.png)
 
 versión
 ```
