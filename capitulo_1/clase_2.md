@@ -8,18 +8,25 @@
 En esta segunda clase del capítulo 1 se describirán como construir nuestros primeros programas en python con el fin de 
 poder realizar los diferentes trabajos del máster. 
 
-### 2.1 Creando mis primeros programas en python
+[2.1 Instalación][1]
+[2.2 Elementos básicos en python][2]
+[2.3 Creando mi primer programa python][3]
+[2.4 El flujo de ejecución][4]
+[2.5 Funciones][5]
+
+
+### Creando mis primeros programas en python
 
 Python es un lenguaje de programación en scripting. Es un lenguje interpretado, orientado a objetos con tipado dinámico, 
 que  permite el desarrollo de algoritmos sencillos basados en un scripting, así como algoritmos complejos desarrollados 
 con múltiples clases. 
 
-**Instalación**
+**[1]2.1 Instalación**
 
 Instalamos [python 3.7]()
 
 
-**Elementos básicos: La consola**
+**[2]2.2 Elementos básicos en python: La consola**
 
 Python puede ejecutar mediante scripts desarrollados en uno o varios ficheros que interactuan entre sí o directamente en 
 el terminal del sistema operativo. Actualmente python ofrece dos versión
@@ -27,7 +34,7 @@ el terminal del sistema operativo. Actualmente python ofrece dos versión
 * Python 2.7 que puede invocarse mediante el comando python
 * Python 3.6 o 3.7 que puede invocarse mediante el comando python3. Esta será nuestra elección para la ejecución de los diferentes scripts que desarrollaremos en el máster. 
 
-**Elementos básicos: La versión de python**
+**2.2 Elementos básicos en python: La versión de python**
 
 Para comprobar la versión de python que vamos a utilizar deberemos comprobar que versiones tenemos disponibles, siendo la 
 versión por defecto de la mayoría de los sistemas operativos, la versión 2.7. 
@@ -47,7 +54,7 @@ Python 3.6.8
 
 ```
 
-**Elementos básicos: Jugueteando con la consola**
+**2.2 Elementos básicos en python: Jugueteando con la consola**
 
 Python puede utilizar directamente usando la consola mediante un interprete de comando, creando de esta manera una sesión 
 para la ejecución de comandos.
@@ -93,7 +100,7 @@ cualquier momento. Si queremos informar del tipo de salida que se ha producido, 
 ejemplo exit(10) generando como salida el valor 10. El valor 10 puede tener un significado específico permitiendo que nuestro 
 programa termine de diferentes maneras utilizando diferentes valores (códigos). 
 
-**Creando mi primer programa python**
+**[3]2.3 Creando mi primer programa python**
 
 Los archivos que incluyen código python utilizan la extensión .py. A pesar de ser un lenguaje interpretado es necesario 
 compilar el código cada vez que se produce un cambio en el archivo de código fuente python (*.py) de modo que se produce 
@@ -144,7 +151,7 @@ esta cabecera indicará al interprete de comando (terminal) el programa que debe
   
   ```
 
-**El flujo de ejecución**
+**[4]El flujo de ejecución**
 
 Los programas en python siguen el flujo de ejecución en base al orden en el que se hayan escrito los comando en el script, 
 aunque es posible definir un punto de inicio con el fin de construir un código con piezas reutilizables. Para ello, tenemos 
@@ -196,7 +203,7 @@ Adios
 El inteprete de comando ha ejecutado los cómandos básicos como el print("Bye") y luego a comenzado la ejecución a través del 
 método main llamando a la función. ¿Pero qué es una función?
 
-**Funciones**
+**[5]2.5 Funciones**
 
 Las funciones nos permiten crear métodos reutilizables que pueden ser ejecutados multiples veces. Las funciones se definen 
 utilizando la palabra reservada def seguido del nombre de la función y unos parentesis donde se incluyen los parámetros, 
