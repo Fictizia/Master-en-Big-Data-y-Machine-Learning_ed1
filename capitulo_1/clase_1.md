@@ -42,6 +42,8 @@ Instalamos [Git - Source Code Management](http://git-scm.com/)
 
 **Comandos básicos**
 
+La opción push -f debe ser la último opción al hacer un push. Es el camino al lado oscuro. 
+
 ![Lo que nunca debemos hacer es un git -f](./img/git_force.png)
 
 versión
