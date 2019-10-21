@@ -8,15 +8,14 @@
 En esta segunda clase del capítulo 1 se describirán como construir nuestros primeros programas en python con el fin de 
 poder realizar los diferentes trabajos del máster. 
 
-2.1 Instalación
-2.2 Elementos básicos en python
-2.3 Creando mi primer programa python
-2.4 El flujo de ejecución
-2.5 Funciones
-2.6 Variables (locales y globales)
-2.7 Clases y objetos
-2.8 Tipos de datos básicos
-
+* 2.1 Instalación
+* 2.2 Elementos básicos en python
+* 2.3 Creando mi primer programa python
+* 2.4 El flujo de ejecución
+* 2.5 Funciones
+* 2.6 Variables (locales y globales)
+* 2.7 Clases y objetos
+* 2.8 Tipos de datos básicos
 
 ### Creando mis primeros programas en python
 
@@ -26,7 +25,63 @@ con múltiples clases.
 
 **2.1 Instalación**
 
-Instalamos [python 3.7]()
+***2.1.2 Instalando python 3.6 y virtualenv en ubuntu ***
+
+Los sistemas operativos basados en Debian poseen un sistema de instalación de paquetes que nos permite instalar python y el sistema de instalación de paquetes pip mediante el siguiente comando. 
+
+```
+sudo apt install python3-dev python3-pip
+```
+
+Tras la instalación de ambos paquetes es necesario la instalación del sistema de generación de entornos virtuales mediante la utilización de pip. Los entornos virtuales nos permiten construir entornos aislados para la ejecución de nuestras aplicaciones con el fin de evitar conflictos entre paquetes similares o para obtener listados de paquetes necesarios para la ejecución de nuestra aplicación. 
+
+```
+sudo pip install --upgrade virtualenv 
+```
+
+***2.1.3 Instalando python 3.6 y virtualenv en Mac ***
+
+Los sistemas operativos Mac poseen un sistema de instalación de paquetes denominado "brew" que nos permite instalar python y el sistema de instalación de paquetes pip mediante el siguiente comando. 
+
+```
+brew install python3
+```
+
+Tras la instalación de ambos paquetes es necesario la instalación del sistema de generación de entornos virtuales mediante la utilización de pip. Los entornos virtuales nos permiten construir entornos aislados para la ejecución de nuestras aplicaciones con el fin de evitar conflictos entre paquetes similares o para obtener listados de paquetes necesarios para la ejecución de nuestra aplicación. 
+
+```
+pip3 install --upgrade virtualenv
+```
+
+***2.1.3 Desplegando mi entorno virtual ***
+
+Para la creación de un entorno virtual es necesario utilizando el comando "virtualenv" expecificando la ruta (path) donde se almacenará la información de nuestro entorno virtual. Por ejemplo, para crear un entorno virtual en la carpeta proyecto1, se debería utilizar 
+
+```
+virtualenv proyecto1
+```
+
+Tras la ejecución del comando se generarán un conjunto de directorios necesarios para la utilización del entorno virtual. Si realizaramos una visualización de los diferentes directorios de la carpeta proyecto1 mediante el comando "ls -la" deberíamos obtener el siguiente resultado:
+
+total 24
+drwxrwxr-x 6 momartin momartin 4096 sep 10 02:39 .
+drwxrwxr-x 3 momartin momartin 4096 sep 10 02:39 ..
+drwxrwxr-x 2 momartin momartin 4096 sep 10 02:39 bin
+drwxrwxr-x 2 momartin momartin 4096 sep 10 02:39 include
+drwxrwxr-x 3 momartin momartin 4096 sep 10 02:39 lib
+drwxrwxr-x 2 momartin momartin 4096 sep 10 02:39 local  
+
+Una vez que el entorno se ha creado correctamente podremos utilizarlo para la ejecución de nuestras aplicaciones previa activación mediante el siguiente comando:
+
+```
+source proyecto1/bin/activate 
+```
+
+Una vez activado el entorno virtual podremos instalar todos los paquetes que necesitemos sin que estos se instalen en la estructura local del usuario del sistema operativo, de manera que si desactivamos el entorno virtual, nuestra versión local de python no almacenará ninguno de los paquetes que se hayan instalado en el entorno virtual. Para desactivar el entorno virtual y volver al entorno local de python es necesario utilizar el siguiente comando:
+
+```
+deactivate
+```
 
 
 **2.2 Elementos básicos en python: La consola**
