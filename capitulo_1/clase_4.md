@@ -16,12 +16,21 @@ En esta clase se definirán algunos conceptos básicos sobre librerias de tratam
 
 * 3. Algoritmia para datos *
 
-La palabra algorirmia deriva de la palabra algoritmo y se puede definir como el proceso de construcción de algoritmos para resolver determinados problemas. 
-En este caso nos centraremos en como construir algoritmos para la gestión de datos mediante python. 
+La palabra algorirmia deriva de la palabra algoritmo y se puede definir como el proceso de construcción de algoritmos para resolver determinados problemas. En este caso nos centraremos en como construir algoritmos para la gestión de datos mediante python. 
 
 ** 3.1 Resolviendo mi primer problema de algoritmia **
 
-Construir un fichero de datos que contenga toda la información de un dataset
+Construir un fichero de datos que contenga toda la información de un dataset para ello vamos a utilizar los datos recopilados por la universidad de wisconsin (USA) referentes al cancer de mama. Para más información sobre el dataset o el estudio pueder visitar la siguiente [página web](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)). 
+
+* [Dataset de datos](https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data)
+
+* [Información del dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.names)
+
+** Ejercicio de lectura y escritura de ficheros **
+
+Para la realización del ejercicio es necesario descargar los dos ficheros y construir un script en python que genere un archivo json y un archivo csv a partir de los datos contenidos en ambos fichero. Ambos ficheros deberán incluir la información referente a los campos (names) y a los datos (data)
+
+La solución propuesta para resolver este ejercició se puede descargar en el siguiente [enlace](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/blob/master/capitulo_1/src/breast-cancer-wisconsin-reading.py)
 
 ** 3.2 Trabajando con Pandas **
 
