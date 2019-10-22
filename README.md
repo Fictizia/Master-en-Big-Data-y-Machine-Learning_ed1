@@ -23,10 +23,10 @@ Información sobre el Curso
 Fecha | Cap | Contenido | Recurso | Descripción
 ------------ | ---------- | ------------ | --------------- | -------------
 08/10/19 | 0 | [Clase 01](capitulo_0/clase_1.md) | [Recurso 01](capitulo_0/recursos/clase_1.md) | Introducción al curso
-10/10/19 | 1 | [Clase 02](capitulo_0/clase_2.md) | Recurso 02 | Introducción al Big Data - GIT
-10/10/19 | 1 | [Clase 02](capitulo_0/clase_3.md) | Recurso 03 | Introducción al Big Data - Python
-15/10/19 | 1 | [Clase 03](capitulo_0/clase_1.md) | [Recurso 04]() | Introducción al Big Data - Parte I
-15/10/19 | 1 | [Clase 03] | Recurso 05 | Introducción al Big Data - Parte II
+10/10/19 | 1 | [Clase 02](capitulo_1/clase_1.md) | Recurso 02 | Introducción al Big Data - GIT
+10/10/19 | 1 | [Clase 02](capitulo_1/clase_2.md) | Recurso 03 | Introducción al Big Data - Python
+15/10/19 | 1 | [Clase 03](capitulo_1/clase_3.md) | [Recurso 04]() | Introducción al Big Data - Parte I
+15/10/19 | 1 | [Clase 03](capitulo_1/clase_4.md) | [Recurso 05]() | Introducción al Big Data - Parte II
 17/10/19 | 2 | Clase 04 | Recurso 06 | Contenedores - Creación, uso, depligue
 22/10/19 | 2 | Clase 05 | Recurso 05 | Contenedores - Desplegando una infraestructura
 24/10/19 | 2 | Clase 06 | Recurso 06 | Apificación - Parte I
