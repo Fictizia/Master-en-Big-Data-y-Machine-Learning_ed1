@@ -164,4 +164,69 @@ Name: Junio, dtype: object
 
 *** 3.2.3 Cargando datos desde fichero ***
 
-Además de construir nuestros conjuntos de datos utilizando listas y diccionarios es posible cargar la información directamente desde diferentes tipos de ficheros. Para ellos vamos a utilizar el archivo que utilizamos en el anterior ejemplo: 
+Además de construir nuestros conjuntos de datos utilizando listas y diccionarios es posible cargar la información directamente desde diferentes tipos de ficheros. Para ellos vamos a utilizar el archivo que utilizamos en el anterior ejercicio relacionado con el cancer de mama. 
+
+```
+#!/usr/bin/env python3
+
+import pandas as pd
+
+if __name__ == "__main__":
+
+    names = ["id", "clump_thickness", "unif_cell_size", "unif_cell_shape", "marg_adhesion", "single_epith_cell_size",
+             "bare_nuclei", "bland_chrom", "norm_nucleoli", "mitoses", "class"]
+    raw_data = pd.read_csv("./data/breast-cancer-wisconsin.data", ',', names=names)
+
+    raw_data.to_csv(index=False, encoding='utf-8', path_or_buf='pandas.csv')
+    raw_data.to_json(orient='records', path_or_buf='pandas.json')
+```
+
+Pero podemos hacer muchas más cosas con la librería pandas para preparar nuestro datasets:
+
+Generando subconjunto de datos desde el inicio del datasets
+
+```
+raw_data.head()
+```
+
+Generando subconjunto de datos formado por dos elementos desde el inicio del datasets
+
+```
+raw_data.head(2)
+```
+
+Generando subconjunto de datos desde el final del datasets
+
+```
+raw_data.tail()
+```
+
+Generando subconjunto de datos formado por cinco elementos desde el final del datasets
+
+```
+raw_data.tail(5)
+```
+
+Generando subconjunto de datos aleatorios de 10 elementos
+
+```
+raw_data.sample(10)
+```
+
+Seleccionando sólo una de las series (columnas)
+```
+raw_data.id
+```
+
+Seleccionando sólo una de las series (columnas)
+```
+raw_data[['id', 'bare_nuclei']]
+```
+
+Aplicar condiciones sobre la selección de series
+
+```
+print(raw_data[raw_data.classs == 2])
+```
+
+article_read[['country', 'user_id']]
