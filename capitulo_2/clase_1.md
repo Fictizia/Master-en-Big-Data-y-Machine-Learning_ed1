@@ -41,7 +41,7 @@ tipos de servidores virtuales en un mismo servidores físicos siempre y cuando s
 
 #### Vagrant
 
-![Vagrant Logo](../vagrant.png)
+![Vagrant Logo](./imgvagrant.png)
 
 **Recursos**
 - [vagrantup.com](https://www.vagrantup.com/)
@@ -57,7 +57,7 @@ tipos de servidores virtuales en un mismo servidores físicos siempre y cuando s
 
 #### VMWare
 
-![wmware Logo](./img/vmware.jpg)
+![wmware Logo](./img/wmware.jpg)
 
 **Recursos**
 - [Wikipedia | VMware](https://es.wikipedia.org/wiki/VMware)
