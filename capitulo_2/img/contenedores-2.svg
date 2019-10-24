@@ -34,10 +34,10 @@
         <tspan font-family="Arial" font-size="18" font-weight="bold" x=".48876953" y="16" textLength="52.02246">Image</tspan>
       </text>
       <text transform="translate(112.55905 373.91507)" fill="black">
-        <tspan font-family="Arial" font-size="18" font-weight="bold" x="6.5043945" y="36.588867" textLength="71.99121">Stopped</tspan>
+        <tspan font-family="Arial" font-size="18" font-weight="bold" x="6.5043945" y="16" textLength="71.99121">Stopped</tspan>
       </text>
       <text transform="translate(225.94488 373.91507)" fill="black">
-        <tspan font-family="Arial" font-size="18" font-weight="bold" x="6.012207" y="36.588867" textLength="72.97559">Running</tspan>
+        <tspan font-family="Arial" font-size="18" font-weight="bold" x="6.012207" y="16" textLength="72.97559">Running</tspan>
       </text>
       <rect x="-255.1181" y="354.3307" width="127.55905" height="85.03937" fill="#327cbd"/>
       <rect x="-255.1181" y="354.3307" width="127.55905" height="85.03937" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4173228"/>
