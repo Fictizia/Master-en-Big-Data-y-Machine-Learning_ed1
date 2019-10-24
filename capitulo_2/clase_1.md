@@ -78,3 +78,12 @@ tipos de servidores virtuales en un mismo servidores físicos siempre y cuando s
 - [VirtualBox.org | Community](https://www.virtualbox.org/wiki/Community)
 - [Oracle | Desarrollo mediante VM Virtual Box, despliegue en cualquier parte](https://www.oracle.com/es/virtualization/virtualbox/)
 
+#### Contenedores: Dockers ####
+
+![La metáfora del contenedor](./img/contenedores-1.jpg)
+
+Docker es una plataforma de software que le permite crear, probar e implementar aplicaciones rápidamente. Docker empaqueta software en unidades estandarizadas llamadas contenedores que incluyen todo lo necesario para que el software se ejecute, incluidas bibliotecas, herramientas de sistema, código y tiempo de ejecución. Con Docker, puede implementar y ajustar la escala de aplicaciones rápidamente en cualquier entorno con la certeza de saber que su código se ejecutará.
+
+![Diferencias entre contenedores y máquinas virtuales](./img/contenedores-2.jpg)
+
+
