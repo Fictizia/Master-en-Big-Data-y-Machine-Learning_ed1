@@ -57,7 +57,7 @@ tipos de servidores virtuales en un mismo servidores físicos siempre y cuando s
 
 #### VMWare
 
-![Vagrant Logo](./img/vmware.jpg)
+![wmware Logo](./img/vmware.jpg)
 
 **Recursos**
 - [Wikipedia | VMware](https://es.wikipedia.org/wiki/VMware)
@@ -68,7 +68,7 @@ tipos de servidores virtuales en un mismo servidores físicos siempre y cuando s
 
 #### Oracle VM VirtualBox
 
-![Virtual Box Logo](./virtualbox.jpg)
+![Virtual Box Logo](./img/virtualbox.jpg)
 
 **Recursos**
 - [Wikipedia | Virtualbox](https://es.wikipedia.org/wiki/VirtualBox)
