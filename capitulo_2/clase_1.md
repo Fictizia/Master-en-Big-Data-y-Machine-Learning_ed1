@@ -124,8 +124,14 @@ El ciclo de vida de un contenedor es el conjunto de estados por los que puede pa
 * Stopped: Es un contenedor en que encuentra en estado de reposo, es decir la imagen está congelada.  
 * Running: Es un contenedor en ejecución, es decir la imagen está en ejecución.   
 
+#### Recursos ####
 
-#### Comando básicos de docker
+**Recursos**
+- [Página oficial | Docker](https://docs.docker.com/)
+- [Página oficial | Referencias](https://docs.docker.com/reference/)
+- [Guía de instalación | Inglés](https://docs.docker.com/install/)
+
+#### Comando básicos de docker ####
 
 versión
 ```
@@ -574,8 +580,135 @@ docker run -p 80:80 --name apache1 -v /home/ficticia/capitulo_2/shared:/shared -
 
 #### Creando redes de contenedores
 
-Docker nos permite crear redes entre los diferentes contenedores de manera que podamos crear grupos de contenedores que interactuan entre si mediante espacios de red diferentes. 
+Docker nos permite crear redes entre los diferentes contenedores de manera que podamos crear conjuntos de contenedores que interactuan entre si mediante espacios de red diferentes con el fin de crear entornos aislados de trabajo. Se pueden crear tres tipos de redes:
 
+* bridge - Es el caso más general de red y construye automaticamente un red con sus elementos básicos (subnet y gateway)
+* host - Es un caso específico donde un contenedor se conecta a una red previamente generada. 
+* null - Es un caso específico donde se crea una pila de red especifica de red que carece de un interfaz.  
 
+**Paso 1: Creando un red**
+
+El caso mas común consiste en crear un red y conectar los diferentes contenedores a esa red. Docker, por defecto, ya ofrece un interfaz de red al que se conectan los contenedores cuando son lanzados. Es posible consultar los diferentes interfaces de red utilizando el siguiente comando:
+
+```
+docker network ls  
+```
+
+donde el resultado nos mostrará las tres redes básicas que crea docker por defecto
+
+```
+NETWORK ID          NAME                DRIVER              SCOPE
+5cffca5f2cff        bridge              bridge              local
+453942b4fa3b        host                host                local
+b22524d9d769        none                null                local
+```
+para crear una nueva red deberemos utilizar el siguiente comando, donde el único parámetro obligatorio es el nombre de red, el cual debe ser único. Es posible configurar los diferentes elementos de la red. 
+
+```
+docker network create pruebas
+```
+de forma que si comprobamos de nuevo las diferentes redes disponibles obtendremos el siguiente listado de redes:
+
+```
+NETWORK ID          NAME                DRIVER              SCOPE
+5cffca5f2cff        bridge              bridge              local
+453942b4fa3b        host                host                local
+b22524d9d769        none                null                local
+a1b2e65f110a        pruebas             bridge              local
+``` 
+ donde se ha creado una nueva red denominad pruebas de tipo bridge. Es posible configurar diferentes parametros de la red, por ejemplo podemos formar el tipo de driver que queremos utilizar para la creación de la red o definir la máscara de subred que queremos utilizar. Por ejemplo, si quisieramos crear una red de tipo bridge con una máscara de red 172.30.0.0
+ 
+```
+docker network create -d bridge --subnet 172.30.0.0/16 prueba2 
+```
+**Paso 2: Conectando nuestro contenedor a la red**
+
+Una vez que hemos creado nuestra red podemos comenzar a conectar nuestros contenedores. Para ello tenemos que conectar el contener a la red mediante el siguiente comando. 
+
+```
+docker network connect prueba2 apache1
+```
+
+Una vez que se ha realiza la conexión podremos ver las diferentes redes del contenedor utilizando el comando __inspect__ y buscando la sección de networks:
+
+```
+"Networks": {
+    "bridge": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "NetworkID": "5cffca5f2cff09d6b67e6fb4e2642e79fc694f10268895044d9a2242290c7290",
+        "EndpointID": "d0255553d058bd091f9c10a4e361bf01349b1f486a5a4a2863c574730c0184cb",
+        "Gateway": "172.17.0.1",
+        "IPAddress": "172.17.0.3",
+        "IPPrefixLen": 16,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "MacAddress": "02:42:ac:11:00:03",
+        "DriverOpts": null
+    },
+    "prueba2": {
+        "IPAMConfig": {},
+        "Links": null,
+        "Aliases": [
+            "c97913ba34ff"
+        ],
+        "NetworkID": "69bac7002f242235eba0ce222d4cd68f1abbd4916e8aeeebc6f04fc6cf39b16b",
+        "EndpointID": "cceeac2673e2c3b0d1d796cb81e4b46146e85bd06aca9f0e598300e9c2aad51b",
+        "Gateway": "172.30.0.1",
+        "IPAddress": "172.30.0.2",
+        "IPPrefixLen": 16,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "MacAddress": "02:42:ac:1e:00:02",
+        "DriverOpts": {}
+    }
+}
+```
+
+Ahora nuestro contenedor esta conectado a dos redes: (1) la red __bridge__ que es la red genérica creada por Docker y (2) la red __prueba2__ que es la red que hemos creado y conectado al contenedor. 
 
 #### Desplegando multiples contenedores con Compose
+
+La gestión de contenedores es muy sencilla pero que ocurre cuanto tenemos que desplegar diferentes tipo de contenedores, para ello existen un sistema de despliegue denominado __compose__. 
+
+**Recursos**
+- [Página oficial | Compose](https://es.wikipedia.org/wiki/VirtualBox)
+- [Guía de instalación](https://docs.docker.com/compose/install/)
+
+**El fichero de servicio**
+
+Los diferentes componentes de nuestra infraestructura (contenedores) pueden ser ejecutados de forma conjunta con el fin de construir una infraestructura aislada facilmente replicable. Para ello es necesario crear un fichero despligue denominado __docker-compose.yml__. En este fichero se describen los diferentes componentes de la infraestructura (redes, contenedores, volumenes, etc) que son identificados como servicios. 
+
+Un fichero docker-compose.yml tiene la siguiente estructura
+
+```
+version: '3.4'
+services:
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongoData:/data/db
+volumes:
+  mongoData: {}
+```
+
+**Paso 1:Construyendo mi red de contenedore**
+
+En primer lugar vamos a crear un nuevo contenedor de forma que cargemos una base de datos ya creada durante el proceso de construcción. Para ello vamos a crear un nuevo fichero de despliegue 
+
+``` 
+FROM mysql/mysql-server:latest
+MAINTAINER Moisés <moises@fictizia.com>
+
+RUN apt-get update && apt-get install -y apache2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY ./database.sql /tmp
+EXPOSE 3306
+CMD ["mysql", "-u", "username", "-p", "universidad", "<", "/tmo/database.sql"]
+``` 
