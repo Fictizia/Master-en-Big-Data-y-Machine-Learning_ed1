@@ -90,7 +90,26 @@ Para que las máquinas virtuales puedan ejecutarse en el entorno de virtualizaci
 
 ![La metáfora del contenedor](./img/contenedores-3.jpeg)
 
-Docker es una plataforma de software que permite crear, implementar y deplegar aplicaciones software de forma rápica y sencilla. Docker empaqueta el software en unidades estandarizadas llamadas contenedores que incluyen todo lo necesario para que el software se ejecute, incluyendo bibliotecas, herramientas de sistema, código y tiempo de ejecución. Con Docker, se puede implementar y ajustar la escala de aplicaciones rápidamente en cualquier entorno con la certeza de saber que su código se ejecutará. Ya que el contenedor es autocontenido desde el punto de vista del SSOO y las aplicaciones que se ejecutan dentro. 
+Docker es un proyecto de software que permite crear, implementar y deplegar aplicaciones software de forma rápica y sencilla mediante virtualización basada en contenedores. Docker empaqueta el software en unidades estandarizadas llamadas contenedores que incluyen todo lo necesario para que el software se ejecute, incluyendo bibliotecas, herramientas de sistema, código y tiempo de ejecución. Con Docker, se puede implementar y ajustar la escala de aplicaciones rápidamente en cualquier entorno con la certeza de saber que su código se ejecutará. Ya que el contenedor es autocontenido desde el punto de vista del SSOO y las aplicaciones que se ejecutan dentro. 
+
+#### Componentes básicos ###
+
+Los elementos básicos de docker son el motor Docker (Docker engine) que permite ejecutar las diferentes imágenes que pueden ser creadas por el usuario u obtenerse en el repositorio general Docker Hub.
+
+**Imágenes**
+
+Este es el elemento más importe de docker y es una plantilla de solo **lectura** con todas las instrucciones que necesita el motor de Docker para crear un contenedor. Los imagenes Docker se describen mediante un archivo de texto (Dockerfile).
+
+**Docker Hub**
+El Docker Hub es un registro para repositorios de software basado en la nube, es decir, una especie de biblioteca para las imágenes Docker. Este servicio online está formado por repositorios públicos y privados. Los repositorios públicos ofrecen a los usuarios la posibilidad de subir sus propias imágenes y compartirlas con la comunidad. En cambio, los repositorios privados son repositorios específico para una empresa o entidad. Docker Hub está disponible a través de hub.docker.com.
+
+**Motor de Docker (Docker Engine)**
+
+Es una aplicación cliente-servidor de código abierto disponible para todos los usuarios en la versión actual en todas las plataformas establecidas. Está formado por tres componentes: (1) un daemon que actua como servidor, (2) una interfaz de programación (API) basada en REST; y (3) un terminal del sistema operativo (Command-Line Interface, CLI) como interfaz de usuario.
+
+* Daemon: Se encarga de crear y administrar todas las imágenes, contenedores o redes.
+* API REST: Ofrece una serie de interfaces que permite a otros programas interactuar con el daemon y darle instrucciones.
+* Terminal: Docker utiliza la terminal del sistema operativo como programa cliente, el cual interacciona con el daemon a través de la API REST y permite a los usuarios controlarlo a través de scripts o comandos.
 
 ![Diferencias entre contenedores y máquinas virtuales](./img/diferencias.png)
 
@@ -120,47 +139,32 @@ docker pull nombre[:tag|@digest]
 
 Despliegue de un contenedor (básico)
 ```
-docker run --name=nombre imagen
+docker run --name=id_contenedor imagen
 ```
 
 Despliegue de un contenedor en segundo plano (básico)
 ```
-docker run --name=nombre -d imagen
+docker run --name=id_contenedor -d imagen
 ```
 
-Listar todas la imágenes finales
+Listar/visualizar todas la imágenes finales
 ```
 docker images
 ```
 
-Listar todas la imágenes (incluyenod las imágenes ocultas)
+Listar/visualizar todas la imágenes (incluyenod las imágenes ocultas)
 ```
 docker images -a 
 ```
 
+Eliminar una imagen
+```
+docker images rm <id_imagen>
+```
+
 Acceder al contenedor 
 ```
-docker exec -it nombre_contenedor comando
-```
-
-Parada de un contenedor
-```
-docker stop nombre_contenedor
-```
-
-Arranque de un contenedor (Debe encontrarse en el estado de parada (Stop))
-```
-docker start nombre_contenedor
-```
-
-Borrado de un contenedor (Debe encontrarse en el estado de parada (Stop))
-```
-docker rm nombre_contenedor
-```
-
-Borrado de un contenedor
-```
-docker rm -f nombre_contenedor
+docker exec -it <id_contenedor> <programa>
 ```
 
 Listar/visualizar todos los contenedores en ejecución
@@ -173,12 +177,46 @@ Listar/visualizar todos los contenedores
 docker container ps -a
 ```
 
+Parar un contenedor
+```
+docker container stop <id_contenedor>
+```
+
+Arrancar de un contenedor (Debe encontrarse en el estado de parada (Stop))
+```
+docker container start <id_contenedor>
+```
+
+Borrar de un contenedor (Debe encontrarse en el estado de parada (Stop))
+```
+docker container rm <id_contenedor>
+```
+
+Borrar de un contenedor
+```
+docker container rm -f <id_contenedor>
+```
+
+visualizar información del contenedor
+```
+docker inspect <id_contenedor>
+```
+
+Crear un volumen 
+```
+docker volume create --name <nombre_volumen>
+```
+
+eliminar un volumen 
+```
+docker volume rm <nombre_volumen>
+```
 
 #### Desplegando un base de datos en 3 minutos
 
 Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servidor de bases de datos MySQL. 
 
-** Paso 1: Descargando la imagen **
+**Paso 1: Descargando la imagen**
 
 En primer lugar vamos a descarga la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [MySQL](https://hub.docker.com/r/mysql/mysql-server/) disponibles en docker. 
 
@@ -206,12 +244,12 @@ mysql                     5.7                 383867b75fd2        6 weeks ago   
 ```
 
 
-** Paso 2: Descargando la imagen **
+**Paso 2: Descargando la imagen**
 
 A continuación desplegamos el contenedor mediante la utilización del comando run indicando el nombre que le queremos dar al contenedor, que en este caso será mysql1 y la imagen que queremos desplegar. 
 
 ```
-docker run --name=mysql1 mysql/mysql-server:latest
+docker run --name mysql1 mysql/mysql-server:latest
 ```
 
 Tras la ejecución de este comando observamos que nuestro terminal se ha bloqueado y vemos la actividad del contenedor mediante log en tiempo real 
@@ -225,13 +263,13 @@ Tras la ejecución de este comando observamos que nuestro terminal se ha bloquea
 2019-10-29T08:59:44.851538Z 5 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
 ```
 
-Para evitar esto debemos utilizar la opción __-d__ que nos permite ejecutar el contenedor en segundo plano. 
+Para evitar esto debemos utilizar la opción (Deatached Mode) __-d__ que nos permite ejecutar el contenedor en segundo plano (background). 
 
 ```
-docker run --name=mysql1 -d mysql/mysql-server:latest
+docker run --name mysql1 -d mysql/mysql-server:latest
 ```
 
-** Paso 3: Identificando la contraseña **
+**Paso 3: Identificando la contraseña**
 
 Los servidores MySQL obligan a crear una contraseña durante su intalación, en este caso no hemos indicando ningún tipo de constraseña para nuestro servidor, por lo que deberemos identificar cual es la constraseña del usuario root. Para identificar la contraseña debemos visualizar el log mediante el siguiente comando:
 
@@ -255,7 +293,7 @@ Tras la ejecución del comando obteneremos algo como esto
 
 Esto indica que mi servidor se ha creado sin ningún tipo de password para el usuario root por lo que será muy recomdable cambiarlo. 
 
-** Paso 4: Accediendo al contenedor **
+**Paso 4: Accediendo al contenedor**
 
 Para modificar el password del usuario root es necesario acceder al contenedor mediante la utilización del siguiente comando:
 
@@ -292,12 +330,12 @@ Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skippin
 ```
 Donde el password de acceso es __uRF3PRuRuvmansYM0DGeL*orT__. Ahora ya si que podemos entrar en nuestro servidor MySQL
 
-** Paso 5: Accediendo a nuestro servidor desde el exterior **
+**Paso 5: Accediendo a nuestro servidor desde el exterior**
 
 Ahora tenemos un servidor MySQL operativo pero sólo podemos utilizar si accedemos directamente al contenedor, para ello tenemos que abrir los puertos necesarios para permitir el acceso a los diferentes servicios que ha desplegado nuestro contenedor. En este caso queremos acceder al servidor a través del puerto __3306__ del servidor MySQL, para ello debemos incluir una nueva opción en nuestro comando de arranque
 
 ``` 
-docker run -p 3306:3306 --name=mysql1 -d mysql/mysql-server:latest
+docker run -p 3306:3306 --name mysql1 -d mysql/mysql-server:latest
 ``` 
 
 Para comprobar si mi contenedor se ha levantado correctamente puedo utilizar el siguiente comando 
@@ -313,16 +351,19 @@ CONTAINER ID        IMAGE                       COMMAND                  CREATED
 d80d489b03bb        mysql/mysql-server:latest   "/entrypoint.sh mysq…"   5 seconds ago       Up 4 seconds (health: starting)   0.0.0.0:3306->3306/tcp, 33060/tcp   mysql1
 ```
 
-** Paso 6: Buenas prácticas **
+**Paso 6: Buenas prácticas**
 
 La forma en la que hemos levantado el servidor MySQL es correcta, pero hay ciertos pasos que se pueden simplificar incluyendo variables de sesion, que son utilizadas para la configuración de ciertos elementos del servidor. Por ejemplo, el password del usuario se puede definir durante la ejecución el comando run, utilizando la variable de entorno **MYSQL_ROOT_PASSWORD** 
 
 ``` 
-docker run --name=mysql1 -d mysql/mysql-server:latest -e MYSQL_ROOT_PASSWORD=fictizia
+docker run --name mysql1 -e MYSQL_ROOT_PASSWORD=fictizia -d mysql/mysql-server:latest 
 ``` 
 
+Cuando estemos incluyendo variables de entorno, se recomiendo que imagen se encuentre al final del comando, ya que en algunas situaciones da errores. 
 
 #### Creando nuestro primer contenedor
+
+**Paso 1: Creando la estructura de directorios**
 
 Vamos a crear nuestro primer contenedor para montar nuestro propio servidor web. Para ellos vamos a crear una página web muy sencilla. 
 
@@ -333,6 +374,8 @@ $ mkdir app
 $ cd app
 $ mkdir src
 ``` 
+
+**Paso 2: Creación de nuestra página web**
 
 A continuación crearemos un fichero denominado index.html dentro del directorio src donde incluiremos nuestro código html básico. 
 
@@ -349,7 +392,9 @@ A continuación crearemos un fichero denominado index.html dentro del directorio
 </html>
 ``` 
 
-A continuación crearemos nuestro fichero de configuración o depliegue del contenedor que se denomina DockerFile (Es importante utilizar siempre este nombre porque sino Docker tal vez no lo encuentre). 
+**Paso 3: Creación de nuestro fichero de despliegue**
+
+A continuación crearemos nuestro fichero de configuración o depliegue del contenedor que se denomina DockerFile (Es importante utilizar siempre este nombre porque sino Docker tal vez no lo encuentre). El fichero de despliegue es la configuración básica de nuestro contenedor, en ella se indican todos los pasos necesarios para la construcción de nuestra imagen. 
 
 ``` 
 FROM ubuntu:18.04
@@ -381,3 +426,156 @@ El contenido del fichero de despliegue es la parte más importante a la hora de 
 * EXPOSE: Este comando se ejecuta cuando tenemos que exponer algún tipo de aplicación mediante un puerto. En el ejemplo, estamos exponiendo el puerto 80 de nuestro servidor web.
 * ENV: Esto son las diferentes variables de entorno que estamos definiendo de manera que puedan ser utilizadas tanto en tiempo de construcción como en tiempo de ejecución. 
 
+**Paso 4: Construyendo nuestra imagen**
+
+Una vez que hemos definido el fichero de despliegue podemos construir nuestra imagen mediante el comando __build__ desde el directorio donde está 
+
+``` 
+docker build -t fictizia-1/0.1 . 
+``` 
+
+Para comprobar si nuestra imagen se ha construido correctamente visualizaremos la imagenes y deberíamos obtener la siguiente salida:
+
+``` 
+REPOSITORY                TAG                 IMAGE ID            CREATED              SIZE
+fictizia-1/0.1          latest              aebd49d31f40        About a minute ago   161MB
+``` 
+
+**Paso 5: Desplegando nuestro contenedor**
+
+A continuación desplegamos el contenedor mediante la utilización del comando __run__ de forma similar a como lo realizamos en el ejemplo anterior
+
+```
+docker run -p 80:80 --name apache1 -d fictizia-1/0.1:latest
+```
+
+#### Volumenes
+
+En algunas situaciones es útil tener un directorio compartido entre la máquina donde se ejecuta el Docker engine y los contendores con el fin de que cierta persista con independencia del estado del contenedor. Existen tres tipos de volúmenes que comunmente se dividen en tres tipos:
+
+* Volumenes de datos anónimos
+* Volumenes de datos no anónimos
+* Molumenes montamos (Mounted)
+
+** Volúmenes de datos anónimos **
+
+Los volumenes anónimos se crean cuando se lanza el contenedor, donde el nombre del volumen se define con un nombre alfanumérico. Se pueden generar añadiendo la opción __-v__ y la ruta del directorio que se quiere compartir
+
+```
+docker run -p 80:80 --name apache1 -v /var/www/html -d fictizia-web/0.1:latest
+```
+En este caso hemos mapeado el directorio de donde se almacenan las páginas web de manera que podamos modicarlas, para poder encontrar nuestro volumen compartido podemos utilizar el siguiente comando:
+
+```
+docker volume ls
+```
+
+que muestra el conjunto de volumenes que tenemos disponibles:
+
+```
+DRIVER              VOLUME NAME
+local               3fdf0a573f504b90cf66afcb03466eec686cb80fc4bf57a33a67a2c2eb5cbee5
+```
+Este tipo de volumenes se almacenan en la carpeta __/var/lib/docker/volumes/__ (entorno linux), de forma que si utilizamos el comando __tree__ sobre el directorio podemos encontrar nuestro volumen:
+
+```
+tree /var/lib/docker/volumes/
+```
+cuya salida sería la siguiente: 
+
+```
+/var/lib/docker/volumes/
+├── 3fdf0a573f504b90cf66afcb03466eec686cb80fc4bf57a33a67a2c2eb5cbee5
+├── _data
+│   └── index.html
+└── metadata.db
+```
+
+Además es posible asignar el volumen anónimo de un contenedor a otro con el objetivo de compartir los volumenes mediante el siguiente comando:
+
+```
+docker run -p 8080:80 --name apache2 --volumes-from apache1 -d fictizia-web/0.1:latest
+```
+
+** Volúmenes de datos no anónimos **
+
+Los volumenes no anónimos se crean cuando se lanza el contenedor, son similares a los anteriores con la salvedad que se define el nombre del volumen de manera que no dependan de ninǵun volumen concreto de forma que se pueden reutilizar. Se crean con el comando de creación de volumens
+
+```
+docker volume create --name share
+```
+
+Se asignan al contenedor añadiendo la opción __-v__, el nombre del volumen y la ruta del directorio que se quiere compartirseparados por dos puntos. 
+
+```
+docker run -p 80:80 --name apache1 -v share:/var/www/html -d fictizia-web/0.1:latest
+```
+
+si comprobamos el nuevo conjunto de volumenes:
+
+```
+DRIVER              VOLUME NAME
+local               3fdf0a573f504b90cf66afcb03466eec686cb80fc4bf57a33a67a2c2eb5cbee5
+local               share
+```
+
+cuya salida utilizando el comando __tree__ sería la siguiente: 
+
+```
+/var/lib/docker/volumes/
+├── 3fdf0a573f504b90cf66afcb03466eec686cb80fc4bf57a33a67a2c2eb5cbee5
+├── _data
+│   └── index.html
+├── share
+├── _data
+│   └── index.html
+└── metadata.db
+```
+
+**Volúmenes montados**
+
+Los volumenes montados se pueden asociar a carpetas específicas del ordenar host. Este tipo de volumenes se utilizan para mantener la persistencia de los datos, para realizar backups, etc. Para montar un volumen en la misma carpeta donde están los archivos del contenedor deberíamos utilizas el siguiente comando (se asume que el directorio de datos ha sido creado previamente):
+
+```
+docker run -p 80:80 --name apache1 -v ./share_1:/var/www/html -d fictizia-web/0.1:latest
+```
+
+Si utilizamos el comando __inspect__ podemos comprobar el tipo de montaje que se ha realizado
+
+```
+"Mounts": [
+    {
+        "Type": "bind",
+        "Source": "/home/momartin/fictizia/capitulo_2/app/share_1",
+        "Destination": "/var/www/html",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+    }
+],
+```
+
+**Paso 1: Creando las carpetas compartidas**
+
+En primer lugar es necesario crear la carpeta en el servidor/ordenador de origen, es decir donde se vaya a lanzar el contenedor.  
+
+```
+mkdir shared
+
+```
+
+**Paso 2: Ejecutando nuestro nuevo contenedor**
+
+A continuación se debe desplegar el comtenedor incluyendo la opción __v__ (volumen) indicando la carpeta de origen (se corresponde con la carpeta que hemos creado previamente) y la carpeta de destino que se corresponde con la carpeta dentro del contenedor. Por ejemplo si quisieran conectar la carpeta creada anteriormente con una similar en el contenedor de destino deberiamos ejecutar el siguiente comando:
+
+```
+docker run -p 80:80 --name apache1 -v /home/ficticia/capitulo_2/shared:/shared -d fictizia-web/0.1:latest
+```
+
+#### Creando redes de contenedores
+
+Docker nos permite crear redes entre los diferentes contenedores de manera que podamos crear grupos de contenedores que interactuan entre si mediante espacios de red diferentes. 
+
+
+
+#### Desplegando multiples contenedores con Compose
