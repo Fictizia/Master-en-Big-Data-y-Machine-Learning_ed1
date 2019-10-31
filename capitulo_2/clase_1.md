@@ -249,6 +249,21 @@ REPOSITORY                TAG                 IMAGE ID            CREATED       
 mysql                     5.7                 383867b75fd2        6 weeks ago         373MB
 ```
 
+A continuación se muestran la opciones del comando images:
+
+```
+Usage:	docker images [OPTIONS] [REPOSITORY[:TAG]]
+
+List images
+
+Options:
+  -a, --all             Show all images (default hides intermediate images)
+      --digests         Show digests
+  -f, --filter filter   Filter output based on conditions provided
+      --format string   Pretty-print images using a Go template
+      --no-trunc        Don't truncate output
+  -q, --quiet           Only show numeric IDs
+```
 
 **Paso 2: Descargando la imagen**
 
@@ -584,7 +599,24 @@ Docker nos permite crear redes entre los diferentes contenedores de manera que p
 
 * bridge - Es el caso más general de red y construye automaticamente un red con sus elementos básicos (subnet y gateway)
 * host - Es un caso específico donde un contenedor se conecta a una red previamente generada. 
-* null - Es un caso específico donde se crea una pila de red especifica de red que carece de un interfaz.  
+* none - Es un caso específico donde se crea una pila de red especifica de red que carece de un interfaz.  
+
+A continuación se muestran las opiones del comando network:
+
+```
+Usage:	docker network COMMAND
+
+Manage networks
+
+Commands:
+  connect     Connect a container to a network
+  create      Create a network
+  disconnect  Disconnect a container from a network
+  inspect     Display detailed information on one or more networks
+  ls          List networks
+  prune       Remove all unused networks
+  rm          Remove one or more networks
+```
 
 **Paso 1: Creando un red**
 
@@ -675,8 +707,9 @@ Ahora nuestro contenedor esta conectado a dos redes: (1) la red __bridge__ que e
 La gestión de contenedores es muy sencilla pero que ocurre cuanto tenemos que desplegar diferentes tipo de contenedores, para ello existen un sistema de despliegue denominado __compose__. 
 
 **Recursos**
-- [Página oficial | Compose](https://es.wikipedia.org/wiki/VirtualBox)
+- [Página oficial | Compose](https://docs.docker.com/compose)
 - [Guía de instalación](https://docs.docker.com/compose/install/)
+- [Referencia de compose](https://docs.docker.com/compose/compose-file/)
 
 **El fichero de servicio**
 
@@ -697,8 +730,19 @@ services:
       - ./data:/data/db
 ```
 
-En esta caso estamos desplegando un imagen denominada __mongo.3.6__, que se reinicia en caso de que esté desplegada previamente, la cual mapea el puerto 27017 con el puerto de la máquina host y crea un volumen de datos compartido en la carperta data. Este volumen se utiliza como almacenamiento persistente de la base de datos. 
+En esta caso estamos desplegando un imagen denominada __mongo.3.6__, que se reinicia en caso de que esté desplegada previamente, la cual mapea el puerto 27017 con el puerto de la máquina host y crea un volumen de datos compartido en la carperta data. Este volumen se utiliza como almacenamiento persistente de la base de datos. Para obtener más información sobre las diferentes opciones que se pueden configurar en un fichero de compose, puedes ir a la siguiente [página web](https://docs.docker.com/compose/compose-file/)
 
+Para poder desplegar el contenedor que tenemos en nuestro fichero de compose debemos utilizar el siguiente comando con la opción __up__ para levantar nuestro contenedores (Nunca olvide el -d o tu terminal se bloqueará!!!) :
+
+```
+docker-compose up -d
+```
+
+En este caso no es necesario especificar la localización del fichero docker compose, siempre y cuando ejecutemos este comando en la carpeta que contiene al fichero __docker-compose.yml__. Pero si quisiera utilizar otro fichero localizar en otra carperta tendríamos que incluir la opción -f de la siguiente manera. 
+
+```
+docker-compose -f ./docker-compose.yml up -d
+```
 
 **Paso 1: Construyendo mi red de contenedores**
 
@@ -716,31 +760,254 @@ services:
     volumes:
       - ./data:/data/db
 
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
 
 ```
 
 Esto generará una red en docker añadiendo al nombre de la red el nombre de carpeta que contiene el fichero de compose. 
 
+```
+NETWORK ID          NAME                    DRIVER              SCOPE
+7f7619778d4b        bridge                  bridge              local
+453942b4fa3b        host                    host                local
+b22524d9d769        none                    null                local
+69bac7002f24        capitulo_2_fictizia     bridge              local
 
+```
 
+**Paso 2: Añadiendo mis contenedores a la red**
 
-**Paso 2: Construyendo mi red de contenedores**
+Una vez construida nuestra red, vamos a añadir nuestro contenedor a la red que hemos creado. 
 
-A continuación vamos a crear un sistema de despliegue para múltiples contenedores, para ellos vamos a incluir los dos contenedores que 
+```
+version: '3.4'
+services:
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.2
 
-En primer lugar vamos a crear un nuevo contenedor de forma que cargemos una base de datos ya creada durante el proceso de construcción. Para ello vamos a crear un nuevo fichero de despliegue 
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+
+```
+
+Recuerda que no puedes asignar a ningún contenedor la dirección 172.18.10.1 ya que el gateway de la red. Aunque puedes configurar la web y cambiar la dirección de gateway y así tus contenedores podrían comenzar sus direcciones ip a partir de la 1. Es posible no asignarle ip al contenedor y dejar que el servicio de docker le asigne una de manera automática. 
 
 **Paso 3: Desplegando mi red de contenedores**
 
-**Paso 4: Desarrollando entornos
-**
+Los ficheros de compose nos permiten incluir todos los servicios que necesite nuestra red de contenedores, por lo que vamos a incluir nuestro servidor apache. Los ficheros de compose, permiten la inclusión de contenedores cuya imagen ha sido creada previamente como contenedores cuya imagen debe ser creada durante el proceso de despliegue. Este es el caso de nuestro servidor apache, cuyo imagen se construye a partir del Dockerfile que hemos definido anteriormente. Para incluir servicios, cuya imagen debe construir previo al despligue debemos hacerlo de la siguiente manera:
 
-``` 
-FROM mysql/mysql-server:latest
-MAINTAINER Moisés <moises@fictizia.com>
+```
+version: '3.4'
+services:
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.2
 
-RUN apt-get update && apt-get install -y apache2 && apt-get clean && rm -rf /var/lib/apt/lists/*
-COPY ./database.sql /tmp
-EXPOSE 3306
-CMD ["mysql", "-u", "username", "-p", "universidad", "<", "/tmo/database.sql"]
-``` 
+  apache:
+    restart: always
+    container_name: apache_web
+    build: ./app
+    expose: 
+      - "80"
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/var/www/html
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+
+```
+
+Ahora para desplegar nuestra red de contenedores tendríamos que añadir la opción __--build__ a nuestro comando con el objetivo de que el contenedor apache_web se genere y pueda ser desplegado. 
+
+```
+docker-compose -f ./docker-compose.yml up --build -d
+```
+
+Al igual que el caso anterior podemos incluir variables de entorno con el fin de facilitar la configuración de nuestros contenedores mediante la opción __enviroment__. 
+
+```
+version: '3.4'
+services:
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.2
+
+  mysql-db: 
+    restart: always
+    image: mysql:5.7
+    container_name: mysql_1
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/my_secret_data
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    secrets:
+      - my_secret_data
+
+  apache:
+    restart: always
+    container_name: apache_web
+    build: ./app
+    expose: 
+      - "80"
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/var/www/html
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+      
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+
+```
+
+En este caso hemos añadido una variable de entorno para definir el password del archivo root y para no dejarlo en claro en nuestro fichero denominado __my_secret_data__ para incluir nuestro password. 
+
+**Paso 4: Desarrollando entornos**
+
+Uno de los grandes problemas que suele producirse en nuestros despliegues es que existen diferencias significativas en nuestros entornos de produccción, preproducción y desarrollo y crearse los entornos de manera independiente puede ser un problema por lo que una forma sencilla de construir entorno es separar la configuración que puede variar en diferentes ficheros de dispose. Por ejemplo las variables de entorno y la configuración de la red. De esta manera tendremos un un fichero de compose global:
+
+```
+version: '3.4'
+services:
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+      
+  mysql-db: 
+    restart: always
+    image: mysql:5.7
+    container_name: mysql_1
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  apache:
+    restart: always
+    container_name: apache_web
+    build: ./app
+    expose: 
+      - "80"
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/var/www/html
+
+```
+
+y además tendremos un conjunto de ficheros de composición especificos para cada entorno, en este caso uno para nuestro entorno de desarrollo:
+
+```
+version: '3.4'
+services:
+  mongo:
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.2
+
+  mysql-db: 
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/my_secret_data
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+    secrets:
+      - ./dev/my_secret_data
+
+  apache:
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+      
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+
+```
+
+Para desplegar ambos ficheros tendramos que utilizar el siguiente comando:
+
+```
+docker-compose [-p nombre_proyecto] -f ./docker-compose.yml -f ./dev/docker-compose.yml up --build -d
+```
