@@ -5,9 +5,7 @@
 
 ## Capítulo 2 - Clase 01
 
-Es esta clase vamos a apreder a trabar con contenedor mediante la utilización de Docker. El objetivo de esta clase es aprender 
-que es un contenedor, cómo se utiliza, cómo se configura y como utilizar este tipo de tecnología para desplegar cualquier tipo 
-de aplicación utilizándolos. 
+Es esta clase vamos a apreder a trabajar con contenedor mediante la utilización de Docker. El objetivo de esta clase es aprender que es un contenedor, cómo se utiliza, cómo se configura y como utilizar este tipo de tecnología para desplegar cualquier tipo de aplicación utilizándolos. 
 
 ### La virtualización ###
 
