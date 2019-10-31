@@ -694,14 +694,46 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongoData:/data/db
-volumes:
-  mongoData: {}
+      - ./data:/data/db
 ```
 
-**Paso 1:Construyendo mi red de contenedore**
+En esta caso estamos desplegando un imagen denominada __mongo.3.6__, que se reinicia en caso de que esté desplegada previamente, la cual mapea el puerto 27017 con el puerto de la máquina host y crea un volumen de datos compartido en la carperta data. Este volumen se utiliza como almacenamiento persistente de la base de datos. 
+
+
+**Paso 1: Construyendo mi red de contenedores**
+
+Cómo explicamos anteriormente es posible crear redes de contenedores de manera manual utilizando docker, pero es posible hacerlo también mediante compose. Para ello incluiremos la configuración de nuestra red en el fichero de compose de la siguiente manera:
+
+```
+version: '3.4'
+services:
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+
+
+```
+
+Esto generará una red en docker añadiendo al nombre de la red el nombre de carpeta que contiene el fichero de compose. 
+
+
+
+
+**Paso 2: Construyendo mi red de contenedores**
+
+A continuación vamos a crear un sistema de despliegue para múltiples contenedores, para ellos vamos a incluir los dos contenedores que 
 
 En primer lugar vamos a crear un nuevo contenedor de forma que cargemos una base de datos ya creada durante el proceso de construcción. Para ello vamos a crear un nuevo fichero de despliegue 
+
+**Paso 3: Desplegando mi red de contenedores**
+
+**Paso 4: Desarrollando entornos
+**
 
 ``` 
 FROM mysql/mysql-server:latest
