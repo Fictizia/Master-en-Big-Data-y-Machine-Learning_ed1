@@ -94,9 +94,9 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
         "title": "API REST Capitulo 2"
     },
     "paths":{
-        "/experiments": {
+        "/analysis": {
             "get": {
-                "operationId": "functions.experiments",
+                "operationId": "functions.analysis",
                 "tags": ["Experiments"], 
                 "responses": {
                     "200": {
@@ -115,7 +115,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 Este fragmento de json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __experiments__ en la URI mediante una operación get y utilizando para generar el contenido de la respuesta el método experiments del fichero functions.py. Siendo el código de este fichero el siguiente:
 
 ```
-def experiments():
+def analysis():
     return DATA, 200
 ```
 
@@ -134,7 +134,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 ```
 "/analisis/{id}": {
     "get": {
-        "operationId": "functions.get_experiment",
+        "operationId": "functions.get_analysis",
         "tags": ["Análisis"], 
         "parameters":[
             {   
@@ -166,7 +166,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 En este caso hemos construido un nuevo recursos incluyendo un parametros que se incluye el la URI que se corresponde con el id, para ello hemos incluio las características del parámetro en el array de parámetros indicando sus caractersticas donde las más importantes son la forma de entrada del parametro que ocurre a partir de la URI indicandolo mediante la opción __in__ con el valor __patch__ y que es obligatorio mediante la opción __required__. Además en este caso hemos definido dos posible respuesta: (1) 200 cuando existe el anlisis; y (2) 404 cuando no exista el análisis. En este caso el código desarrollado para la generación de las diferentes respuesta sera el siguiente:
 
 ```
-def get_experiment(id):
+def get_analysis(id):
     if id in DATA.keys():
         return DATA[id], 200
     else:
@@ -186,7 +186,7 @@ En este caso es necesario incluir todos los campos que deben ser incluidos en el
 ```
 "/análisis": {
     "post": {
-        "operationId": "functions.add_experiment",
+        "operationId": "functions.add_analysis",
         "tags": ["Experiment"],
         "parameters": [
             {
@@ -269,10 +269,190 @@ En este caso es necesario incluir todos los campos que deben ser incluidos en el
 }
 ```
 
+Además hay que crear una nueva función que inserte un nuevo análisis en el diccionario donde están contenidos los datos. Para ello es necesario incluir la siguiente función que siempre crea el análisis y en caso de que existe lo sustituye con la nueva información. 
+
+```
+def add_analysis(id,
+                   clump_thickness,
+                   unif_cell_size,
+                   unif_cell_shape,
+                   marg_adhesion,
+                   single_epith_cell_size,
+                   bare_nuclei,
+                   bland_chrom,
+                   norm_nucleoli,
+                   mitoses,
+                   class_value):
+
+    DATA[id] = {
+        "id": id,
+        "clump_thickness": clump_thickness,
+        "unif_cell_size": unif_cell_size,
+        "unif_cell_shape": unif_cell_shape,
+        "marg_adhesion": marg_adhesion,
+        "single_epith_cell_size": single_epith_cell_size,
+        "bare_nuclei": bare_nuclei,
+        "bland_chrom": bland_chrom,
+        "norm_nucleoli": norm_nucleoli,
+        "mitoses": mitoses,
+        "class": class_value
+    }
+    
+    return DATA[id], 200
+```
+
+
 **Paso 6: Actualización de un análisis**
 
-El proceso de actualización de un nuev
+El proceso de actualización es similar al de insercción con la salvedad de que los ficheros atributos del análisis son opciones, excepto el id, ya que la instancia del análisis debe existir. Además el proceso de análisis debe realizarse mediante PUT. Para ello, es necesario crear una operación similar con la diferencia en el tipo de operación HTTP, que en este caso será PUT. 
+
+```
+"put": {
+   "operationId": "functions.update_analysis",
+   "tags": ["Experiment"], 
+   "parameters":[
+       {   
+           "name": "id",
+           "in": "path",
+           "required": true,
+           "type": "integer",
+           "default": 23456
+       },
+       {
+           "name": "clump_thickness",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "unif_cell_size",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "unif_cell_shape",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "marg_adhesion",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "single_epith_cell_size",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "bare_nuclei",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "bland_chrom",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "norm_nucleoli",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "mitoses",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "class_value",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       }
+   ],
+   "responses": {
+       "200": {
+           "description": "Se ha procesado la petición correctamente",
+           "schema": {
+               "type": "object"
+           }
+       },
+       "404": {
+           "description": "Error",
+           "schema": {
+               "type": "object"
+           }
+       }
+   } 
+}
+```
+
+Además, al igual que en el caso anterior habra que crear una nueva función denominada __update_analysis__ que comprobase cada campo con el fin de actualizarlos.
 
 **Paso 7: Eliminación de un análisis**
 
+Para finalizar es necesario crear el método de eliminación de análisis usando la operación DELETE. Para ello, añadimos un nuevo elemento en nuestro archivo __api.json__ del siguiente tipo:
+
+```
+"delete": {
+    "operationId": "functions.delete_analysis",
+    "tags": ["Analysis"], 
+    "parameters":[
+        {   
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "default": 23456
+        }
+    ],
+    "responses": {
+        "204": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+                "type": "object"
+            }
+        },
+        "404": {
+            "description": "Error",
+            "schema": {
+                "type": "object"
+            }
+        }
+    } 
+}
+```
+
+Además es necesario incluir un número metodo para la eliminación de los elementos de nuestro diccionario. 
+
+```
+def delete_analysis(id):
+    if id in DATA.keys():
+        del DATA[id]
+        return {}, 204
+    else:
+        return {'No existe ningún analisis con id' + str(id)}, 404
+```
+
+Tras todo esto ya podríamos lanzar nuestra API REST y comprobar si funciona mediante la utilización del siguiente comando:
+
+```
+python3 server.py
+```
+
 **Paso 8: Creación del contenedor**
+
+Una vez que hemos creado nuestra API REST, es necesario preparla para poder ser desplegada en un contenedor, para ellos tenemos que crear el archivo de creación de la imagen mediante un Dockerfile, aunque antes es necesario congelar el estado de nuestras librerias en python con el fin de poder instalarlas correctamente en nuestro contenedor. Para ellos es necesario ejecutar el siguiente comando:
+
+```
+pip3 freeze > instructions.txt
+```
