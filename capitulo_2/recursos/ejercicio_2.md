@@ -4,4 +4,4 @@
 # [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
 ### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
-## Capítulo 2 - Ejercicio 01: Creación de un API REST de planetas y personas ##
+## Capítulo 2 - Ejercicio 03: Creación de un API basada en REST de planetas y personas ##
