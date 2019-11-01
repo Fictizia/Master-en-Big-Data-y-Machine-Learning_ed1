@@ -11,7 +11,7 @@ Es esta clase vamos a apreder a trabajar con APIs. De hecho, API es el acrónimo
 * REST
 * GraphQL
 
-![Comparativa entre REST y GraphQL](./img/apis/restvsgraphql_2.png)
+![Comparativa entre REST y GraphQL](./img/apis/restvsgraphql_2.jpg)
 
 ### REST (REpresentational State Transfer) ###
 
