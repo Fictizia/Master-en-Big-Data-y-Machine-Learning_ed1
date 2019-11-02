@@ -8,7 +8,7 @@
 
 El objetivo de este ejercicio es crear una API basada en REST para acceder a los datos referentes al cancer de mama recogidos por la universidad de Wisconsin. Para ellos vamos a utilizar su data set de datos y vamos a construir un conjunto de métodos que nos permitan acceder, crear, actualizar y eliminar esta información. Siendo el objetivo conseguir un API con 5 recursos.
 
-![Interfaz de usuario web de la API REST](../img/ejercicio_1/image_1.png)
+![Interfaz de usuario web de la API REST](../img/ejercicio_1/resultado_ejercicio_1.png)
 
 IMPORTANTE: A la hora de crear una API REST para una entorno real es necesario analizar el número de peticiones y el grado extress que sufrirá nuestro sistema con el fin de utilizar el sistema de servicio que más se adapte a sus necesidades. Este es sólo un ejercicio para comprender los fundamentos básicos de construcción de una API REST.  
 
@@ -16,9 +16,9 @@ IMPORTANTE: A la hora de crear una API REST para una entorno real es necesario a
 
 Para el desarrollo de este ejercicios vamos a utilizar las diferentes tecnologas y recursos.
 
-[Python]() como lenguaje de programación para el desarrollo de nuestra API. 
-[Flask]() como servidor de aplicaciones para desplegar nuestar API.
-[Docker]() para construir el contenedor donde se desplegará nuestro servidor. 
+[Python](https://www.python.org/) como lenguaje de programación para el desarrollo de nuestra API. 
+[Flask](https://flask.palletsprojects.com/en/1.1.x/) como servidor de aplicaciones para desplegar nuestar API.
+[Docker](https://docs.docker.com/) para construir el contenedor donde se desplegará nuestro servidor. 
 [Dataset de información]() para incluir la estructura y los datos principales. 
 
 **Paso 1: Creación del proyecto**
@@ -52,7 +52,17 @@ Los ficheros del la carpeta src se corresponde con el servidor (server.py), las 
 
 **Paso 2: Configuración del servidor**
 
-El primer paso consiste en desarrollar el código de nuestro servidor para ellos vamos a utilizar [Flask](https://flask.palletsprojects.com/en/1.1.x/) que es un paquete de python que nos permite desplegar servidor web de forma sencilla y rápido. Para ellos deberemos instalar algunos paquetes utilizando pip3. 
+El primer paso consiste en desarrollar el código de nuestro servidor para ellos vamos a utilizar [Flask](https://flask.palletsprojects.com/en/1.1.x/) que es un paquete de python que nos permite desplegar servidor web de forma sencilla y rápido. 
+
+__Documentación y recursos__
+
+[Projecto Flask](https://flask.palletsprojects.com/en/1.1.x/)
+[Documentación Flask](https://flask.palletsprojects.com/en/1.1.x/api/)
+[Projecto Swagger](https://swagger.io/)
+[Documentación Swagger](https://swagger.io/solutions/api-documentation/)
+[Construcción de APIs](https://swagger.io/solutions/api-development/)
+
+Para ellos deberemos instalar algunos paquetes utilizando pip3. 
 
 ```
 pip3 install Flask connexion connexion[swagger-ui]
