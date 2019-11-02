@@ -147,8 +147,8 @@ Content:
 
 Para entender el correcto funcionamiento de las APIs basadas en REST vamos a realizar dos ejercicios con el fin de construir APIs y empaquetarlas en contenedores y poder reutilizarlas. 
 
-* [Desarrollo de un API REST para la gestión de información de cancer de Mama](./recursos/ejercicio_1.md)
-* [Desarrollo de un API REST para la interacción de personas de StarWars](./recursos/ejercicio_2.md)
+* [Desarrollo de un API basada en REST de análisis clínicos](./recursos/ejercicio_1.md)
+* [Desarrollo de un API basada en REST para la interacción de personas de StarWars](./recursos/ejercicio_2.md)
 
 **Recursos**
 
