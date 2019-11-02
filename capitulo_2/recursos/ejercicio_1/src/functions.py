@@ -33,13 +33,11 @@ def load_data(file_name):
 DATA = load_data('./data/data.json')
 
 
-def experiments():
-    if len(DATA) == 0:
-        init()   
+def analysis():
     return DATA, 200
 
 
-def add_experiment(id,
+def add_analysis(id,
                    clump_thickness,
                    unif_cell_size,
                    unif_cell_shape,
@@ -68,22 +66,22 @@ def add_experiment(id,
     return DATA[id], 200
 
 
-def get_experiment(id):
+def get_analysis(id):
     if id in DATA.keys():
         return DATA[id], 200
     else:
-        return {'No existe ningún registro con id' + str(id)}, 404
+        return {'No existe ningún analisis con id' + str(id)}, 404
 
 
-def delete_experiment(id):
+def delete_analysis(id):
     if id in DATA.keys():
         del DATA[id]
         return {}, 204
     else:
-        return {'No existe ningún registro con id' + str(id)}, 404
+        return {'No existe ningún analisis con id' + str(id)}, 404
 
 
-def update_experiment(id,
+def update_analysis(id,
                       clump_thickness=None,
                       unif_cell_size=None,
                       unif_cell_shape=None,
@@ -99,4 +97,4 @@ def update_experiment(id,
         DATA[id]['class'] = class_value
         return DATA[id], 200
     else:
-        return {'No existe ningún registro con id' + str(id)}, 404
+        return {'No existe ningún analisis con id' + str(id)}, 404

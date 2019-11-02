@@ -6,13 +6,13 @@
         "title": "API REST Capitulo 2"
     },
     "paths":{
-        "/experiments": {
+        "/analysis": {
             "get": {
-                "operationId": "functions.experiments",
-                "tags": ["Experiments"], 
+                "operationId": "functions.analysis",
+                "tags": ["Analisis"], 
                 "responses": {
                     "200": {
-                        "description": "resultado",
+                        "description": "Se ha procesado la petición correctamente",
                         "schema": {
                             "type": "object"
                         }
@@ -26,10 +26,10 @@
                 } 
             },
             "post": {
-                "operationId": "functions.add_experiment",
-                "tags": ["Experiments"], 
+                "operationId": "functions.add_analysis",
+                "tags": ["Analisis"],
                 "parameters": [
-                    {   
+                    {
                         "name": "id",
                         "in": "query",
                         "required": true,
@@ -99,18 +99,18 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "resultado",
+                        "description": "Se ha procesado la petición correctamente",
                         "schema": {
                             "type": "object"
                         }
                     }
-                } 
+                }
             }
         },
-        "/experiments/{id}": {
+        "/analisis/{id}": {
             "get": {
-                "operationId": "functions.get_experiment",
-                "tags": ["Experiment"], 
+                "operationId": "functions.get_analysis",
+                "tags": ["Analisis"],
                 "parameters":[
                     {   
                         "name": "id",
@@ -122,13 +122,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "resultado",
+                        "description": "Se ha procesado la petición correctamente",
                         "schema": {
                             "type": "object"
                         }
                     },
                     "404": {
-                        "description": "error",
+                        "description": "Error",
                         "schema": {
                             "type": "object"
                         }
@@ -136,8 +136,8 @@
                 } 
             },
             "delete": {
-                "operationId": "functions.delete_experiment",
-                "tags": ["Experiment"], 
+                "operationId": "functions.delete_analysis",
+                "tags": ["Analisis"], 
                 "parameters":[
                     {   
                         "name": "id",
@@ -149,13 +149,13 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "resultado",
+                        "description": "Se ha procesado la petición correctamente",
                         "schema": {
                             "type": "object"
                         }
                     },
                     "404": {
-                        "description": "error",
+                        "description": "Error",
                         "schema": {
                             "type": "object"
                         }
@@ -163,8 +163,8 @@
                 } 
             },
             "put": {
-                "operationId": "functions.update_experiment",
-                "tags": ["Experiment"], 
+                "operationId": "functions.update_analysis",
+                "tags": ["Analisis"], 
                 "parameters":[
                     {   
                         "name": "id",
@@ -236,13 +236,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "resultado",
+                        "description": "Se ha procesado la petición correctamente",
                         "schema": {
                             "type": "object"
                         }
                     },
                     "404": {
-                        "description": "error",
+                        "description": "Error",
                         "schema": {
                             "type": "object"
                         }
