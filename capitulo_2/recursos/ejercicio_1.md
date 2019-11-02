@@ -21,6 +21,8 @@ Para el desarrollo de este ejercicios vamos a utilizar las diferentes tecnologas
 - [Docker](https://docs.docker.com/) para construir el contenedor donde se desplegará nuestro servidor. 
 - [Dataset de información]() para incluir la estructura y los datos principales. 
 
+### Solución paso a paso ###
+
 **Paso 1: Creación del proyecto**
 
 Para la creación del proyecto se recomienda crear una nueva carpeta denominado __ejercicio_1__ que deberá contener los siguientes archivos y directorios. 
