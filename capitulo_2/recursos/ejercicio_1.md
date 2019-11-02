@@ -16,10 +16,10 @@ IMPORTANTE: A la hora de crear una API REST para una entorno real es necesario a
 
 Para el desarrollo de este ejercicios vamos a utilizar las diferentes tecnologas y recursos.
 
-[Python](https://www.python.org/) como lenguaje de programación para el desarrollo de nuestra API. 
-[Flask](https://flask.palletsprojects.com/en/1.1.x/) como servidor de aplicaciones para desplegar nuestar API.
-[Docker](https://docs.docker.com/) para construir el contenedor donde se desplegará nuestro servidor. 
-[Dataset de información]() para incluir la estructura y los datos principales. 
+- [Python](https://www.python.org/) como lenguaje de programación para el desarrollo de nuestra API. 
+- [Flask](https://flask.palletsprojects.com/en/1.1.x/) como servidor de aplicaciones para desplegar nuestar API.
+- [Docker](https://docs.docker.com/) para construir el contenedor donde se desplegará nuestro servidor. 
+- [Dataset de información]() para incluir la estructura y los datos principales. 
 
 **Paso 1: Creación del proyecto**
 
@@ -56,11 +56,11 @@ El primer paso consiste en desarrollar el código de nuestro servidor para ellos
 
 __Documentación y recursos__
 
-[Projecto Flask](https://flask.palletsprojects.com/en/1.1.x/)
-[Documentación Flask](https://flask.palletsprojects.com/en/1.1.x/api/)
-[Projecto Swagger](https://swagger.io/)
-[Documentación Swagger](https://swagger.io/solutions/api-documentation/)
-[Construcción de APIs](https://swagger.io/solutions/api-development/)
+- [Projecto Flask](https://flask.palletsprojects.com/en/1.1.x/)
+- [Documentación Flask](https://flask.palletsprojects.com/en/1.1.x/api/)
+- [Projecto Swagger](https://swagger.io/)
+- [Documentación Swagger](https://swagger.io/solutions/api-documentation/)
+- [Construcción de APIs](https://swagger.io/solutions/api-development/)
 
 Para ellos deberemos instalar algunos paquetes utilizando pip3. 
 
