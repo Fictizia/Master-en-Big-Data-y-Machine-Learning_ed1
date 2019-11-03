@@ -1,0 +1,466 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Mi api de starwars",
+        "version": "1.0",
+        "title": "API REST Capitulo 2"
+    },
+    "paths":{
+        "/people": {
+            "get": {
+                "operationId": "people.get_all",
+                "tags": ["Personajes"], 
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "300": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            },
+            "post": {
+                "operationId": "people.add_person",
+                "tags": ["Personajes"],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "height",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "mass",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "hair_color",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "skin_color",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "eye_color",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "birth_year",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "planet_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    }
+
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/people/{id}": {
+            "get": {
+                "operationId": "people.get_person",
+                "tags": ["Personajes"],
+                "parameters":[
+                    {   
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            },
+            "delete": {
+                "operationId": "people.delete_person",
+                "tags": ["Personajes"], 
+                "parameters":[
+                    {   
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            },
+            "put": {
+                "operationId": "people.update_person",
+                "tags": ["Personajes"], 
+                "parameters":[
+                    {   
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "height",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "mass",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "hair_color",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "skin_color",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "eye_color",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "birth_year",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "planet_id",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            }
+        },
+        "/planet": {
+            "get": {
+                "operationId": "planet.get_all",
+                "tags": ["Planetas"],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "300": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "planet.add_planet",
+                "tags": ["Planetas"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "rotation_period",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "orbital_period",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "diameter",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "climate",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "gravity",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "terrain",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "surface_water",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "population",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/planet/{id}": {
+            "get": {
+                "operationId": "planet.get_planet",
+                "tags": ["Planetas"],
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "planet.delete_planet",
+                "tags": ["Planetas"],
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "operationId": "planet.update_planet",
+                "tags": ["Planetas"],
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "rotation_period",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "orbital_period",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "diameter",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "climate",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "gravity",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "terrain",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "surface_water",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "population",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
