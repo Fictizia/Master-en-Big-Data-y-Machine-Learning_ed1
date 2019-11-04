@@ -181,6 +181,409 @@ if __name__ == "__main__":
 2. A continuación deberemos definir nuestra API, para ello utilizaremos el archivo __api.json__ donde describiremos los diferentes recursos de nuestra API y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__ y la versión __1.0__. 
 3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
 
+**Paso 6: Visualización de los planetas**
 
+Una vez construido los elementos básicos de nuestro servidor vamos a comenzar con la construcción de la API REST. Para ellos vamos a construir el recursos analisis, cuya URI será la siguiente:
+
+```
+http://localhost:5005/fictizia/1.0/analisis
+```
+
+Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+
+```
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Mi primera api",
+        "version": "1.0",
+        "title": "API REST Capitulo 2"
+    },
+    "paths":{
+        "/analysis": {
+            "get": {
+                "operationId": "functions.analysis",
+                "tags": ["Experiments"], 
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                } 
+            }
+        }
+    }
+}
+```
+
+Este fragmento de json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __experiments__ en la URI mediante una operación get y utilizando para generar el contenido de la respuesta el método experiments del fichero functions.py. Siendo el código de este fichero el siguiente:
+
+```
+def analysis():
+    return DATA, 200
+```
+
+Esta función devuelve el contenido de la variable DATA con un código 200. 
+
+**Paso 7: Visualización de la información de un planeta**
+
+A continuación vamos a construir el recursos que nos permitirá obtener la información de un determinado análisis utilizando su Id, donde la URI será la siguiente:
+
+```
+http://localhost:5005/fictizia/1.0/experiments/1002025
+```
+
+Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+
+```
+"/analisis/{id}": {
+    "get": {
+        "operationId": "functions.get_analysis",
+        "tags": ["Análisis"], 
+        "parameters":[
+            {   
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "type": "integer",
+                "default": 23456
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Se ha procesado la petición correctamente",
+                "schema": {
+                    "type": "object"
+                }
+            },
+            "404": {
+                "description": "Error",
+                "schema": {
+                    "type": "object"
+                }
+            }
+        } 
+    }
+}
+```
+
+En este caso hemos construido un nuevo recursos incluyendo un parametros que se incluye el la URI que se corresponde con el id, para ello hemos incluio las características del parámetro en el array de parámetros indicando sus caractersticas donde las más importantes son la forma de entrada del parametro que ocurre a partir de la URI indicandolo mediante la opción __in__ con el valor __patch__ y que es obligatorio mediante la opción __required__. Además en este caso hemos definido dos posible respuesta: (1) 200 cuando existe el anlisis; y (2) 404 cuando no exista el análisis. En este caso el código desarrollado para la generación de las diferentes respuesta sera el siguiente:
+
+```
+def get_analysis(id):
+    if id in DATA.keys():
+        return DATA[id], 200
+    else:
+        return {'No existe ningún registro con id' + str(id)}, 404
+```
+
+**Paso 8: Creación de un nuevo planeta**
+
+A continuación vamos a crear un recursos para la insercción de nuestros análisis, para ello hemos creado un recurso mediante la operación POST, siendo la URI a utilizar la siguiente:
+
+```
+http://localhost:5005/fictizia/1.0/experiment?id=123&clump_thickness=1&unif_cell_size=2&unif_cell_shape=3&marg_adhesion=4&single_epith_cell_size=5&bare_nuclei=4&bland_chrom=3&norm_nucleoli=4&mitoses=2&class_value=4
+```
+
+En este caso es necesario incluir todos los campos que deben ser incluidos en el análisis. Puesto que estamos utilizando una operación POST, lo ideal sera que todos estos campos se incluyeran como parámetros de tipo form y no como parámetros de tipo path. 
+
+```
+"/análisis": {
+    "post": {
+        "operationId": "functions.add_analysis",
+        "tags": ["Experiment"],
+        "parameters": [
+            {
+                "name": "id",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "clump_thickness",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "unif_cell_size",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "unif_cell_shape",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "marg_adhesion",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "single_epith_cell_size",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "bare_nuclei",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "bland_chrom",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "norm_nucleoli",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "mitoses",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            },
+            {
+                "name": "class_value",
+                "in": "query",
+                "required": true,
+                "type": "integer"
+            }
+
+        ],
+        "responses": {
+            "200": {
+                "description": "Se ha procesado la petición correctamente",
+                "schema": {
+                    "type": "object"
+                }
+            }
+        }
+    }
+}
+```
+
+Además hay que crear una nueva función que inserte un nuevo análisis en el diccionario donde están contenidos los datos. Para ello es necesario incluir la siguiente función que siempre crea el análisis y en caso de que existe lo sustituye con la nueva información. 
+
+```
+def add_analysis(id,
+                   clump_thickness,
+                   unif_cell_size,
+                   unif_cell_shape,
+                   marg_adhesion,
+                   single_epith_cell_size,
+                   bare_nuclei,
+                   bland_chrom,
+                   norm_nucleoli,
+                   mitoses,
+                   class_value):
+
+    DATA[id] = {
+        "id": id,
+        "clump_thickness": clump_thickness,
+        "unif_cell_size": unif_cell_size,
+        "unif_cell_shape": unif_cell_shape,
+        "marg_adhesion": marg_adhesion,
+        "single_epith_cell_size": single_epith_cell_size,
+        "bare_nuclei": bare_nuclei,
+        "bland_chrom": bland_chrom,
+        "norm_nucleoli": norm_nucleoli,
+        "mitoses": mitoses,
+        "class": class_value
+    }
+    
+    return DATA[id], 200
+```
+
+
+**Paso 9: Actualización de un planeta**
+
+El proceso de actualización es similar al de insercción con la salvedad de que los ficheros atributos del análisis son opciones, excepto el id, ya que la instancia del análisis debe existir. Además el proceso de análisis debe realizarse mediante PUT. Para ello, es necesario crear una operación similar con la diferencia en el tipo de operación HTTP, que en este caso será PUT. 
+
+```
+"put": {
+   "operationId": "functions.update_analysis",
+   "tags": ["Experiment"], 
+   "parameters":[
+       {   
+           "name": "id",
+           "in": "path",
+           "required": true,
+           "type": "integer",
+           "default": 23456
+       },
+       {
+           "name": "clump_thickness",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "unif_cell_size",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "unif_cell_shape",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "marg_adhesion",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "single_epith_cell_size",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "bare_nuclei",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "bland_chrom",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "norm_nucleoli",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "mitoses",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       },
+       {
+           "name": "class_value",
+           "in": "query",
+           "required": false,
+           "type": "integer"
+       }
+   ],
+   "responses": {
+       "200": {
+           "description": "Se ha procesado la petición correctamente",
+           "schema": {
+               "type": "object"
+           }
+       },
+       "404": {
+           "description": "Error",
+           "schema": {
+               "type": "object"
+           }
+       }
+   } 
+}
+```
+
+Además, al igual que en el caso anterior habra que crear una nueva función denominada __update_analysis__ que comprobase cada campo con el fin de actualizarlos.
+
+**Paso 10: Eliminación de un planeta**
+
+Para finalizar es necesario crear el método de eliminación de análisis usando la operación DELETE. Para ello, añadimos un nuevo elemento en nuestro archivo __api.json__ del siguiente tipo:
+
+```
+"delete": {
+    "operationId": "functions.delete_analysis",
+    "tags": ["Analysis"], 
+    "parameters":[
+        {   
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "default": 23456
+        }
+    ],
+    "responses": {
+        "204": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+                "type": "object"
+            }
+        },
+        "404": {
+            "description": "Error",
+            "schema": {
+                "type": "object"
+            }
+        }
+    } 
+}
+```
+
+Además es necesario incluir un número metodo para la eliminación de los elementos de nuestro diccionario. 
+
+```
+def delete_analysis(id):
+    if id in DATA.keys():
+        del DATA[id]
+        return {}, 204
+    else:
+        return {'No existe ningún analisis con id' + str(id)}, 404
+```
+
+Tras todo esto ya podríamos lanzar nuestra API REST y comprobar si funciona mediante la utilización del siguiente comando:
+
+```
+python3 server.py
+```
+
+**Paso 11: Creación de los recursos de personas**
+
+El proceso de creación de los diferentes recursos para la tabla personas sera similar al realizado para la tabla planeta. La forma de realizarlo es muy sencilla, por lo que para terminarlo puedes apoyarte en los 5 pasos anteriores y en la solución del ejercicio que se encuentra en el siguiente [enlace](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/edit/master/capitulo_2/recursos/ejercicio_2/)
+
+**Paso 12: Creación del contenedor**
+
+Una vez que hemos creado nuestra API REST, es necesario preparla para poder ser desplegada en un contenedor, para ellos tenemos que crear el archivo de creación de la imagen mediante un Dockerfile, aunque antes es necesario congelar el estado de nuestras librerias en python con el fin de poder instalarlas correctamente en nuestro contenedor. Para ellos es necesario ejecutar el siguiente comando:
+
+```
+pip3 freeze > instructions.txt
+```
+
+A continuación debemos crear el fichero __Dockerfile__ con los siguientes comandos:
+
+```
+FROM ubuntu:18.04
+MAINTAINER Moisés <moises@fictizia.com>
+
+RUN apt-get update && apt-get install -y python3 python3-pip && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN mkdir /src
+COPY src /src
+WORKDIR /src
+RUN pip3 install -r requirements.txt
+EXPOSE 5005
+CMD ["python3", "server.py"]
+```
+
+Ahora es momento de construir nuestro contenedor y ejecutarlo. Una vez seguidos estos pasos, hemos creado una sencilla API REST que se despliega en un contenedor docker. 
+
+El código fuente de todo el ejercicio se encuentra en el siguiente [enlace](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/edit/master/capitulo_2/recursos/ejercicio_2/)
 
 
