@@ -175,7 +175,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 }
 ```
 
-En este caso hemos construido un nuevo recursos incluyendo un parametros que se incluye el la URI que se corresponde con el id, para ello hemos incluio las características del parámetro en el array de parámetros indicando sus caractersticas donde las más importantes son la forma de entrada del parametro que ocurre a partir de la URI indicandolo mediante la opción __in__ con el valor __patch__ y que es obligatorio mediante la opción __required__. Además en este caso hemos definido dos posible respuesta: (1) 200 cuando existe el anlisis; y (2) 404 cuando no exista el análisis. En este caso el código desarrollado para la generación de las diferentes respuesta sera el siguiente:
+En este caso hemos construido un nuevo recursos incluyendo un parametro que se incluye el la URI. Este parámetro se corresponde con el id, para ello hemos incluio la descripción del parámetro en el array de parámetros indicando sus caractersticas básicas, siendo las más importantes la forma de entrada del parámetro a partir de la URI definiéndolo mediante la opción __in__ con el valor __patch__ y la obligatoriedad del parámetro mediante la opción __required__. Además en este caso hemos definido dos posible respuestas: (1) 200 cuando existe el resultado; y (2) 404 cuando no exista el resultado con el id indicado como parámetro. En este caso el código desarrollado para la generación de las diferentes respuestas es el siguiente:
 
 ```
 def get_analysis(id):
