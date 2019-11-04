@@ -8,7 +8,7 @@
 
 El objetivo de este ejercicio es crear una API basada en REST para acceder a los datos referentes a personas y planetas de la saga de StarWars. Para ellos vamos a utilizar su data set de datos y vamos a construir un conjunto de métodos que nos permitan acceder, crear, actualizar y eliminar la información de los dos conjuntos de datos. 
 
-![Interfaz de usuario web de la API REST](../img/ejercicio_1/resultado_ejercicio_1.png)
+![Interfaz de usuario web de la API REST](../img/ejercicio_2/resultado_ejercicio_2.png)
 
 IMPORTANTE: A la hora de crear una API REST para una entorno real es necesario analizar el número de peticiones y el grado extress que sufrirá nuestro sistema con el fin de utilizar el sistema de servicio que más se adapte a sus necesidades. Este es sólo un ejercicio para comprender los fundamentos básicos de construcción de una API REST.  
 
