@@ -101,10 +101,40 @@ Base.query = db_session.query_property()
 
 **Paso 4: Creación de tablas**
 
-Una vez que hemos definido la base da datos debemos definir la estructura de las diferentes tablas. Para ello 
+Una vez que hemos definido la base da datos debemos definir la estructura de las diferentes tablas. Para ello vamos a construir un archivo python por cada una de las tablas que vamos a utilizar, comenzaremos por la tabla planeta (planet), creando el archivo __planet.py__ utilizando el siguiente código:
+
+```
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from .connector import Base
+from .people_table import People
+
+
+class Planet(Base):
+
+    __tablename__ = 'planet'
+
+    id = Column('id', Integer, primary_key=True, doc="Id del planeta")
+    name = Column('name', String, doc="Nombre")
+    rotation_period = Column('rotation_period', String, doc="Periodo de rotación")
+    orbital_period = Column('orbital_period', String, doc="Periodo orbital")
+    diameter = Column('diameter', String, doc="Diametro")
+    climate = Column('climate', String, doc="Clima")
+    gravity = Column('gravity', String, doc="Gravedad")
+    terrain = Column('terrain', String, doc="Tipo de terreno")
+    surface_water = Column('surface_water', String, doc="Superficie de agua")
+    population = Column('population', String, doc="Población")
+    created = Column('created', String, doc="Fecha de creación")
+    edited = Column('edited', String, doc="Fecha de actualización")
+
+    peopleList = relationship(People, backref='planet')
+```
+
+Para la creación de una tabla mediante SQL Alchemy debemos extender la clase Base e incluir la variable ____tablename____ indicando el nombre en SQL de la tabla, a continuación es necesario crear cada uno de los atributos como columnas (Column) indicando su nombre y tipo; y las diferentes relaciones que existen con otras tablas. En este caso la tabla planeta tiene una relación con la tabla personas, ya que una persona debe habitar en un planeta. 
 
 **Paso 5: Configuración del servidor II **
 
+Una vez que hemos definido todos los elementos del sistema de almacenamiento, es decir de nuestra base de datos. Pasamos a la definición del método principal del servidor, para ello hemos desarrollado el siguiente código:
 
 ```
 import connexion
@@ -147,8 +177,10 @@ if __name__ == "__main__":
 ```
 
 1. Para construir nuestra API REST utilizaremos el paquete connexion, para ello tendremos que importar el paquete y a continuación crear un objeto para nuestra aplicación (server) indicando que se debe activar el interfaz de usuario mediante la opción swagger_ui. 
-2. A continuación debemos crear una función de carga para cargar los datos de los diferentes ficheros json que almacenan la información. Para ello utilizaremos un conjunto de objetos q
+2. A continuación debemos crear una función de carga para cargar los datos de los diferentes ficheros json que almacenan la información en la base de datos. Para ello insertaremos cada uno de los elementos del fichero como objetos de tipo Planer o People en su respectiva tabla.
 2. A continuación deberemos definir nuestra API, para ello utilizaremos el archivo __api.json__ donde describiremos los diferentes recursos de nuestra API y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__ y la versión __1.0__. 
 3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
+
+
 
 
