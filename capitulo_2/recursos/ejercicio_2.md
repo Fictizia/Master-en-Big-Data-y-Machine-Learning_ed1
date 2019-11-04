@@ -195,15 +195,15 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 {
     "swagger": "2.0",
     "info": {
-        "description": "Mi primera api",
+        "description": "Mi api de starwars",
         "version": "1.0",
         "title": "API REST Capitulo 2"
     },
     "paths":{
-        "/analysis": {
+        "/planets": {
             "get": {
-                "operationId": "functions.analysis",
-                "tags": ["Experiments"], 
+                "operationId": "planet.get_all",
+                "tags": ["Planetas"],
                 "responses": {
                     "200": {
                         "description": "Se ha procesado la petición correctamente",
@@ -211,278 +211,175 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
                             "type": "object"
                         }
                     },
-                } 
-            }
+                    "300": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
         }
     }
 }
 ```
-
-Este fragmento de json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __experiments__ en la URI mediante una operación get y utilizando para generar el contenido de la respuesta el método experiments del fichero functions.py. Siendo el código de este fichero el siguiente:
+ 
+Este fragmento de json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __planets__ en la URI mediante una operación get y utilizando para generar el contenido de la respuesta el método get_all del fichero planet.py. Siendo el código de este fichero el siguiente:
 
 ```
-def analysis():
-    return DATA, 200
+
+def get_record(planet):
+    tmp = dict()
+
+    tmp['id'] = planet.id
+    tmp['name'] = planet.name
+    tmp['rotation_period'] = planet.rotation_period
+    tmp['orbital_period'] = planet.orbital_period
+    tmp['diameter'] = planet.diameter
+    tmp['climate'] = planet.climate
+    tmp['gravity'] = planet.gravity
+    tmp['terrain'] = planet.terrain
+    tmp['surface_water'] = planet.surface_water
+    tmp['population'] = planet.population
+    tmp['created'] = planet.created
+    tmp['edited'] = planet.edited
+
+    return tmp
+
+def get_all():
+    result = dict()
+
+    for planet in Planet.query.all():
+        result[planet.id] = get_record(planet)
+
+    return result, 200
 ```
 
-Esta función devuelve el contenido de la variable DATA con un código 200. 
+Esta función realizar una query a la table Planet obteniendo un lista de resultados (rows), cada una de las cuales son transformadas en diccionarios mediante la función get_record.  
 
 **Paso 7: Visualización de la información de un planeta**
 
-A continuación vamos a construir el recursos que nos permitirá obtener la información de un determinado análisis utilizando su Id, donde la URI será la siguiente:
+A continuación vamos a construir el recursos que nos permitirá obtener la información de un determinado planeta utilizando su Id, donde la URI será la siguiente:
 
 ```
-http://localhost:5005/fictizia/1.0/experiments/1002025
+http://localhost:5005/fictizia/1.0/planets/1
 ```
 
 Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
 
 ```
-"/analisis/{id}": {
-    "get": {
-        "operationId": "functions.get_analysis",
-        "tags": ["Análisis"], 
-        "parameters":[
-            {   
-                "name": "id",
-                "in": "path",
-                "required": true,
-                "type": "integer",
-                "default": 23456
-            }
-        ],
-        "responses": {
-            "200": {
-                "description": "Se ha procesado la petición correctamente",
-                "schema": {
-                    "type": "object"
-                }
-            },
-            "404": {
-                "description": "Error",
-                "schema": {
-                    "type": "object"
-                }
-            }
-        } 
-    }
+"/planets/{id}": {
+   "get": {
+       "operationId": "planet.get_planet",
+       "tags": ["Planetas"],
+       "parameters":[
+           {
+               "name": "id",
+               "in": "path",
+               "required": true,
+               "type": "integer",
+               "default": 23456
+           }
+       ],
+       "responses": {
+           "200": {
+               "description": "Se ha procesado la petición correctamente",
+               "schema": {
+                   "type": "object"
+               }
+           },
+           "404": {
+               "description": "Error",
+               "schema": {
+                   "type": "object"
+               }
+           }
+       }
+   }
 }
 ```
 
-En este caso hemos construido un nuevo recursos incluyendo un parametros que se incluye el la URI que se corresponde con el id, para ello hemos incluio las características del parámetro en el array de parámetros indicando sus caractersticas donde las más importantes son la forma de entrada del parametro que ocurre a partir de la URI indicandolo mediante la opción __in__ con el valor __patch__ y que es obligatorio mediante la opción __required__. Además en este caso hemos definido dos posible respuesta: (1) 200 cuando existe el anlisis; y (2) 404 cuando no exista el análisis. En este caso el código desarrollado para la generación de las diferentes respuesta sera el siguiente:
+En este caso hemos construido un nuevo recursos incluyendo un parametro que se incluye el la URI. Este parámetro se corresponde con el id, para ello hemos incluio la descripción del parámetro en el array de parámetros indicando sus caractersticas básicas, siendo las más importantes la forma de entrada del parámetro a partir de la URI definiéndolo mediante la opción __in__ con el valor __patch__ y la obligatoriedad del parámetro mediante la opción __required__. Además en este caso hemos definido dos posible respuestas: (1) 200 cuando existe el resultado; y (2) 404 cuando no exista el resultado con el id indicado como parámetro. En este caso el código desarrollado para la generación de las diferentes respuestas es el siguiente:
 
 ```
-def get_analysis(id):
-    if id in DATA.keys():
-        return DATA[id], 200
+def get_planet(id):
+    planet = Planet.query.filter(Planet.id == id).first()
+
+    if planet is None:
+        return {'message': 'No existe ningún planeta con id ' + str(id)}, 404
     else:
-        return {'No existe ningún registro con id' + str(id)}, 404
+        return get_record(planet), 200
 ```
 
 **Paso 8: Creación de un nuevo planeta**
 
-A continuación vamos a crear un recursos para la insercción de nuestros análisis, para ello hemos creado un recurso mediante la operación POST, siendo la URI a utilizar la siguiente:
+A continuación vamos a crear un recurso para la insercción de nuevos planetas, para ello vamos utilizar la operación POST, siendo la URI a utilizar la siguiente:
 
 ```
-http://localhost:5005/fictizia/1.0/experiment?id=123&clump_thickness=1&unif_cell_size=2&unif_cell_shape=3&marg_adhesion=4&single_epith_cell_size=5&bare_nuclei=4&bland_chrom=3&norm_nucleoli=4&mitoses=2&class_value=4
-```
-
-En este caso es necesario incluir todos los campos que deben ser incluidos en el análisis. Puesto que estamos utilizando una operación POST, lo ideal sera que todos estos campos se incluyeran como parámetros de tipo form y no como parámetros de tipo path. 
+http://localhost:5005/fictizia/1.0/planet?name=1&rotation_period=2&orbital_period=2&diameter=2&climate=2&gravity=2&terrain=2&surface_water=2&population=2
 
 ```
-"/análisis": {
-    "post": {
-        "operationId": "functions.add_analysis",
-        "tags": ["Experiment"],
-        "parameters": [
-            {
-                "name": "id",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "clump_thickness",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "unif_cell_size",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "unif_cell_shape",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "marg_adhesion",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "single_epith_cell_size",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "bare_nuclei",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "bland_chrom",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "norm_nucleoli",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "mitoses",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            },
-            {
-                "name": "class_value",
-                "in": "query",
-                "required": true,
-                "type": "integer"
-            }
 
-        ],
-        "responses": {
-            "200": {
-                "description": "Se ha procesado la petición correctamente",
-                "schema": {
-                    "type": "object"
-                }
-            }
-        }
-    }
-}
-```
-
-Además hay que crear una nueva función que inserte un nuevo análisis en el diccionario donde están contenidos los datos. Para ello es necesario incluir la siguiente función que siempre crea el análisis y en caso de que existe lo sustituye con la nueva información. 
+En este caso es necesario incluir todos los campos que deben ser añadidos para la creación de un planeta. Puesto que estamos utilizando una operación POST, lo ideal sera que todos estos campos se incluyeran como parámetros de tipo form y no como parámetros de tipo path, pero para la realización del ejercicio vamos a utilizar parámetros de tipo GET. 
 
 ```
-def add_analysis(id,
-                   clump_thickness,
-                   unif_cell_size,
-                   unif_cell_shape,
-                   marg_adhesion,
-                   single_epith_cell_size,
-                   bare_nuclei,
-                   bland_chrom,
-                   norm_nucleoli,
-                   mitoses,
-                   class_value):
-
-    DATA[id] = {
-        "id": id,
-        "clump_thickness": clump_thickness,
-        "unif_cell_size": unif_cell_size,
-        "unif_cell_shape": unif_cell_shape,
-        "marg_adhesion": marg_adhesion,
-        "single_epith_cell_size": single_epith_cell_size,
-        "bare_nuclei": bare_nuclei,
-        "bland_chrom": bland_chrom,
-        "norm_nucleoli": norm_nucleoli,
-        "mitoses": mitoses,
-        "class": class_value
-    }
-    
-    return DATA[id], 200
-```
-
-
-**Paso 9: Actualización de un planeta**
-
-El proceso de actualización es similar al de insercción con la salvedad de que los ficheros atributos del análisis son opciones, excepto el id, ya que la instancia del análisis debe existir. Además el proceso de análisis debe realizarse mediante PUT. Para ello, es necesario crear una operación similar con la diferencia en el tipo de operación HTTP, que en este caso será PUT. 
-
-```
-"put": {
-   "operationId": "functions.update_analysis",
-   "tags": ["Experiment"], 
-   "parameters":[
-       {   
-           "name": "id",
-           "in": "path",
+"post": {
+   "operationId": "planet.add_planet",
+   "tags": ["Planetas"],
+   "parameters": [
+       {
+           "name": "name",
+           "in": "query",
            "required": true,
-           "type": "integer",
-           "default": 23456
+           "type": "string"
        },
        {
-           "name": "clump_thickness",
+           "name": "rotation_period",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "unif_cell_size",
+           "name": "orbital_period",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "unif_cell_shape",
+           "name": "diameter",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "marg_adhesion",
+           "name": "climate",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "single_epith_cell_size",
+           "name": "gravity",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "bare_nuclei",
+           "name": "terrain",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "bland_chrom",
+           "name": "surface_water",
            "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        },
        {
-           "name": "norm_nucleoli",
+           "name": "population",
            "in": "query",
-           "required": false,
-           "type": "integer"
-       },
-       {
-           "name": "mitoses",
-           "in": "query",
-           "required": false,
-           "type": "integer"
-       },
-       {
-           "name": "class_value",
-           "in": "query",
-           "required": false,
-           "type": "integer"
+           "required": true,
+           "type": "string"
        }
    ],
    "responses": {
@@ -510,10 +407,10 @@ Para finalizar es necesario crear el método de eliminación de análisis usando
 
 ```
 "delete": {
-    "operationId": "functions.delete_analysis",
-    "tags": ["Analysis"], 
+    "operationId": "planet.delete_planet",
+    "tags": ["Planetas"],
     "parameters":[
-        {   
+        {
             "name": "id",
             "in": "path",
             "required": true,
@@ -534,19 +431,22 @@ Para finalizar es necesario crear el método de eliminación de análisis usando
                 "type": "object"
             }
         }
-    } 
+    }
 }
 ```
 
-Además es necesario incluir un número metodo para la eliminación de los elementos de nuestro diccionario. 
+Además es necesario incluir un nuevo metodo para la eliminación de los elementos de nuestro base de datos. 
 
 ```
-def delete_analysis(id):
-    if id in DATA.keys():
-        del DATA[id]
-        return {}, 204
+def delete_planet(id):
+
+    Planet.query.filter(Planet.id == id).delete()
+    result = connector.db_session.commit()
+
+    if result is None:
+        return {'message': 'Se ha eliminado el planeta con id ' + str(id)}, 200
     else:
-        return {'No existe ningún analisis con id' + str(id)}, 404
+        return {'message': 'No existe ningún planeta con id ' + str(id)}, 404
 ```
 
 Tras todo esto ya podríamos lanzar nuestra API REST y comprobar si funciona mediante la utilización del siguiente comando:
