@@ -157,8 +157,15 @@ Para entender el correcto funcionamiento de las APIs basadas en REST vamos a rea
 
 ### GraphQL (Graph Query Languages) ###
 
-GraphQL es una lenguaje de consultas (Query Language) similar a PL-SQL, que es un lenguaje de consultas que se enfoca en las consultas a una base de datos. Aunque parezcan los mismo no tiene muchas similitudes, ya que PL-SQL es una lenguaje definido para manipular bases de datos relacionales y GrapjQL es una lenguaje para crear comunicaciones entre clientes y servidores.  De manera que GraphQL es un tipo de tecnologías alternativa a REST. 
+GraphQL es una lenguaje de consultas (Query Language), similar a PL-SQL, que permite la generación de consultas expecificas sobre los datos. La creación de APIs mediante la utilización de GraphQL ofrece acceso a la descripción de los datos, permitiendo realizar consultas específicas sobre ellos minimizando la cantidad de información superflua en las consultas y facilitando el acceso a los datos ofreciendo una mayor capacidad a los desarrolladores para acceder a ellos. 
 
+![Funcionamiento de una petición GraphQL](./img/apis/funcionamiento_graphql.png)
+  
+**Diferencias entre GraphQL y REST**
+
+Como describimos anteriormente, REST se basa en la creación de diferente recursos (Entry points) que permiten acceder a una conjunto de información definida por el desarrollador del API REST. Si tomamos el ejemplo descrito en la imagen de la sección de REST, para poner obtener los posts de un usuario deberíamos acceder al recurso /users/<id>/posts mediante la operación GET obteniendo el conjunto de posts donde la estructura de la información está definida por el desarrollador de los recursos. En cambio, si utilizamos GraphQL simplemente tenemos que realizar una consulta indicando las condiciones de nuestro consulta recibiendo a continuación un json con toda la información requerida. 
+  
+  
 
 
 
