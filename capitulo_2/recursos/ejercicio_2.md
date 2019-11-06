@@ -28,6 +28,7 @@ Para el desarrollo de este ejercicio vamos a utilizar las diferentes tecnología
 
 Para la creación del proyecto se recomienda crear una nueva carpeta denominado ejercicio_1 que deberá contener los siguientes archivos y directorios.
 
+```
 drwxr-xr-x 7 momartin momartin 4096 nov  1 11:55 .
 drwxr-xr-x 8 momartin momartin 4096 nov  1 11:55 ..
 drwxrwxr-x 2 momartin momartin 4096 nov  1 11:54 bin
@@ -37,19 +38,23 @@ drwxrwxr-x 3 momartin momartin 4096 nov  1 11:53 lib
 drwxrwxr-x 2 momartin momartin 4096 nov  1 11:53 local
 -rw-r--r-- 1 momartin momartin  612 oct 31 21:11 requirements.txt
 drwxr-xr-x 4 momartin momartin 4096 nov  1 12:56 src
+```
 
 Donde se deberán encontrar el fichero de requistos del proyecto (requirements.txt), la carpeta con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y los diferentes directorios del entorno virtual. Dentro de la carperta src deberemos crear los siguientes ficheros:
 
-drwxrwxr-x 5 momartin momartin  4096 nov  4 00:25 .
-drwxrwxr-x 6 momartin momartin  4096 nov  4 00:27 ..
--rw-r--r-- 1 momartin momartin 15857 nov  3 18:53 api.json
-drwxrwxr-x 2 momartin momartin  4096 nov  3 12:24 data
-drwxrwxr-x 3 momartin momartin  4096 nov  4 00:24 database
--rw-r--r-- 1 momartin momartin  4134 nov  4 00:24 people.py
--rw-r--r-- 1 momartin momartin  4352 nov  4 00:25 planet.py
--rw-r--r-- 1 momartin momartin  1831 nov  3 14:43 server.py
+```
+drwxrwxr-x 5 momartin momartin 4096 nov  6 08:14 .
+drwxrwxr-x 6 momartin momartin 4096 nov  4 00:27 ..
+-rw-r--r-- 1 momartin momartin 7548 nov  6 08:14 api_people.json
+-rw-rw-r-- 1 momartin momartin 7756 nov  6 08:13 api_planet.json
+drwxrwxr-x 2 momartin momartin 4096 nov  3 12:24 data
+drwxrwxr-x 3 momartin momartin 4096 nov  6 08:14 database
+-rw-r--r-- 1 momartin momartin 4349 nov  6 08:11 people.py
+-rw-r--r-- 1 momartin momartin 3829 nov  6 07:51 planet.py
+-rw-r--r-- 1 momartin momartin 1911 nov  6 07:54 server.py
+```
 
-Los ficheros del la carpeta src se corresponden con el servidor (server.py), las funciones con la lógica de los diferentes recursos (people.py y planet.py), la configuración de la API REST (api.json) y los datos (data) que utilizaremos para realizar la carga inicial. La carpeta database contiene el interfaz de configuración de la "Base de datos" y los fichero de definición de las diferentes tablas. Los diferentes ficheros que se utilizarn para insertar los datos inicial se encuentra en la carpeta data. 
+Los ficheros del la carpeta src se corresponden con el servidor (server.py), las funciones con la lógica de los diferentes recursos (people.py y planet.py), la configuración de los diferentes puntos de acceso (api_planet para los recursos relacionados con planetas y api_people para los recursos relacionados con personajes) y los datos (data) que utilizaremos para realizar la carga inicial. La carpeta database contiene el interfaz de configuración de la "Base de datos" y los fichero de definición de las diferentes tablas. Los diferentes ficheros que se utilizarn para insertar los datos inicial se encuentra en la carpeta data. 
 
 **Paso 2: Configuración del servidor I**
 
@@ -87,9 +92,6 @@ DB_NAME = 'fictizia_ejercicio_2.db'
 DB_PATH = os.path.join(os.path.dirname(__file__), DB_NAME)
 DB_URI = 'sqlite:///{}'.format(DB_PATH)
 
-if os.path.exists(DB_PATH):
-    os.remove(DB_PATH)
-
 engine = create_engine(DB_URI, convert_unicode=True)
 
 Base = declarative_base()
@@ -105,9 +107,7 @@ Una vez que hemos definido la base da datos debemos definir la estructura de las
 
 ```
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 from .connector import Base
-from .people_table import People
 
 
 class Planet(Base):
@@ -126,11 +126,31 @@ class Planet(Base):
     population = Column('population', String, doc="Población")
     created = Column('created', String, doc="Fecha de creación")
     edited = Column('edited', String, doc="Fecha de actualización")
+    
+    @staticmethod
+    def get_json(data):
 
-    peopleList = relationship(People, backref='planet')
+        tmp = dict()
+
+        tmp['id'] = data.id
+        tmp['name'] = data.name
+        tmp['rotation_period'] = data.rotation_period
+        tmp['orbital_period'] = data.orbital_period
+        tmp['diameter'] = data.diameter
+        tmp['climate'] = data.climate
+        tmp['gravity'] = data.gravity
+        tmp['terrain'] = data.terrain
+        tmp['surface_water'] = data.surface_water
+        tmp['population'] = data.population
+        tmp['created'] = data.created
+        tmp['edited'] = data.edited
+
+        return tmp
+    
+    
 ```
 
-Para la creación de una tabla mediante SQL Alchemy debemos extender la clase Base e incluir la variable ____tablename____ indicando el nombre en SQL de la tabla, a continuación es necesario crear cada uno de los atributos como columnas (Column) indicando su nombre y tipo; y las diferentes relaciones que existen con otras tablas. En este caso la tabla planeta tiene una relación con la tabla personas, ya que una persona debe habitar en un planeta. 
+Para la creación de una tabla mediante SQL Alchemy debemos extender la clase Base e incluir la variable ____tablename____ indicando el nombre en SQL de la tabla, a continuación es necesario crear cada uno de los atributos como columnas (Column) indicando su nombre y tipo. Además, vamos a crear un método de tipo estático que nos permita transformar los datos de la tabla en un json que pueda ser serializado como resultado del recurso.  
 
 **Paso 5: Configuración del servidor II **
 
@@ -164,21 +184,17 @@ def load_database():
                 connector.db_session.add(person)
             connector.db_session.commit()
 
-server = connexion.App(__name__,
-    options= {"swagger_ui": True})
-
-server.add_api('api.json', 
-    base_path='/fictizia/1.0')
-
 if __name__ == "__main__":
-    db = load_database()
+    load_database()
+    server = connexion.App(__name__, options= {"swagger_ui": True})
+    server.add_api('api_planet.json', base_path='/fictizia/1.0/planet')
     server.run(port=5005)
     exit(0)
 ```
 
 1. Para construir nuestra API REST utilizaremos el paquete connexion, para ello tendremos que importar el paquete y a continuación crear un objeto para nuestra aplicación (server) indicando que se debe activar el interfaz de usuario mediante la opción swagger_ui. 
 2. A continuación debemos crear una función de carga para cargar los datos de los diferentes ficheros json que almacenan la información en la base de datos. Para ello insertaremos cada uno de los elementos del fichero como objetos de tipo Planer o People en su respectiva tabla.
-2. A continuación deberemos definir nuestra API, para ello utilizaremos el archivo __api.json__ donde describiremos los diferentes recursos de nuestra API y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__ y la versión __1.0__. 
+2. A continuación deberemos definir los recursos de nuestra API, para ello utilizaremos el archivo __api_planet.json__ donde describiremos los diferentes recursos que ofrecerá API para planetas y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__, la versión __1.0__ y el recurso en este caso será planeta. 
 3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
 
 **Paso 6: Visualización de los planetas**
@@ -186,10 +202,10 @@ if __name__ == "__main__":
 Una vez construido los elementos básicos de nuestro servidor vamos a comenzar con la construcción de la API REST. Para ellos vamos a construir el recursos analisis, cuya URI será la siguiente:
 
 ```
-http://localhost:5005/fictizia/1.0/analisis
+http://localhost:5005/fictizia/1.0/planet
 ```
 
-Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+Para construir el recurso, primero debemos crear la descripción del recurso en el fichero __api_planet.json__ mediante el siguiente framento de código:
 
 ```
 {
@@ -200,7 +216,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
         "title": "API REST Capitulo 2"
     },
     "paths":{
-        "/planets": {
+        "/": {
             "get": {
                 "operationId": "planet.get_all",
                 "tags": ["Planetas"],
@@ -211,7 +227,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
                             "type": "object"
                         }
                     },
-                    "300": {
+                    "404": {
                         "description": "error",
                         "schema": {
                             "type": "object"
@@ -224,51 +240,36 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 }
 ```
  
-Este fragmento de json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __planets__ en la URI mediante una operación get y utilizando para generar el contenido de la respuesta el método get_all del fichero planet.py. Siendo el código de este fichero el siguiente:
-
+Este fragmento de información en formato json define la estructura básica de los recursos que estarn disponibles para planet (descripción, versión, title) y la estructura de los diferentes recursos como elementos de la URI. En ese caso hemos creado un recurso al que se accede a través de / en la URI mediante una operación GET utilizando para generar el contenido de la respuesta el método get_all del fichero planet.py. Siendo el código de este fichero el siguiente:
 ```
-
-def get_record(planet):
-    tmp = dict()
-
-    tmp['id'] = planet.id
-    tmp['name'] = planet.name
-    tmp['rotation_period'] = planet.rotation_period
-    tmp['orbital_period'] = planet.orbital_period
-    tmp['diameter'] = planet.diameter
-    tmp['climate'] = planet.climate
-    tmp['gravity'] = planet.gravity
-    tmp['terrain'] = planet.terrain
-    tmp['surface_water'] = planet.surface_water
-    tmp['population'] = planet.population
-    tmp['created'] = planet.created
-    tmp['edited'] = planet.edited
-
-    return tmp
 
 def get_all():
-    result = dict()
+    planets = Planet.query.all()
 
-    for planet in Planet.query.all():
-        result[planet.id] = get_record(planet)
+    if len(planets) == 0:
+        return {'message': 'No existe información referente a planetas.'}, 404
+    else:
+        result = dict()
+        for planet in planets:
+            result[planet.id] = Planet.get_json(planet)
 
-    return result, 200
+        return result, 200
 ```
 
-Esta función realizar una query a la table Planet obteniendo un lista de resultados (rows), cada una de las cuales son transformadas en diccionarios mediante la función get_record.  
+Esta función realizar una query a la tabla planet, definida en la clase Planet, obteniendo un lista de resultados (rows), cada una de las cuales son transformadas en diccionarios mediante la función get_json de la clase Planet.  
 
 **Paso 7: Visualización de la información de un planeta**
 
-A continuación vamos a construir el recursos que nos permitirá obtener la información de un determinado planeta utilizando su Id, donde la URI será la siguiente:
+A continuación vamos a construir el recursos que nos permitirá obtener la información de un determinado planeta utilizando su ID, donde la URI será la siguiente:
 
 ```
 http://localhost:5005/fictizia/1.0/planets/1
 ```
 
-Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+Para construir el recurso, primero debemos crear la descripción del recursos en fichero __api_planet.json__ mediante el siguiente framento de código:
 
 ```
-"/planets/{id}": {
+"/{id}": {
    "get": {
        "operationId": "planet.get_planet",
        "tags": ["Planetas"],
@@ -299,7 +300,7 @@ Para construir el recurso, primero debemos crear la descripción del recursos en
 }
 ```
 
-En este caso hemos construido un nuevo recursos incluyendo un parametro que se incluye el la URI. Este parámetro se corresponde con el id, para ello hemos incluio la descripción del parámetro en el array de parámetros indicando sus caractersticas básicas, siendo las más importantes la forma de entrada del parámetro a partir de la URI definiéndolo mediante la opción __in__ con el valor __patch__ y la obligatoriedad del parámetro mediante la opción __required__. Además en este caso hemos definido dos posible respuestas: (1) 200 cuando existe el resultado; y (2) 404 cuando no exista el resultado con el id indicado como parámetro. En este caso el código desarrollado para la generación de las diferentes respuestas es el siguiente:
+En este caso hemos construido un nuevo recurso incluyendo un parametro en la URI. Este parámetro se corresponde con el ID del planeta. Para ello hemos añadido la descripción del parámetro en el array de parámetros de la definición, indicando sus caractersticas básicas, siendo las más importantes la forma de entrada del parámetro a partir de la URI, definiéndolo mediante la opción __in__ con el valor __patch__ y la obligatoriedad del parámetro mediante la opción __required__ (El valor por defecto de la opción required es False, por lo que sólo es necesario incluir si esl parámtro es obligatorio). Además en este caso hemos definido dos posible respuestas: (1) 200 cuando existe el resultado; y (2) 404 cuando no exista el resultado con el id indicado como parámetro. En este caso el código desarrollado para la generación de las diferentes respuestas es el siguiente:
 
 ```
 def get_planet(id):
@@ -308,19 +309,19 @@ def get_planet(id):
     if planet is None:
         return {'message': 'No existe ningún planeta con id ' + str(id)}, 404
     else:
-        return get_record(planet), 200
+        return Planet.get_json(planet), 200
 ```
 
 **Paso 8: Creación de un nuevo planeta**
 
-A continuación vamos a crear un recurso para la insercción de nuevos planetas, para ello vamos utilizar la operación POST, siendo la URI a utilizar la siguiente:
+A continuación vamos a crear un recurso para la insercción de nuevos planetas, para ello vamos utilizar la operación POST, siendo la URI (los datos utilizados en la URI sin ejemplos) a utilizar la siguiente:
 
 ```
 http://localhost:5005/fictizia/1.0/planet?name=1&rotation_period=2&orbital_period=2&diameter=2&climate=2&gravity=2&terrain=2&surface_water=2&population=2
 
 ```
 
-En este caso es necesario incluir todos los campos que deben ser añadidos para la creación de un planeta. Puesto que estamos utilizando una operación POST, lo ideal sera que todos estos campos se incluyeran como parámetros de tipo form y no como parámetros de tipo path, pero para la realización del ejercicio vamos a utilizar parámetros de tipo GET. 
+En este caso es necesario incluir todos los campos que deben ser añadidos para la creación de un planeta. Puesto que estamos utilizando una operación POST, lo ideal sera que todos estos campos se incluyeran como parámetros de tipo form y no como parámetros de tipo path, pero para la realización del ejercicio vamos a utilizar parámetros de tipo path. 
 
 ```
 "post": {
@@ -399,11 +400,170 @@ En este caso es necesario incluir todos los campos que deben ser añadidos para 
 }
 ```
 
-Además, al igual que en el caso anterior habra que crear una nueva función denominada __update_analysis__ que comprobase cada campo con el fin de actualizarlos.
+A continuación es necesario crear una nueva función para la creación del planeta de la siguiente forma:
 
-**Paso 10: Eliminación de un planeta**
+```
+def add_planet(name,
+               rotation_period,
+               orbital_period,
+               diameter,
+               climate,
+               gravity,
+               terrain,
+               surface_water,
+               population):
 
-Para finalizar es necesario crear el método de eliminación de análisis usando la operación DELETE. Para ello, añadimos un nuevo elemento en nuestro archivo __api.json__ del siguiente tipo:
+    planet = Planet()
+
+    planet.name = name
+    planet.rotation_period = rotation_period
+    planet.orbital_period = orbital_period
+    planet.diameter = diameter
+    planet.climate = climate
+    planet.gravity = gravity
+    planet.terrain = terrain
+    planet.surface_water = surface_water
+    planet.population = population
+    planet.created = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
+    connector.db_session.add(planet)
+    result = connector.db_session.commit()
+
+    if result is None:
+        return Planet.get_json(planet), 200
+    else:
+        return {'message': 'No se ha podido crear el nuevo planeta ' + str(name)}, 404
+```
+
+**Paso 10: Actualización de un planeta**
+
+La generación del recursos de actualización es muy similar al de creación con la salvedad que los parámetros son opcionales, es decir sólo se actualizarán aquellos parámetros de nuestro planeta que seán incluidos en la URI, y que la operación que utilizaremos será PUT. En este caso la configuración de la estructura del recurso de actualización es parecida a la del recurso de creación con la diferencia de la obligatoriedad de los campos a actualizar y la existencia del identificador del planeta.  
+
+```
+"put": {
+    "operationId": "planet.update_planet",
+    "tags": ["Planetas"],
+    "parameters":[
+        {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+        },
+        {
+            "name": "name",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "rotation_period",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "orbital_period",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "diameter",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "climate",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "gravity",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "terrain",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "surface_water",
+            "in": "query",
+            "type": "string"
+        },
+        {
+            "name": "population",
+            "in": "query",
+            "type": "string"
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+                "type": "object"
+            }
+        },
+        "404": {
+            "description": "Error",
+            "schema": {
+                "type": "object"
+            }
+        }
+    }
+}
+```
+
+Donde el código para la actualización de los planetas podría ser el siguiente:
+
+```
+def update_planet(id,
+                  name=None,
+                  rotation_period=None,
+                  orbital_period=None,
+                  diameter=None,
+                  climate=None,
+                  gravity=None,
+                  terrain=None,
+                  surface_water=None,
+                  population=None):
+
+    planet = Planet.query.filter(Planet.id == id).first()
+
+    if planet is not None:
+
+        if name is not None:
+            planet.name = name
+        if rotation_period is not None:
+            planet.rotation_period = rotation_period
+        if orbital_period is not None:
+            planet.orbital_period = orbital_period
+        if diameter is not None:
+            planet.diameter = diameter
+        if climate is not None:
+            planet.climate = climate
+        if gravity is not None:
+            planet.gravity = gravity
+        if terrain is not None:
+            planet.terrain = terrain
+        if surface_water is not None:
+            planet.surface_water = surface_water
+        if population is not None:
+            planet.population = population
+
+        planet.updated = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
+        connector.db_session.commit()
+
+        return Planet.get_json(planet), 200
+    else:
+        return {'message': 'No existe ningún planeta con id ' + str(id)}, 404
+
+    return {'No existe ningún planeta con id' + str(id)}, 404
+```
+
+**Paso 11: Eliminación de un planeta**
+
+Para finalizar es necesario crear el método de eliminación de un planeta usando la operación DELETE. Para ello, añadimos un nuevo elemento en nuestro archivo __api_planet.json__ del siguiente tipo:
 
 ```
 "delete": {
@@ -435,7 +595,7 @@ Para finalizar es necesario crear el método de eliminación de análisis usando
 }
 ```
 
-Además es necesario incluir un nuevo metodo para la eliminación de los elementos de nuestro base de datos. 
+Además es necesario incluir un nuevo metodo para la eliminación de los elementos de nuestra tabla planeta. 
 
 ```
 def delete_planet(id):
@@ -455,9 +615,9 @@ Tras todo esto ya podríamos lanzar nuestra API REST y comprobar si funciona med
 python3 server.py
 ```
 
-**Paso 11: Creación de los recursos de personas**
+**Paso 11: Creación de los recursos para los personakjes**
 
-El proceso de creación de los diferentes recursos para la tabla personas sera similar al realizado para la tabla planeta. La forma de realizarlo es muy sencilla, por lo que para terminarlo puedes apoyarte en los 5 pasos anteriores y en la solución del ejercicio que se encuentra en el siguiente [enlace](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/edit/master/capitulo_2/recursos/ejercicio_2/)
+El proceso de creación de los diferentes recursos para la tabla personas sera similar al realizado para la tabla planeta. La forma de realizarlo es muy sencilla, por lo que para terminarlo puedes apoyarte en los 6 pasos anteriores y en la solución del ejercicio que se encuentra en el siguiente [enlace](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/edit/master/capitulo_2/recursos/ejercicio_2/)
 
 **Paso 12: Creación del contenedor**
 
