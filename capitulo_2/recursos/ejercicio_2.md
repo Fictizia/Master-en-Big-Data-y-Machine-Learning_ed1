@@ -615,7 +615,7 @@ Tras todo esto ya podríamos lanzar nuestra API REST y comprobar si funciona med
 python3 server.py
 ```
 
-**Paso 11: Creación de los recursos para los personakjes**
+**Paso 11: Creación de los recursos para los personajes**
 
 El proceso de creación de los diferentes recursos para la tabla personas sera similar al realizado para la tabla planeta. La forma de realizarlo es muy sencilla, por lo que para terminarlo puedes apoyarte en los 6 pasos anteriores y en la solución del ejercicio que se encuentra en el siguiente [enlace](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/edit/master/capitulo_2/recursos/ejercicio_2/)
 
