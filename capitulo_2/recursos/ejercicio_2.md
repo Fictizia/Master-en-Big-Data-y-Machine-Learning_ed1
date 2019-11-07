@@ -4,7 +4,7 @@
 # [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
 ### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
-## Capítulo 2 - Ejercicio 02: Creación de un API basada en REST de planetas y personas ##
+## Capítulo 2 - Ejercicio 02: Creación de un API basada en REST de planetas y personajes ##
 
 El objetivo de este ejercicio es crear una API basada en REST para acceder a los datos referentes a personas y planetas de la saga de StarWars. Para ellos vamos a utilizar su data set de datos y vamos a construir un conjunto de métodos que nos permitan acceder, crear, actualizar y eliminar la información de los dos conjuntos de datos. 
 
@@ -58,7 +58,7 @@ Los ficheros del la carpeta src se corresponden con el servidor (server.py), las
 
 **Paso 2: Configuración del servidor I**
 
-El primer paso consiste en desarrollar el código de nuestro servidor para ellos vamos a utilizar [Flask](https://flask.palletsprojects.com/en/1.1.x/) que es un paquete de python que nos permite desplegar servidor web de forma sencilla y rápido. 
+El primer paso consiste en desarrollar el código de nuestro servidor para ellos vamos a utilizar [Flask](https://flask.palletsprojects.com/en/1.1.x/) que es un paquete de python que nos permite desplegar servidor web de forma sencilla y rápida. 
 
 __Documentación y recursos__
 
@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
 1. Para construir nuestra API REST utilizaremos el paquete connexion, para ello tendremos que importar el paquete y a continuación crear un objeto para nuestra aplicación (server) indicando que se debe activar el interfaz de usuario mediante la opción swagger_ui. 
 2. A continuación debemos crear una función de carga para cargar los datos de los diferentes ficheros json que almacenan la información en la base de datos. Para ello insertaremos cada uno de los elementos del fichero como objetos de tipo Planer o People en su respectiva tabla.
-2. A continuación deberemos definir los recursos de nuestra API, para ello utilizaremos el archivo __api_planet.json__ donde describiremos los diferentes recursos que ofrecerá API para planetas y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__, la versión __1.0__ y el recurso en este caso será planeta. 
+2. A continuación deberemos definir los recursos de nuestra API, para ello utilizaremos el archivo __api_planet.json__ donde describiremos los diferentes recursos que ofrecerá API para planetas y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__, la versión __1.0__ y el recurso en este caso será planeta. Si deseamos añadir más recursos, habría que incluir una nueva linea del método add_api indicando el fichero de definción del recursos y la estructura de la URI. 
 3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
 
 **Paso 6: Visualización de los planetas**
@@ -424,7 +424,7 @@ def add_planet(name,
     planet.terrain = terrain
     planet.surface_water = surface_water
     planet.population = population
-    planet.created = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    planet.created = datetime.utcnow()
 
     connector.db_session.add(planet)
     result = connector.db_session.commit()
@@ -550,7 +550,7 @@ def update_planet(id,
         if population is not None:
             planet.population = population
 
-        planet.updated = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        planet.updated = datetime.utcnow()
 
         connector.db_session.commit()
 
