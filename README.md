@@ -25,11 +25,11 @@ Fecha | Cap | Contenido | Recurso | Descripción
 08/10/19 | 0 | [Clase 01](capitulo_0/clase_1.md) | [Recurso 01](capitulo_0/recursos/clase_1.md) | Introducción al curso
 10/10/19 | 1 | [Clase 02](capitulo_1/clase_1.md) | Recurso 02 | Introducción al Big Data - GIT
 10/10/19 | 1 | [Clase 02](capitulo_1/clase_2.md) | Recurso 03 | Introducción al Big Data - Python
-15/10/19 | 1 | [Clase 03](capitulo_1/clase_4.md) | [Recurso 04]() | Introducción al Big Data 
-17/10/19 | 2 | [Clase 04](capitulo_2/clase_1.md) | Recurso 06 | Contenedores - Creación, uso, depligue
+15/10/19 | 1 | [Clase 03](capitulo_1/clase_4.md) | Recurso 04 | Introducción al Big Data 
+17/10/19 | 2 | [Clase 04](capitulo_2/clase_1.md) | [Recurso 06](capitulo_2/recursos/ejercicio_0.md) | Contenedores - Creación, uso, depligue
 22/10/19 | 2 | [Clase 05](capitulo_2/clase_1.md) | Recurso 05 | Contenedores - Desplegando una infraestructura
-24/10/19 | 2 | [Clase 06](capitulo_2/clase_2.md) | [Recurso 06](capitulo_2/recursos/ejercicio_2) | Apificación - Parte I
-29/10/19 | 2 | [Clase 07](capitulo_2/clase_2.md) | [Recurso 07](capitulo_2/recursos/ejercicio_3) | Apificación - Parte II
+24/10/19 | 2 | [Clase 06](capitulo_2/clase_2.md) | [Recurso 06](capitulo_2/recursos/ejercicio_2.md) | Apificación - Parte I
+29/10/19 | 2 | [Clase 07](capitulo_2/clase_2.md) | [Recurso 07](capitulo_2/recursos/ejercicio_3.md) | Apificación - Parte II
 31/10/19 | 3 | Clase 08 | Recurso 08 | Representación de la información - Formatos y tipos
 05/11/19 | 3 | Clase 09 | Recurso 09 | Representación de la información - Bases de datos relacionales
 07/11/19 | 3 | Clase 10 | Recurso 10 | Representación de la información - Bases columnares y documentales
