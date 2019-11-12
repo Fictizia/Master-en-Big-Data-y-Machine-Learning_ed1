@@ -6,3 +6,39 @@
 ## Capítulo 3 - Ejercicio 02: Manipulación de bases de datos documentales ##
 
 El objetivo de este ejercicio es crear un contenedor que contenga una base de datos no sólo relacion con el fin de explotar el funcionamiento de este tipo de bases de datos. En este primer ejercicio vamos a explorar el funcionamiento de las bases de datos documentales. 
+
+
+### Desplegando nuestro contenedor MongoDb
+
+Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servidor de bases de datos MongoDB. Existe diferente formas de construir nuestro contenedor Mongo, (1) mediante la utilización de la imagen, (2) mediante la generación de un fichero de despliegue (docker-compose.yaml); y (3) mediante la creación de un contenedor.  
+
+**Paso 1: Descargando la imagen**
+
+En primer lugar vamos a descarga la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [MongoDB](https://hub.docker.com/_/mongo) disponibles en dockerhub. 
+
+```
+$ docker pull mongo:3.4-xenial
+```
+
+En este caso vamos a descargar la imagen instalada en xenial en su versión 3.4 para ello utilizamos el tag "3.4-xenial". Si no nos importa la versión o el sistema operativo que queremos instalar podemos indicar simplemente que queremos descargar mongo. 
+
+```
+$ docker pull mongo
+```
+
+A continuación comprobaremos si la imagen se ha descargado correctamente y está disponible en nuestro repositorio local de imágenes, mediante el siguiente comando:
+
+```
+$ docker images 
+```
+
+
+Obteniendo la siguiente salida que nos indica que hemos descargado la imagen mongo en su versión (tag) 3.4.21-xenial hace 6 semanas. 
+
+```
+REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
+mongo                     3.4.21-xenial       e73a2394fcf4        3 months ago        428MB
+´`` 
+
+
+
