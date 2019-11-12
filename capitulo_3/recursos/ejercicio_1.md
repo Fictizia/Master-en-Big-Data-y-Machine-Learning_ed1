@@ -169,11 +169,11 @@ La forma en la que hemos levantado el servidor MySQL es correcta, pero hay ciert
 $ docker run --name mysql1 -e MYSQL_ROOT_PASSWORD=fictizia -d mysql/mysql-server:latest 
 ``` 
 
-### Cargando nuestra base de datos
+### Cargando datos en nuestra base de datos (Semillas)
 
 **Paso 1: Reconfigurando nuestra base de datos**
 
-Vamos a cargar nuestro contenedor creando un volumen y añadiendo el password a nuestro usuario root. Para ello es necesario crear un directorio para almacenar los ficheros de configuración:
+Vamos a cargar nuestro contenedor creando un volumen para acceder a la información de configuración y añadiendo el password a nuestro usuario root mediante una variable de entorno. Para ello es necesario crear un directorio para almacenar los ficheros de configuración:
 
 ``` 
 mkdir mysql_files
@@ -182,7 +182,7 @@ mkdir mysql_files
 A continuación podemos lanzar el contenedor
 
 ``` 
-$ docker run --name mysql1 --env="MYSQL_ROOT_PASSWORD=prueba" -v ./mysql_files/conf.d:/etc/mysql/conf.d -d mysql/mysql-server:latest
+$ docker run --name mysql_data --env="MYSQL_ROOT_PASSWORD=prueba" -v ./mysql_files/conf.d:/etc/mysql/conf.d -d mysql/mysql-server:latest
 ``` 
 
 **Paso 2: Compartiendo los datos de las bases de datos**
@@ -193,9 +193,171 @@ Los contenedores son elementos sin información persistente de forma que si reco
 mkdir mysql_data
 ``` 
 
-A continuación podemos lanzar el contenedor añadiendo un nuevo volumen 
+A continuación podemos lanzar el contenedor añadiendo un nuevo volumen. Si se produce un error al intentar crear un volumen, es necesario modificar  
 
 ``` 
-$ docker run --name mysql1 --env="MYSQL_ROOT_PASSWORD=prueba" -v ./mysql_files/conf.d:/etc/mysql/conf.d -v ./mysql_data:/var/lib/mysql -d mysql/mysql-server:latest
+$ docker run --name mysql_data --env="MYSQL_ROOT_PASSWORD=prueba" -v ./mysql_files/conf.d:/etc/mysql/conf.d -v ./mysql_data:/var/lib/mysql -d mysql/mysql-server:latest
 ``` 
 
+**Paso 3: Generando un fichero de despliegue mediante docker compose**
+
+Ahora vamos a crear un fichero de despliegue para cargar los datos en nuestra base de datos y configurar el password del root mediante una variable de entorno. Para ello vamos a crear un fichero de despliegue denominado __docker_compose.yaml__ que contendrá la siguiente información:
+
+```
+version: '3.4'
+services:
+  mysql-db: 
+    restart: always
+    image: mysql/mysql-server:latest
+    container_name: mysql_data
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment: 
+      - MYSQL_ROOT_PASSWORD=fictizia
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+    volumes:
+      - ./mysql_files/conf.d:/etc/mysql/conf.d
+      - ./mysql-data:/var/lib/mysql
+
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+```
+
+Una vez creado el fichero, lo ejecutaremoe mediante el comando siguiente comando, generándose una nueva red cuyo nombre se construirá con el nombre incluido en la configuración del fichero añadiéndose el nombre de carpeta que contiene el fichero de despligue.
+
+```
+docker-compose -f ./docker-compose.yml up --build -d
+```
+
+Este comando levantará un máquina con nuestro servidor de base de datos y lo incluirá en una red denomindo __ejercicio31_fictizia__. Para comprobar que la red ha sido creada correctamente, se puede utilizar el siguiente comando:
+
+```
+docker network ls
+```
+
+Obteniendo la siguiente salida:
+
+```
+NETWORK ID          NAME                    DRIVER              SCOPE
+7f7619778d4b        bridge                  bridge              local
+453942b4fa3b        host                    host                local
+b22524d9d769        none                    null                local
+69bac7002f24        ejercicio31_fictizia    bridge              local
+```
+
+**Paso 4: Generando nuestro proceso semilla**
+
+Una vez que hemos levantado nuestro servidor MySQL vamos a incluir toda la información necesario para cargar la información de nuestra base de datos de prueba. Para ellos vamos a utilizar la [base de datos](./recursos/ejercicio_1/database.sql) que contiene una pequeña base de datos de prueba. Para por poder realizar el proceso de carga tenemos que crear una nueva carpeta 
+
+```
+mkdir scripts
+```
+
+A continuación es necesario modificar nuestro fichero de despliegue incluyendo nuesvas opciones. En este caso incluiremos un nuevo volumen que se enlazará con la carpeta __/docker-entrypoint-initdb.d/__. Todos los scripts almacenados en esta carpeta se ejecutarán cuando se despligue el contenedor. 
+
+```
+version: '3.4'
+services:
+  mysql-db: 
+    restart: always
+    image: mysql/mysql-server:latest
+    container_name: mysql_data
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment: 
+      - MYSQL_ROOT_PASSWORD=fictizia
+    networks:
+      fictizia:
+        ipv4_address: 172.18.10.3
+    volumes:
+      - ./mysql_files/conf.d:/etc/mysql/conf.d
+      - ./mysql-data:/var/lib/mysql      
+      - ./scripts/:/docker-entrypoint-initdb.d/
+
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+```
+
+
+**Paso 5: Interactuando con nuestro base de datos**
+
+Ahora que nuestra base de datos está cargada y desplegada podemos comenzar a interactura con ella. Para ello vamos a construir un connector básico mediante python. Creando un nuevo fichero denominado __connector.py__ en una nueva carpeta denominada __mysql_connector__. 
+
+```
+mkdir mysql_connector
+```
+
+A continuación es necesario crear un entorno virtual mediante el siguiente comando
+
+```
+virtualenv .
+```
+
+y activarlo utilizando el siguiente comando:
+
+```
+source ./bin/activate
+```
+
+Una vez creado el entorno virtual podemos construir nuestro connector para mysql utilizando la librería __mysql-connector-python__ que debe ser instalada mediante pip utilizando el siguiente comando:
+
+```
+pip3 install mysql-connector-python
+```
+
+Tras la instalación del driver de mysql podemos escribir nuestro primer script de conexión, utilizando el siguiente código:
+
+```
+import mysql.connector
+from mysql.connector import Error
+
+try:
+    connection_config = {
+        'user': 'root',
+        'password': 'fictizia',
+        'host': 'localhost',
+        'database': 'universidad',
+        'raise_on_warnings': True,
+        'use_pure': False,
+        'autocommit': True,
+        'pool_size': 5
+    }
+
+    connection = mysql.connector.connect(**connection_config)
+
+    if connection.is_connected():
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM asignatura;")
+        records = cursor.fetchall()
+        
+        for record in records:
+            print(record)
+
+except Error as e:
+    print("Error while connecting to MySQL", e)
+finally:
+    if (connection.is_connected()):
+        cursor.close()
+        connection.close()
+        print("MySQL connection is closed")
+```
