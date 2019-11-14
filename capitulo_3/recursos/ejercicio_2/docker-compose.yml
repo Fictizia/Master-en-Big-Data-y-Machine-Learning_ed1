@@ -1,0 +1,42 @@
+version: '3.4'
+services:
+  
+  mongo:
+    restart: always
+    image: mongo:3.6
+    container_name: mongo_db  
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongoData:/data/db
+    networks:
+      fictizia:
+        ipv4_address: 172.18.1.3
+
+  mongo_seed:
+    restart: on-failure
+    build: ./mongo_seed_1
+    container_name: mongo_seed  
+    networks:
+      fictizia:
+        ipv4_address: 172.18.1.4
+
+  mongo_api:
+    restart: always
+    build: ./api
+    container_name: api 
+    ports:
+      - "5005:5005" 
+    networks:
+      fictizia:
+        ipv4_address: 172.18.1.5
+
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.1.0/24
