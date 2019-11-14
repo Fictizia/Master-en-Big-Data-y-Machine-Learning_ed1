@@ -10,7 +10,89 @@
       "get": {
         "operationId": "functions.analysis",
         "tags": [
-          "Experiments"
+          "Experimentos"
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "functions.add_analysis",
+        "tags": [
+          "Experimentos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "clump_thickness",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "unif_cell_size",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "unif_cell_shape",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "marg_adhesion",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "single_epith_cell_size",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "bare_nuclei",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "bland_chrom",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "norm_nucleoli",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "mitoses",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "class_value",
+            "in": "query",
+            "required": true,
+            "type": "integer"
+          }
         ],
         "responses": {
           "200": {
@@ -26,7 +108,7 @@
       "get": {
         "operationId": "functions.get_analysis",
         "tags": [
-          "Análisis"
+          "Experimentos"
         ],
         "parameters": [
           {
@@ -34,7 +116,7 @@
             "in": "path",
             "required": true,
             "type": "integer",
-            "default": 23456
+            "default": 1
           }
         ],
         "responses": {
