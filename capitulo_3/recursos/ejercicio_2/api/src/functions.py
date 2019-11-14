@@ -46,3 +46,34 @@ def get_analysis(id):
         return json.loads(json_util.dumps(documents)), 200
     else:
         return {'No existe ningún registro con id' + str(id)}, 404
+    
+def add_analysis(id,
+                   clump_thickness,
+                   unif_cell_size,
+                   unif_cell_shape,
+                   marg_adhesion,
+                   single_epith_cell_size,
+                   bare_nuclei,
+                   bland_chrom,
+                   norm_nucleoli,
+                   mitoses,
+                   class_value):
+    
+    document = dict()
+
+    document['id'] = id
+    document['unif_cell_size'] = unif_cell_size
+    document['unif_cell_shape'] = unif_cell_shape
+    document['marg_adhesion'] = marg_adhesion
+    document['single_epith_cell_size'] = single_epith_cell_size
+    document['bare_nuclei'] = bare_nuclei
+    document['bland_chrom'] = bland_chrom
+    document['norm_nucleoli'] = norm_nucleoli
+    document['mitoses'] = mitoses
+    document['class'] = class_value
+
+    result = database.insert_one(document)
+
+    documents = database.find({'_id':result.inserted_id})
+
+    return json.loads(json_util.dumps(documents)), 200
