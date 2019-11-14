@@ -59,21 +59,38 @@ def add_analysis(id,
                    mitoses,
                    class_value):
     
-    document = dict()
+    result = database.find_one({'id':id})
 
-    document['id'] = id
-    document['unif_cell_size'] = unif_cell_size
-    document['unif_cell_shape'] = unif_cell_shape
-    document['marg_adhesion'] = marg_adhesion
-    document['single_epith_cell_size'] = single_epith_cell_size
-    document['bare_nuclei'] = bare_nuclei
-    document['bland_chrom'] = bland_chrom
-    document['norm_nucleoli'] = norm_nucleoli
-    document['mitoses'] = mitoses
-    document['class'] = class_value
+    if result is None:
+        document = dict()
 
-    result = database.insert_one(document)
+        document['id'] = id
+        document['unif_cell_size'] = unif_cell_size
+        document['unif_cell_shape'] = unif_cell_shape
+        document['marg_adhesion'] = marg_adhesion
+        document['single_epith_cell_size'] = single_epith_cell_size
+        document['bare_nuclei'] = bare_nuclei
+        document['bland_chrom'] = bland_chrom
+        document['norm_nucleoli'] = norm_nucleoli
+        document['mitoses'] = mitoses
+        document['class'] = class_value
 
-    documents = database.find({'_id':result.inserted_id})
+        result = database.insert_one(document)
+        document = database.find_one({'_id':result.inserted_id})
 
-    return json.loads(json_util.dumps(documents)), 200
+        return json.loads(json_util.dumps(document)), 200
+    else:
+        return 'Existe un registro con el id ' + str(id) + '.', 404
+
+def delete_analysis(id):
+    
+    document = database.find_one({'id':id})
+
+    if document is not None:
+        result = database.delete_one({'id':id})
+        return 'El análisis con id ' + id + ' se ha eliminado correctamente.', 200
+    else:
+        return 'No existe un registro con el id ' + id + '.', 404
+
+def update_analysis(id):   
+    return {}, 200
