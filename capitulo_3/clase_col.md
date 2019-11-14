@@ -3,4 +3,4 @@
 # [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
 ### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
-# Clase 3: Bases de datos no sólo relacional: Columnares
+# Clase 3 - Bases de datos no sólo relacional: Columnares
