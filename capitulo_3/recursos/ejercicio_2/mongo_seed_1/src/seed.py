@@ -4,7 +4,7 @@ import pandas as pd
 import json
 from pymongo import MongoClient
 
-raw_data = pd.read_csv("../data/osc.csv", ',', header=0)
+raw_data = pd.read_csv("../data/cancer.csv", ',', header=0)
 
 tmp = raw_data.to_json(orient='records')
 data = json.loads(tmp)
