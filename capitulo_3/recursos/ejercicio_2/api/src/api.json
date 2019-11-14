@@ -1,0 +1,57 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Mi tercera api",
+    "version": "1.0",
+    "title": "API REST Capitulo 2"
+  },
+  "paths": {
+    "/analysis": {
+      "get": {
+        "operationId": "functions.analysis",
+        "tags": [
+          "Experiments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/analisis/{id}": {
+      "get": {
+        "operationId": "functions.get_analysis",
+        "tags": [
+          "Análisis"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "default": 23456
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
