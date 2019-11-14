@@ -19,7 +19,19 @@ import pandas as pd
 import json
 from pymongo import MongoClient
 
-raw_data = pd.read_csv("../data/cancer.csv", ',', header=0)
+field_names = ['id',
+'clump_thickness',
+'unif_cell_size',
+'unif_cell_shape',
+'marg_adhesion',
+'single_epith_cell_size',
+'bare_nuclei',
+'bland_chrom',
+'norm_nucleoli',
+'mitoses',
+'class']
+
+raw_data = pd.read_csv("../data/cancer.csv", ',', names=field_names)
 
 tmp = raw_data.to_json(orient='records')
 data = json.loads(tmp)
