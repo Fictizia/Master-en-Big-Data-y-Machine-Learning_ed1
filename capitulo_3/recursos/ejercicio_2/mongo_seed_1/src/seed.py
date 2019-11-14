@@ -48,7 +48,3 @@ for document in data:
     database.insert_one(document)
 
 exit(0)
-
-
-
-
