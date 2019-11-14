@@ -1,4 +1,199 @@
 {
+    "swagger": "2.0",
+    "info": {
+        "description": "Mi primera api",
+        "version": "1.0",
+        "title": "API REST Capitulo 2"
+    },
+    "paths":{
+        "/analysis": {
+            "get": {
+                "operationId": "functions.analysis",
+                "tags": ["Analisis"], 
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "300": {
+                        "description": "error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            },
+            "post": {
+                "operationId": "functions.add_analysis",
+                "tags": ["Analisis"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "clump_thickness",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "unif_cell_size",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "unif_cell_shape",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "marg_adhesion",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "single_epith_cell_size",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "bare_nuclei",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "bland_chrom",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "norm_nucleoli",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "mitoses",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "class_value",
+                        "in": "query",
+                        "required": true,
+                        "type": "integer"
+                    }
+
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/analisis/{id}": {
+            "get": {
+                "operationId": "functions.get_analysis",
+                "tags": ["Analisis"],
+                "parameters":[
+                    {   
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            },
+            "delete": {
+                "operationId": "functions.delete_analysis",
+                "tags": ["Analisis"], 
+                "parameters":[
+                    {   
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            },
+            "put": {
+                "operationId": "functions.update_analysis",
+                "tags": ["Analisis"], 
+                "parameters":[
+                    {   
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "default": 23456
+                    },
+                    {
+                        "name": "clump_thickness",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "unif_cell_size",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "unif_cell_shape",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "marg_adhesion",
+                        "in": "query",{
   "swagger": "2.0",
   "info": {
     "description": "Mi tercera api",
@@ -10,11 +205,17 @@
       "get": {
         "operationId": "functions.analysis",
         "tags": [
-          "Experimentos"
+          "Analisis"
         ],
         "responses": {
           "200": {
             "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "300": {
+            "description": "error",
             "schema": {
               "type": "object"
             }
@@ -24,7 +225,7 @@
       "post": {
         "operationId": "functions.add_analysis",
         "tags": [
-          "Experimentos"
+          "Analisis"
         ],
         "parameters": [
           {
@@ -108,7 +309,7 @@
       "get": {
         "operationId": "functions.get_analysis",
         "tags": [
-          "Experimentos"
+          "Analisis"
         ],
         "parameters": [
           {
@@ -116,7 +317,125 @@
             "in": "path",
             "required": true,
             "type": "integer",
-            "default": 1
+            "default": 23456
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "functions.delete_analysis",
+        "tags": [
+          "Analisis"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "default": 23456
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "functions.update_analysis",
+        "tags": [
+          "Analisis"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "default": 23456
+          },
+          {
+            "name": "clump_thickness",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "unif_cell_size",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "unif_cell_shape",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "marg_adhesion",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "single_epith_cell_size",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "bare_nuclei",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "bland_chrom",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "norm_nucleoli",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "mitoses",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "class_value",
+            "in": "query",
+            "required": false,
+            "type": "integer"
           }
         ],
         "responses": {
@@ -136,4 +455,62 @@
       }
     }
   }
+}
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "single_epith_cell_size",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "bare_nuclei",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "bland_chrom",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "norm_nucleoli",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "mitoses",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "class_value",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se ha procesado la petición correctamente",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                } 
+            }
+        }
+    }
 }
