@@ -580,7 +580,6 @@ En primer lugar es necesario crear la carpeta en el servidor/ordenador de origen
 
 ```
 mkdir shared
-
 ```
 
 **Paso 2: Ejecutando nuestro nuevo contenedor**
@@ -590,6 +589,23 @@ A continuación se debe desplegar el comtenedor incluyendo la opción __v__ (vol
 ```
 docker run -p 80:80 --name apache1 -v /home/ficticia/capitulo_2/shared:/shared -d fictizia-web/0.1:latest
 ```
+
+#### Políticas de reinicio
+
+Uno de los problemas que puede surgir cuando desplegamos un contenedor es que surja algún problema y este finalice su ejecución. Esto no significa, que el contenedor funcione de modo incorrecto, sino que tal vez tenía que acceder a algún servicio que no estaba disponible cuando se arranco, por lo que es necesario que el contenedor debea intentar conectarse a ese servicio pasados uno segundos. Docker nos permite definir la política de reinicio de los contenedores mediante la utilización de la opción __--restart__. Esta opción permite definir en que situaciones se reiniciará nuestro contenedor en caso de que se produzca un fallo en la ejecución. Las posibles polticas que pueden asignarse son:
+
+- no:	El contenedor no se reiniciará en caso de fallo (Es la política por defecto).
+- on-failure: El contenedor se reiniciará si se produce un error. Los errores son identificados cuando el contenedor finaliza su ejecución con un valor diferentes de 0.
+- always: El contenedor siempre se reinicia si se detiene la ejecución, incluso si se realiza de manera manual. 
+- unless-stopped: Es similar a la anterior sólo que no se reiniciará cuando se produce una parada manual. 
+
+Por ejemplo para definir una política de reinicio para el contenedor del ejemplo anterior debería hacerlo de la siguiente manera:
+
+```
+docker run -p 80:80 --name apache1 -v /home/ficticia/capitulo_2/shared:/shared --restart always -d fictizia-web/0.1:latest
+```
+
+Es este caso el contenedor apache1 siempre se reiniciará cuando se produzca una parada del contenedor. 
 
 #### Creando redes de contenedores
 
