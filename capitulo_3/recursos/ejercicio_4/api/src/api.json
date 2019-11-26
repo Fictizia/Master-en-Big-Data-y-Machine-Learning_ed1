@@ -1,0 +1,230 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Mi tercera api",
+    "version": "1.0",
+    "title": "API REST Capitulo 2"
+  },
+  "paths": {
+    "/peliculas": {
+      "get": {
+        "operationId": "functions.movies",
+        "tags": [
+          "peliculas"
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "300": {
+            "description": "error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "functions.add_movie",
+        "tags": [
+          "peliculas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "The Matrix"
+          },
+          {
+            "name": "tag_line",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "released",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/pelicula/{id}": {
+      "get": {
+        "operationId": "functions.get_movie",
+        "tags": [
+          "peliculas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "The Matrix"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "functions.delete_movie",
+        "tags": [
+          "peliculas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "The Matrix"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "functions.update_movie",
+        "tags": [
+          "peliculas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "The Matrix"
+          },
+          {
+            "name": "tag_line",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "released",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/pelicula/{id}/directors": {
+      "get": {
+        "operationId": "functions.get_directors",
+        "tags": [
+          "peliculas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "The Matrix"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "300": {
+            "description": "error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/pelicula/{id}/actors": {
+      "get": {
+        "operationId": "functions.get_actors",
+        "tags": [
+          "peliculas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "The Matrix"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "300": {
+            "description": "error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
