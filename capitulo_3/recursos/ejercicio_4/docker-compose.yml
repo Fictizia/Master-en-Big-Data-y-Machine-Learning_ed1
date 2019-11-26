@@ -1,0 +1,35 @@
+version: '3.4'
+services:
+  
+  neo4j:
+    restart: always
+    image: neo4j:latest
+    container_name: neo4j_db
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./data:/data
+    networks:
+      fictizia:
+        ipv4_address: 172.18.1.10
+
+  api:
+    restart: always
+    build: ./api
+    container_name: api 
+    ports:
+      - "5005:5005" 
+    networks:
+      fictizia:
+        ipv4_address: 172.18.1.5
+
+networks:
+  fictizia:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.1.0/24
