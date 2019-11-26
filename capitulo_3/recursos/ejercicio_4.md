@@ -127,7 +127,7 @@ CREATE (Keanu)-[:ACTED_IN {roles:['Neo']}]->(TheMatrix)
 ```
 en este caso hemos creado una relación entre el nodo __Keanu__ y el nodo __TheMatrix__ donde la relación se denomina __ACTED_IN__ e incluye un conjunto de propiedades. En este caso sólo una que se denominado roles. 
 
-**Paso 4: Accediendo a nuestro grafo **
+**Paso 4: Accediendo a nuestro grafo de manera visual **
 
 Una vez que nuestro grafo ha sido ejecutado, podemos realizar diferentes tipos de consultas sobre el. Por ejemplo si quisieramos visualizar todos los nodos entre los que al menos existe una relación __DIRECTED__ con un límite de 25 nodos, tendramos que utilizar el siguiente comando.  
 
@@ -139,3 +139,65 @@ Obteniéndose un grafo como el siguiente:
 
 ![Grafo ejemplo Neo4J](./img/neo4j_grafo.png)
 
+**Paso 5: Accediendo a nuestros datos mediante un API REST**
+
+Una vez que hemos definido nuestros contenedores de carga, vamos a construir una API REST para acceder a los datos de nuestra base de datos mongo, construyendo una API REST con dos métodos de acceso. Para ello es necesario crear un nuevo proyecto la creación del proyecto se recomienda crear una nueva carpeta denominado __api__ que deberá contener los siguientes archivos y directorios. 
+
+```
+drwxr-xr-x 7 momartin momartin 4096 nov  1 11:55 .
+drwxr-xr-x 8 momartin momartin 4096 nov  1 11:55 ..
+drwxrwxr-x 2 momartin momartin 4096 nov  1 11:54 bin
+-rw-r--r-- 1 momartin momartin  288 oct 31 21:30 Dockerfile
+drwxrwxr-x 2 momartin momartin 4096 nov  1 11:53 include
+drwxrwxr-x 3 momartin momartin 4096 nov  1 11:53 lib
+drwxrwxr-x 2 momartin momartin 4096 nov  1 11:53 local
+-rw-r--r-- 1 momartin momartin  612 oct 31 21:11 requirements.txt
+drwxr-xr-x 4 momartin momartin 4096 nov  1 12:56 src
+```
+
+Donde se deberán encontrar el fichero de requistos del proyecto (requirements.txt), la carpeta con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y los diferentes directorios del entorno virtual. Dentro de la carperta src deberemos crear los siguientes ficheros:
+
+```
+drwxr-xr-x 4 momartin momartin 4096 nov  1 12:56 .
+drwxr-xr-x 7 momartin momartin 4096 nov  1 11:55 ..
+-rw-r--r-- 1 momartin momartin 8576 nov  1 12:38 api.json
+-rw-r--r-- 1 momartin momartin 2910 nov  1 12:56 functions.py
+-rw-r--r-- 1 momartin momartin  924 nov  1 12:56 server.py
+```
+
+Los ficheros del la carpeta src se corresponde con el servidor (server.py), las funciones con la lógica de los diferentes recursos, la configuración de la API REST.
+
+**Paso 6: Configuración del servidor**
+
+El primer paso consiste en desarrollar el código de nuestro servidor para ellos vamos a utilizar [Flask](https://flask.palletsprojects.com/en/1.1.x/) que es un paquete de python que nos permite desplegar servidor web de forma sencilla y rápido. 
+
+__Documentación y recursos__
+
+- [Projecto Flask](https://flask.palletsprojects.com/en/1.1.x/)
+- [Documentación Flask](https://flask.palletsprojects.com/en/1.1.x/api/)
+- [Projecto Swagger](https://swagger.io/)
+- [Documentación Swagger](https://swagger.io/solutions/api-documentation/)
+- [Construcción de APIs](https://swagger.io/solutions/api-development/)
+
+Para ellos deberemos instalar algunos paquetes utilizando pip3. 
+
+```
+pip3 install Flask connexion connexion[swagger-ui] neo4j
+```
+
+Una vez instalados estos paquetes podemos comenzar con la configuración de nuestro servidor en el fichero server.py. Si no los creastes en el paso anterior, es momento de crear este archivo y seguir los siguientes pasos:
+
+```
+import connexion
+
+server = connexion.App(__name__, options= {"swagger_ui": True})
+server.add_api('api.json', base_path='/fictizia/1.0')
+
+if __name__ == "__main__":
+    server.run(port=5005)
+    exit(0)
+```
+
+1. Para construir nuestra API REST utilizaremos el paquete connexion, para ello tendremos que importar el paquete y a continuación crear un objeto para nuestra aplicación (server) indicando que se debe activar el interfaz de usuario mediante la opción swagger_ui. 
+2. A continuación deberemos definir nuestra API, para ello utilizaremos el archivo __api.json__ donde describiremos los diferentes recursos de nuestra API y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__ y la versión __1.0__. 
+3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
