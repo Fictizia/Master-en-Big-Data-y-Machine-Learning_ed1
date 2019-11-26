@@ -376,3 +376,80 @@ def get_movie(id):
     else:
         return {'Se debe indicar un nombre de película'}, 404
 ```
+
+**Paso 8: Visualización los actores de una película**
+
+una de las grandes ventajas de las bases de datos en grafo, es su versatilidad para generar consultas relacionadas con su esructura. En es caso vamos a realizar una consulta más compleja que nos permite realizar consultas en base a la relaciones que existen entre los nodos del grafo. Para ello vamos a octener los actores de una película y el rol que tenían en ella. Para ello vamos a construir la siguiente URI
+
+```
+http://localhost:5005/fictizia/1.0/pelicula/The%20Matrix/actors
+```
+
+Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+
+```
+"/pelicula/{id}/actors": {
+  "get": {
+    "operationId": "functions.get_actors",
+    "tags": [
+      "peliculas"
+    ],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "type": "string",
+        "default": "The Matrix"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Se ha procesado la petición correctamente",
+        "schema": {
+          "type": "object"
+        }
+      },
+      "300": {
+        "description": "error",
+        "schema": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
+```
+
+En este caso hemos construido un nuevo recursos incluyendo un parametro que se incluye el la URI. Este parámetro se corresponde con el id, para ello hemos incluio la descripción del parámetro en el array de parámetros indicando sus caractersticas básicas, siendo las más importantes la forma de entrada del parámetro a partir de la URI definiéndolo mediante la opción __in__ con el valor __patch__ y la obligatoriedad del parámetro mediante la opción __required__. Además en este caso hemos definido dos posible respuestas: (1) 200 cuando existe el resultado; y (2) 404 cuando no exista el resultado con el id indicado como parámetro. En este caso el código desarrollado para la generación de las diferentes respuestas es el siguiente:
+
+```
+def get_actors(id):
+    if id is not None:
+        with client.session() as session:
+            json_data = session.read_transaction(get_actors_by_movie, id)
+        return json_data, 200
+    else:
+        return {'Se debe indicar un nombre de película'}, 404
+
+
+def get_actors_by_movie(tx, title):
+
+    data = list()
+
+    query = "MATCH (m:Movie)<-[a:ACTED_IN]-(p:Person) WHERE (m.title='" + title + "') RETURN p.name as name, a.roles as roles"
+
+    for record in tx.run(query):
+        r = dict()
+        r['name'] = record['name']
+        r['roles'] = record['roles']
+        data.append(r)
+
+    return data
+```
+
+Como se puede observar en este caso la consulta es más compleja y está formada por los elementos de la relación:
+
+```
+MATCH (m:Movie)<-[a:ACTED_IN]-(p:Person) WHERE (m.title='the Matrix') RETURN p.name as name, a.roles as roles
+```
