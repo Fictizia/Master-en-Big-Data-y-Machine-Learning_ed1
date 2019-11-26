@@ -61,7 +61,7 @@ La otra alternativa a la creación de nuestro contenedor por linea de comando, e
 version: '3.4'
 services:
   
-  mongo:
+  neo4j:
     restart: always
     image: neo4j:latest
     container_name: neo4j_db
