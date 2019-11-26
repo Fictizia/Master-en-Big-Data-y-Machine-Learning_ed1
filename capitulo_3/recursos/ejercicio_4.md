@@ -309,3 +309,70 @@ En el caso de que quisieramos visualizar esta información mediante la interfaz 
 ![Grafo de películas](./img/movies_graph.png)
 
 **Paso 7: Visualización de una película**
+
+A continuación vamos a construir el recursos que nos permitirá obtener la información de un determinado análisis utilizando su Id, donde la URI será la siguiente:
+
+```
+http://localhost:5005/fictizia/1.0/pelicula/The%20Matrix
+```
+
+Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+
+```
+"/pelicula/{id}": {
+  "get": {
+    "operationId": "functions.get_movie",
+    "tags": [
+      "peliculas"
+    ],
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "type": "string",
+        "default": "The Matrix"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Se ha procesado la petición correctamente",
+        "schema": {
+          "type": "object"
+        }
+      },
+      "404": {
+        "description": "Error",
+        "schema": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
+```
+
+En este caso hemos construido un nuevo recursos incluyendo un parametro que se incluye el la URI. Este parámetro se corresponde con el id, para ello hemos incluio la descripción del parámetro en el array de parámetros indicando sus caractersticas básicas, siendo las más importantes la forma de entrada del parámetro a partir de la URI definiéndolo mediante la opción __in__ con el valor __patch__ y la obligatoriedad del parámetro mediante la opción __required__. Además en este caso hemos definido dos posible respuestas: (1) 200 cuando existe el resultado; y (2) 404 cuando no exista el resultado con el id indicado como parámetro. En este caso el código desarrollado para la generación de las diferentes respuestas es el siguiente:
+
+```
+def get_movie_by_title(tx, title):
+    data = list()
+    query = "MATCH (m:Movie) WHERE m.title = '" + title + "' RETURN m.title as title, m.released as released, m.tagline as tagline"
+
+    for record in tx.run(query):
+        r = dict()
+        r['title'] = record['title']
+        r['tagline'] = record['tagline']
+        r['released'] = record['released']
+        data.append(r)
+
+    return data
+
+def get_movie(id):
+    if id is not None:
+        with client.session() as session:
+            json_data = session.read_transaction(get_movie_by_title, id)
+        return json_data, 200
+    else:
+        return {'Se debe indicar un nombre de película'}, 404
+```
