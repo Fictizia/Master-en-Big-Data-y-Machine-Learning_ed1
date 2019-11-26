@@ -137,7 +137,7 @@ MATCH p=()-[r:DIRECTED]->() RETURN p LIMIT 25
 
 Obteniéndose un grafo como el siguiente:
 
-![Grafo ejemplo Neo4J](./img/neo4j_grafo.png)
+![Grafo ejemplo Neo4J](./img/full_graf_neo4j.png)
 
 **Paso 5: Accediendo a nuestros datos mediante un API REST**
 
@@ -201,3 +201,111 @@ if __name__ == "__main__":
 1. Para construir nuestra API REST utilizaremos el paquete connexion, para ello tendremos que importar el paquete y a continuación crear un objeto para nuestra aplicación (server) indicando que se debe activar el interfaz de usuario mediante la opción swagger_ui. 
 2. A continuación deberemos definir nuestra API, para ello utilizaremos el archivo __api.json__ donde describiremos los diferentes recursos de nuestra API y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__ y la versión __1.0__. 
 3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
+
+**Paso 7: Visualización de las películas**
+
+Una vez construido los elementos básicos de nuestro servidor vamos a comenzar con la construcción de la API REST. Para ello, vamos a construir el recursos analisis, cuya URI será la siguiente:
+
+```
+http://localhost:5005/fictizia/1.0/peliculas
+```
+
+Para construir el recurso, primero debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+
+```
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Mi tercera api",
+    "version": "1.0",
+    "title": "API REST Capitulo 2"
+  },
+  "paths": {
+    "/movies": {
+      "get": {
+        "operationId": "functions.movies",
+        "tags": [
+          "peliculas"
+        ],
+        "responses": {
+          "200": {
+            "description": "Se ha procesado la petición correctamente",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "300": {
+            "description": "error",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Este fragmento de json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __peliculas__ en la URI mediante una operación get y utilizando para generar el contenido de la respuesta el método movies del fichero functions.py. Siendo el código de este fichero el siguiente:
+
+```
+from neo4j import GraphDatabase
+
+import json
+
+HOST = 'localhost' #IP del servidor NEO4J
+PORT = 7687
+URI = 'bolt://' + HOST + ':' + str(PORT)
+USER = ''
+PASSWORD = ''
+
+client = GraphDatabase.driver(URI)
+
+def get_all_movies(tx):
+
+    data = list()
+    query = "MATCH (m:Movie) RETURN m.title as title, m.released as released, m.tagline as tagline"
+
+    for record in tx.run(query):
+
+        r = dict()
+        r['title'] = record['title']
+        r['tagline'] = record['tagline']
+        r['released'] = record['released']
+        data.append(r)
+
+    return data
+
+
+def movies():
+
+    with client.session() as session:
+        json_data = session.read_transaction(get_all_movies)
+
+    return json_data, 200
+```
+
+Esta función devuelve el contenido de la variable json_data con un código 200. Siendo la estructura del contenido un array de elementos de tipo json de la siguiente forma:
+
+```
+[
+  {
+    "released": 1999,
+    "tagline": "Welcome to the Real World",
+    "title": "The Matrix"
+  },
+  {
+    "released": 2003,
+    "tagline": "Free your mind",
+    "title": "The Matrix Reloaded"
+  },
+  ...
+]
+```
+
+En el caso de que quisieramos visualizar esta información mediante la interfaz gráfica que ofrece Neo4J obtendríamos la siguiente visualización:
+
+![Grafo de películas](./img/movies_graph.png)
+
+**Paso 7: Visualización de una película**
