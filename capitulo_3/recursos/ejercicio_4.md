@@ -137,7 +137,7 @@ MATCH p=()-[r:DIRECTED]->() RETURN p LIMIT 25
 
 Obteniéndose un grafo como el siguiente:
 
-![Grafo ejemplo Neo4J](./img/full_grafh_neo4j.png)
+![Grafo ejemplo Neo4J](./img/full_graph_neo4j.png)
 
 **Paso 5: Accediendo a nuestros datos mediante un API REST**
 
