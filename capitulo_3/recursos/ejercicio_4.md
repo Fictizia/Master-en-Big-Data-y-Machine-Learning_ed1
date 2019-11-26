@@ -14,16 +14,16 @@ Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes
 
 **Paso 1.1: Descargando la imagen**
 
-En primer lugar vamos a descarga la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [MongoDB](https://hub.docker.com/_/mongo) disponibles en dockerhub. 
+En primer lugar vamos a descarga la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [Neo4J](https://hub.docker.com/_/neo4j) disponibles en dockerhub o en [Neo4J](https://neo4j.com/developer/docker-run-neo4j/) la página de Neo4J.
 
 ```
-$ docker pull mongo:3.4-xenial
+$ docker pull neo4j:latest
 ```
 
-En este caso vamos a descargar la imagen instalada en xenial en su versión 3.4 para ello utilizamos el tag "3.4-xenial". Si no nos importa la versión o el sistema operativo que queremos instalar podemos indicar simplemente que queremos descargar mongo. 
+En este caso vamos a descargar la última imagen que se corresponde con la versión 3.5.12 para ello utilizamos el tag "latest". Si no nos necesitamos una versión específica podemos utilizar el tag neo4j y descargar la última versión del servidor. 
 
 ```
-$ docker pull mongo
+$ docker pull neo4j
 ```
 
 A continuación comprobaremos si la imagen se ha descargado correctamente y está disponible en nuestro repositorio local de imágenes, mediante el siguiente comando:
@@ -37,5 +37,20 @@ Obteniendo la siguiente salida que nos indica que hemos descargado la imagen mon
 
 ```
 REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-mongo                     3.4.21-xenial       e73a2394fcf4        3 months ago        428MB
+neo4j                     latest              8aa3aaffd180        3 days ago          363MB
 ```
+**Paso 1.2: Desplegandando la imagen **
+
+Una vez que hemos descargado la imagen podemos deplegarla para levantarnuestro servidor Neo4J mediante el siguiente comando:
+
+```
+$ docker run --name=neo4j_db -p 7474:7474 -p 7687:7687 -v $(pwd)/data:/data -d neo4j
+```
+En este caso vamos a publicar dos servicios diferentes. El puerto 7474 se correspe con el servicio http y el puerto 7687 se corresponde con la API de acceso a Neo4J. Una vez que accedamos a la base de datos por primera vez será necesario cambiar el password, por lo que es posible desactivar la autenticación mediante la variable de sesión __NEO4J_AUTH__ en el comando de arranque:
+
+```
+$ docker run --name=neo4j_db -p 7474:7474 -p 7687:7687 -v $(pwd)/data:/data --env=NEO4J_AUTH=no -d neo4j 
+```
+__IMPORTANTE:__ Sólo se recomienda desactivar la autenticación mediante para trabajar en entornos de desarrollo. 
+
+
