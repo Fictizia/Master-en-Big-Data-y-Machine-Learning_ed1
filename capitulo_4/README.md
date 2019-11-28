@@ -63,4 +63,6 @@ El término Arquitectura Kappa fue introducido en 2014 por [Jay Kreps]() en su a
 
 Esta propuesta se debía a que el procesamiento de la capa batch se puede considerar como un subconjunto de la capa streaming, debido a que un proceso batch se puede entender como un stream acotado temporalmente. Esta propuesta consistía en una simplificación de la Arquitectura Lambda, en la que se eliminaba la capa batch y todo el procesamiento se realiza en una sola capa denominada capa de tiempo real (Real-time Layer), dando soporte a procesamientos tanto batch como en tiempo real mediante un único flujo de datos. 
 
+<img src="./img/kappa.png" alt="Arquitectura Kappa" width="800"/>
 ![Arquitectura Kappa](./img/kappa.png)
+
