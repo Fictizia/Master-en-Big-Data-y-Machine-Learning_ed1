@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Mi tercera api",
+    "description": "Mi api conectada a NEO4J",
     "version": "1.0",
-    "title": "API REST Capitulo 2"
+    "title": "API REST Capitulo 3"
   },
   "paths": {
     "/peliculas": {
@@ -34,22 +34,21 @@
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
+            "name": "title",
+            "in": "query",
             "required": true,
-            "type": "string",
-            "default": "The Matrix"
+            "type": "string"
           },
           {
-            "name": "tag_line",
+            "name": "tagline",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
             "name": "released",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "integer"
           }
         ],
@@ -103,8 +102,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "default": "The Matrix"
+            "type": "string"
           }
         ],
         "responses": {
@@ -136,7 +134,13 @@
             "default": "The Matrix"
           },
           {
-            "name": "tag_line",
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tagline",
             "in": "query",
             "required": false,
             "type": "string"
@@ -167,37 +171,6 @@
     "/pelicula/{id}/directors": {
       "get": {
         "operationId": "functions.get_directors",
-        "tags": [
-          "peliculas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "default": "The Matrix"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Se ha procesado la petición correctamente",
-            "schema": {
-              "type": "object"
-            }
-          },
-          "300": {
-            "description": "error",
-            "schema": {
-              "type": "object"
-            }
-          }
-        }
-      }
-    },
-    "/pelicula/{id}/actors": {
-      "get": {
-        "operationId": "functions.get_actors",
         "tags": [
           "peliculas"
         ],
