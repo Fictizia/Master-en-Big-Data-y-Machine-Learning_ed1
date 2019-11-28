@@ -101,6 +101,7 @@ Una vez que hemos accedido a nuestra sistema de bases de datos en grafo, vamos a
 
 Cómo describimos anteriormente, las bases de datos en grafo se basa en conceptos diferentes a los otros tipos de bases de datos. En la siguiente tabla se muestran las correspondencias entre una base de datos de tipo SQL y una base de datos en grafo. 
 
+[Correspondencias entre estructuras SQL y estructuras en Graph NoSQL ]
 =================
 SQL | Graph 
 ------------ | ------------ 
