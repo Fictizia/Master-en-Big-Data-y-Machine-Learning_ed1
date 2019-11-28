@@ -13,19 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 from neo4j import GraphDatabase
-
 import json
 
-HOST = 'localhost' #IP del servidor NEO4J
+HOST = '172.18.1.10' #IP del servidor NEO4J
 PORT = 7687
 URI = 'bolt://' + HOST + ':' + str(PORT)
-USER = ''
-PASSWORD = ''
+USER = 'neo4j'
+PASSWORD = 'fictizia'
 
-client = GraphDatabase.driver(URI)
-
+#client = GraphDatabase.driver(URI)
+client = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
 
 def get_all_movies(tx):
 
@@ -55,7 +53,7 @@ def get_movie_by_title(tx, title):
 
     data = list()
 
-    query = "MATCH (m:Movie)-[r:DIRECTED]->(p:Person) WHERE m.title = '" + title + "' RETURN m.title as title, m.released as released, m.tagline as tagline"
+    query = "MATCH (m:Movie) WHERE m.title = '" + title + "' RETURN m.title as title, m.released as released, m.tagline as tagline"
 
     for record in tx.run(query):
 
@@ -81,9 +79,9 @@ def get_directors_by_movie(tx, title):
 
     data = list()
 
-    query = "MATCH (m:Movie)<-[:DIRECTED]-(p:Person) WHERE (m.title='" + title + "') RETURN p.name as name"
+    query = "MATCH (m:Movie)<-[:DIRECTED]-(p:Person) WHERE (m.title='$title') RETURN p.name as name"
 
-    for record in tx.run(query):
+    for record in tx.run(query, title=title):
         r = dict()
         r['name'] = record['name']
         data.append(r)
@@ -106,9 +104,6 @@ def get_actors_by_movie(tx, title):
     query = "MATCH (m:Movie)<-[a:ACTED_IN]-(p:Person) WHERE (m.title='" + title + "') RETURN p.name as name, a.roles as roles"
 
     for record in tx.run(query):
-
-        print(record)
-
         r = dict()
         r['name'] = record['name']
         r['roles'] = record['roles']
@@ -125,13 +120,39 @@ def get_movie(id):
     else:
         return {'Se debe indicar un nombre de película'}, 404
 
+def add_movie_by_title(tx, title, tagline, released):
 
+    id = title.replace(" ", "_")
 
+    query = "CREATE (" + id + ":Movie {title:'" + title + "', released:" + str(released) + ", tagline:'" + tagline + "'}) RETURN " + id
 
-def add_movie(id,
+    print(query)
+
+    record = tx.run(query).single().value()
+
+    result = dict()
+    result['title'] = record['title']
+    result['tagline'] = record['tagline']
+    result['released'] = record['released']
+
+    return result
+
+def add_movie(title,
               tagline,
-              released,):
-    return {}, 200
+              released):
+    
+    if title is None:
+        return {'Se debe indicar un nombre de pelicula'}, 404
+    if tagline is None:
+        return {'Se debe indicar una descricción de pelicula'}, 404
+    if released is None:
+        return {'Se debe indicar un fecha de lanzamiento de pelicula'}, 404
+
+    with client.session() as session:
+        json_data = session.write_transaction(add_movie_by_title, title, tagline, released)
+        return json_data, 200
+    
+    return 'Error', 404
 
 def delete_movie(id):
     return {}, 200
