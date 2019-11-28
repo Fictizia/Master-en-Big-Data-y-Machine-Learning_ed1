@@ -33,8 +33,8 @@ El objetivo de las arquitecturas lambda es implementar sistemas de la informaci�
 - Mantener sistema distribuidos de procesamiento diferentes con el objetivo de producir el mismo resultado suele tener un coste muy elevado a nivel de computación y mantenimiento. 
 - Normalmente para el desarrollo de este tipo de arquitecture se utilizan tecnologías, como Apache Hadoop (MapReduce) y Apache Spark donde existen grandes diferencias a la hora de desarrollar los diferentes algoritmo. 
 
-**Recursos y ejemplos de Arquitectura Lambda**
 
+[Recursos y ejemplos de Arquitectura Lambda]
 =================
 Fecha | Solución
 ------------ | ------------ 
@@ -57,6 +57,10 @@ Fecha | Solución
 11/12/2013 | [A real-time architecture using Hadoop and Storm](http://lambda-architecture.net/stories/2017-04-15-Twitter-tweets-analysis)
 10/12/2013 | [Why are we doing this and why are we doing this now?](http://lambda-architecture.net/stories/2017-04-15-Twitter-tweets-analysis)
 
-
 ### Arquitectura Kappa ###
 
+El término Arquitectura Kappa fue introducido en 2014 por [Jay Kreps]() en su artículo [Questioning the Lambda Architecture]() donde describía los posibles puntos "débiles" que tenía la arquitectura Lambda y podían ser solucionados mediante una serie de cambio. Su propuesta para eliminar estos puntos débiles consistía en la eliminación de la capa batch manteniendo sólo la capa de streaming. 
+
+Esta propuesta se debía a que el procesamiento de la capa batch se puede considerar como un subconjunto de la capa streaming, debido a que un proceso batch se puede entender como un stream acotado temporalmente. Esta propuesta consistía en una simplificación de la Arquitectura Lambda, en la que se eliminaba la capa batch y todo el procesamiento se realiza en una sola capa denominada capa de tiempo real (Real-time Layer), dando soporte a procesamientos tanto batch como en tiempo real mediante un único flujo de datos. 
+
+![Arquitectura Kappa](./img/kappa.png)
