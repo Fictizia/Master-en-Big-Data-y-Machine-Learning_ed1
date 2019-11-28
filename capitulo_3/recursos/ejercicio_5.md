@@ -122,7 +122,7 @@ en este caso hemos creado una relación entre el nodo __Keanu__ y el nodo __TheM
 
 En el ejemplo anterior construimos una API REST para trabajar con bases de datos en grafo, por lo que vamos a utilizarla con el fin de crear procesos de insección de información almacenada en fichero en Google Cloud Storage. 
 
-**Paso 5: Configurando nuestro acceso a Google Cloud Storage**
+**Paso 6: Configurando nuestro acceso a Google Cloud Storage**
 
 Para poder acceder a los recursos de Google Coud Storage (GCS) es necesario construir unos credenciales de acceso que serán utilizados por el driver de acceso de para python. Para ellos deberemos entrar en nuestra consola de Google Cloud Platform y acceder a la sección de __APIs & Servicios__ y procesde a crear unas credenciales de tipo __Services account Key__. Una vez hayamos accedido deberemos crear una nueva cuenta de servicio como se muestra en la siguiente imagen. 
 
@@ -132,9 +132,9 @@ Para ellos seleccionaremos como rol para la cuenta de servicio el de __Administr
 
 <img src="./img/generate_json.png" alt="Generando cuenta de servicio para GCS" width="800"/>
 
-**Paso 6: Cargando nuestros datos en google cloud storage**
+**Paso 7: Cargando nuestros datos en google cloud storage**
 
-Una vez que hemos creado nuestros crendenciales vamos a cargar nuestros datos en GCS, para ellos vamos a utilizar la información de películas que nos ofrece el reto de [Kaggle sobre películas](https://www.kaggle.com/cuantico/datos-de-pelculas/version/1) donde utilizaremos el fichero __movies_metadata.csv__. Para ello crearemos un __bucket__ que es el sistema de almancenamiento de información que utiliza GCS, para ello crearemos un bucket en europa __europe-west3___ como se presenta en la siguiente imagen. 
+Una vez que hemos creado nuestros crendenciales vamos a cargar nuestros datos en GCS, para ellos vamos a utilizar la información de películas que nos ofrece el reto de [Kaggle sobre películas](https://www.kaggle.com/rounakbanik/the-movies-dataset) donde utilizaremos el fichero __movies_metadata.csv__. Para ello crearemos un __bucket__ que es el sistema de almancenamiento de información que utiliza GCS, para ello crearemos un bucket en europa __europe-west3___ como se presenta en la siguiente imagen. 
 
 <img src="./img/crear_bucket.png" alt="Creando nuestro bucket en GCS" width="800"/>
 
@@ -142,7 +142,7 @@ Una vez creado nuestro "repositorio" cargaremos nuestro fichero de datos con el 
 
 <img src="./img/upload-data.png" alt="Creando nuestro bucket en GCS" width="800"/>
 
-**Paso 7: Descargando nuestro datos**
+**Paso 8: Descargando nuestro datos**
 
 Una vez que hemos definido los diferentes credenciales, vamos a construir nuestro sistema de carga y descarga de datos sobre la API REST que hemos construido en el ejercicio anterior. Para ello es necesario crear un nuevo proyecto. Se recomienda crear una nueva carpeta denominado api que deberá contener los siguientes archivos y directorios.
 
@@ -170,7 +170,7 @@ drwxrwxr-x 2 momartin momartin 4096 nov 28 16:50 src
 
 Este nuevo contenedor está formado por el fichero de requirements.txt, el fichero de configuración del contenedor y el cdigo fuente de los sistema de carga y descarga de ficheros.
 
-**Paso 8: Creando nuestro proceso de descarga e insercción*
+**Paso 9: Creando nuestro proceso de descarga e insercción*
 
 A continuación vamos a crear nuestro sistema de descarga, procesamiento e insercción de datos. Para ellos vamos a crear un script en la carpeta src denominado __data_extractor.py__ donde nos tendremos que conectar a GCS. Para ello tenemos que instala el paquete de instalación de GCS.
 
