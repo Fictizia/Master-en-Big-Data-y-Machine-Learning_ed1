@@ -274,39 +274,98 @@ Para poder acceder tendremos que utilizar la url que aparece en la última linea
 Además podremos acceder a la página web donde se puede observar el estado de nuestro servidor de notebooks a través de la url http://localhost:8888
 
 
+**Paso 5: Creando nuestro primer script en nuestro servidor jupyter**
 
-
-**Paso 4: Generando nuestros ficheros de datos**
-
-Una vez que hemos desplegado nuestro cluster en Apache Spark vamos a comenzar a construir un nuevo componente dentro de nuestro ejercicio. Para ellos crearemos una nueva carpeta denominada __procesamiento__, que deberá contener los siguientes elementos:
+Ya hemos desplegado nuestro servidor jupyter y podemos comenzar a trabajar con nuestros primeros scripts en python, para ello debemos crear un nuevo notebook. Para ello utilizaremos el botón __new__ que se encuentra en la esquina superior derecha. Para ello selecionaremos un nuevo archivo que se ejecutará sobre python 3, ya que es la única opción que tenemos disponible. Una vez que hayamos creado nuestro notebooks, podemos introducir código python como si estuvieramos creando un archivo .py. Por lo que comenzaremos creando nuestro primer script en pyspark. Para ello, debemos introducir el siguiente código fuente:
 
 ```
-total 20
-drwxrwxr-x 4 momartin momartin 4096 dic  3 06:39 .
-drwxrwxr-x 6 momartin momartin 4096 dic  3 06:38 ..
--rw-r--r-- 1 momartin momartin    0 dic  3 06:38 Dockerfile
--rw-rw-r-- 1 momartin momartin 3724 dic  3 06:39 requirements.txt
-drwxrwxr-x 2 momartin momartin 4096 dic  3 06:38 src
-drwxrwxr-x 5 momartin momartin 4096 dic  3 06:38 venv
-```
-
-Una vez desplegados los elementos básicos del nuevo componente, será necesario instalar algunos paquetes mediante la utilización del sistema de instalación de paquetes en python. Para ello instalaremos el paquete pyspark que nos permiten interactuar con nuestro cluster de Apache Spark mediante la utilización de python. 
-
-```
-pip3 install pandas pyspark findspark
-```
-
-Una vez que se han instalado los diferentes paqueste necesarios vamos a crear nuestro primer código para conectarnos al cluster de Spark. Para ellos creamos un ficheros en el directorio src denominado __spark_connection.py__ que deberá contener el siguientes código fuente:
-
-```
-import pyspark
+from pyspark.sql import SparkSession
 
 if __name__ == "__main__":
-    sc = pyspark.SparkContext('local[*]')
-    exit(0)
 
+    spark = SparkSession.builder.master('spark://10.18.0.2:7077').appName('spark-cluster').getOrCreate()
+    exit(0)
 ```
 
-Si nuestro sistema es capaz de conectar a nuestro 
+Donde debemos introducir en este caso la dirección IP del nodo máster __spark://10.18.0.2:7077__ bajo el protocolo spark que se encuentra escuchando en el puerto 7077 como configuramos previamente en el fichero de despliegue. A continuación podemos ejecutar el script pulsando el boton de __run__ que se corresponde con la flecha negra en el panel de control de la zona superior. Pero al intentar ejecutar este código obtendremos el siguiente error:
+
+![Interfaz web acceso Jupyter Notebooks](../img/notebook_error.png)
+
+Este error se debe a que la versión de python que utiliza el cluster de spark que hemos desplegado es la 2.7, por lo que al intentar ejecutar nuestro script de spark no somos capaces de ejecutarlo ya que las versiones de python que utilizamos en ambos servicios es diferente. 
+
+
+**Paso 7: Creando nuestro propio servidor de servidores notebooks**
+
+Con el fin de reparar este error tenemos que crear nuestro propio servidor de notebooks, para ellos deberemos crear una nueva carpeta en nuestro ejercicio, que denominaremos __jupyter__. Dentro de esta nueva carpeta tendremos que construir un archivo de generación de nuestro contenedor denominado __Dockerfile__ que deberá contener las siguientes instrucciones:
+
+```
+FROM jupyter/pyspark-notebook:latest
+
+RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 ipython ipykernel kernda && conda clean --all -f -y
+USER root
+RUN $CONDA_DIR/envs/python2/bin/python -m ipykernel install && $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json
+USER $NB_USER
+```
+
+Mediante este fichero extenderemos la funcionalidad del servidor de notebooks incluyendo la versión 2.7 de python con el fin de poder ejecutar nuestros scripts sobre nuestro cluster de tipo Apache Spark. A continuación es necesario modificar nuestro fichero de despligue modificando la estructura del contenedor notebooks, por lo que sustituiremos el código que hemos construido posteriormente por el siguiente:
+
+
+```
+  jupyter-spark:
+    restart: always
+    build: ./jupyter
+    container_name: notebooks
+    ports:
+      - "8888:8888"
+      - "4041-4080:4041-4080"
+    volumes:
+      - ./notebooks:/home/jovyan/work/notebooks/
+    networks: 
+      fictizia:
+        ipv4_address: 10.18.0.10
+```
+
+Ahora podemos volver a desplegar nuestros notebooks en python 2.7 y podemos ejecutar correctamente nuestros scripts. Para ellos volveremos a introducir el siguiente códigmo en nuestro notebook. 
+
+```
+from pyspark.sql import SparkSession
+
+if __name__ == "__main__":
+
+    spark = SparkSession.builder.master('spark://10.18.0.2:7077').appName('spark-cluster').getOrCreate()
+    print(spark)
+    exit(0)
+```
+
+**Paso 8: Añadiendo complejidad a nuestro procesos de spark**
+
+Una vez que hemos configurado correctamente nuestros procesos en apache spark podemos comenzar a utilizar modelos ms complejos que incluyan funciones que deben ser paralelizadas. 
+
+```
+from pyspark.sql import SparkSession
+
+import random
+
+def execution(p):
+    
+    x, y = random.random(), random.random()
+    return x*x + y*y < 1
+
+if __name__ == "__main__":
+
+    spark = SparkSession.builder.master('spark://10.18.0.2:7077').appName('spark-cluster').getOrCreate()
+    NUM_SAMPLES = 10
+
+    count = spark.sparkContext.parallelize(range(0, NUM_SAMPLES)).filter(execution).count()
+    print(count)
+    print('Pi is roughly {}'.format(4.0 * count / NUM_SAMPLES))
+    
+    exit(0)
+```
+
+En este caso hemos paralelizado la ejecución de la función execution que devuelve true cada vez que el resultado de la operación matemática es menor que 1. Cada vez que el resulado de la función es True, se cuenta como un elemento válido mediante el método count. 
+
+**Paso 9: Trabajando con nuestro fichero de películas**
+
 
 
