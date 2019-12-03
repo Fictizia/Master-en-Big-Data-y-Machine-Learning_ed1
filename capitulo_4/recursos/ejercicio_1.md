@@ -191,7 +191,89 @@ cd02e44b8fe6        bde2020/spark-master:latest   "/bin/bash /master.sh"   9 min
 
 Además podremos acceder a la página web donde se puede observar el estado de nuestro cluster spark a través de la url http://localhost:8080
 
-![Interfaz de web del cluster Spark](../img/spark_web_2.png)
+![Interfaz web del cluster Spark](../img/spark_web_2.png)
+
+
+**Paso 4: Desplegando nuestro notebook de desarrollo**
+
+A la hora de construir un proceso que utilice las capacidades del cluster de Spark es necesario realizar una serie de configuraciones en el contenedor. Aunque es posible simplificar de forma sencilla todo esto mediante la utilización de un servidor de notebooks de tipo (jupyter)[https://jupyter.org/]. Jupyter notebooks es un sistema de despliegue de entornos de desarrollo sobre python mediante la utilización de una interfaz web. 
+
+![Interfaz web Jupyter Notebooks](../img/jupyter.gif)
+
+Para poder desplegar nuestro entorno en jupyter vamos a utilizar un contenedor docker que ya ha sido configurado para apache spark. Este contenedor puede encontrarse en el docker hub de (Jupyter)[https://hub.docker.com/r/jupyter/pyspark-notebook/] que ya nos configura todos las variables de entorno necesarias para trabajar con pyspark. Para ellos debemos incluir un nuevo nodo en nuestro ficheros de despliegue:
+
+```
+
+  jupyter-spark:
+    image: jupyter/pyspark-notebook:latest
+    container_name: notebooks
+    ports:
+      - "8888:8888"
+      - "4041-4080:4041-4080"
+    volumes:
+      - ./notebooks:/home/jovyan/work/notebooks/
+    networks: 
+      fictizia:
+        ipv4_address: 10.18.0.10
+```
+
+Una vez introducido el nuevo contenedor podemos desplegar mediante el comando de despligue
+
+```
+docker-compose -f docker-compose.yml up --build -d
+```
+
+Una vez desplegado nuestro nodo maestro podremos comprobar el correcto funcionamiento del nodo mediante el comando docker ps obteniéndose la siguiente salida:
+
+```
+CONTAINER ID        IMAGE                         COMMAND                  CREATED              STATUS              PORTS                                                      NAMES
+3458f67efc46        bde2020/spark-worker:latest   "/bin/bash /worker.sh"   8 seconds ago        Up 7 seconds        0.0.0.0:8083->8081/tcp                                     fictizia-spark-worker-3
+0306c62cd568        bde2020/spark-worker:latest   "/bin/bash /worker.sh"   About a minute ago   Up About a minute   0.0.0.0:8082->8081/tcp                                     fictizia-spark-worker-2
+34c90136b7c6        bde2020/spark-worker:latest   "/bin/bash /worker.sh"   9 minutes ago        Up 9 minutes        0.0.0.0:8081->8081/tcp                                     fictizia-spark-worker-1
+cd02e44b8fe6        bde2020/spark-master:latest   "/bin/bash /master.sh"   9 minutes ago        Up 9 minutes        0.0.0.0:7077->7077/tcp, 6066/tcp, 0.0.0.0:8080->8080/tcp   fictizia-spark-master
+
+```
+
+Además podremos acceder a la página web donde se puede observar el estado de nuestro cluster spark a través de la url http://localhost:8888
+
+![Interfaz web acceso Jupyter Notebooks](../img/notebook.png)
+
+Al intentar acceder a nuestro servidor de notebooks, nos solicitará un token de acceso que podemos obtener si abrirmos el log del contenedor que ha desplegado el servidor. Para ello deberemos utilizar sel siguiente comando: 
+
+
+```
+docker logs notebooks
+```
+
+Donde podremos encontrar el token de acceso a nuestro servidor de notebooks
+
+```
+Executing the command: jupyter notebook
+[I 15:06:06.065 NotebookApp] Writing notebook server cookie secret to /home/jovyan/.local/share/jupyter/runtime/notebook_cookie_secret
+[I 15:06:08.152 NotebookApp] JupyterLab extension loaded from /opt/conda/lib/python3.7/site-packages/jupyterlab
+[I 15:06:08.152 NotebookApp] JupyterLab application directory is /opt/conda/share/jupyter/lab
+[I 15:06:09.954 NotebookApp] Serving notebooks from local directory: /home/jovyan
+[I 15:06:09.954 NotebookApp] The Jupyter Notebook is running at:
+[I 15:06:09.955 NotebookApp] http://d5278ebab486:8888/?token=a8b0c4fb268b3ac848f2ee5fcd6973a7d9cd89d274a5c9e7
+[I 15:06:09.955 NotebookApp]  or http://127.0.0.1:8888/?token=a8b0c4fb268b3ac848f2ee5fcd6973a7d9cd89d274a5c9e7
+[I 15:06:09.955 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 15:06:09.965 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///home/jovyan/.local/share/jupyter/runtime/nbserver-9-open.html
+    Or copy and paste one of these URLs:
+        http://d5278ebab486:8888/?token=a8b0c4fb268b3ac848f2ee5fcd6973a7d9cd89d274a5c9e7
+     or http://127.0.0.1:8888/?token=a8b0c4fb268b3ac848f2ee5fcd6973a7d9cd89d274a5c9e7
+
+```
+
+Para poder acceder tendremos que utilizar la url que aparece en la última linea o introducir el token a través del formulario que nos aparecio en la anterior pantalla del interfaz web donde ya podremos crear nuestros notebooks 
+
+![Interfaz web acceso Jupyter Notebooks](../img/notebook_2.png)
+
+Además podremos acceder a la página web donde se puede observar el estado de nuestro servidor de notebooks a través de la url http://localhost:8888
+
+
 
 
 **Paso 4: Generando nuestros ficheros de datos**
