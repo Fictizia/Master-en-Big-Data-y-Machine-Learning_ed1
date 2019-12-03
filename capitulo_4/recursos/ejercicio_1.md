@@ -194,5 +194,37 @@ Además podremos acceder a la página web donde se puede observar el estado de n
 ![Interfaz de web del cluster Spark](../img/spark_web_2.png)
 
 
-**Paso 4: Generando nuestro ficheros de datos**
+**Paso 4: Generando nuestros ficheros de datos**
+
+Una vez que hemos desplegado nuestro cluster en Apache Spark vamos a comenzar a construir un nuevo componente dentro de nuestro ejercicio. Para ellos crearemos una nueva carpeta denominada __procesamiento__, que deberá contener los siguientes elementos:
+
+```
+total 20
+drwxrwxr-x 4 momartin momartin 4096 dic  3 06:39 .
+drwxrwxr-x 6 momartin momartin 4096 dic  3 06:38 ..
+-rw-r--r-- 1 momartin momartin    0 dic  3 06:38 Dockerfile
+-rw-rw-r-- 1 momartin momartin 3724 dic  3 06:39 requirements.txt
+drwxrwxr-x 2 momartin momartin 4096 dic  3 06:38 src
+drwxrwxr-x 5 momartin momartin 4096 dic  3 06:38 venv
+```
+
+Una vez desplegados los elementos básicos del nuevo componente, será necesario instalar algunos paquetes mediante la utilización del sistema de instalación de paquetes en python. Para ello instalaremos el paquete pyspark que nos permiten interactuar con nuestro cluster de Apache Spark mediante la utilización de python. 
+
+```
+pip3 install pandas pyspark findspark
+```
+
+Una vez que se han instalado los diferentes paqueste necesarios vamos a crear nuestro primer código para conectarnos al cluster de Spark. Para ellos creamos un ficheros en el directorio src denominado __spark_connection.py__ que deberá contener el siguientes código fuente:
+
+```
+import pyspark
+
+if __name__ == "__main__":
+    sc = pyspark.SparkContext('local[*]')
+    exit(0)
+
+```
+
+Si nuestro sistema es capaz de conectar a nuestro 
+
 
