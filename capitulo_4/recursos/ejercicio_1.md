@@ -71,6 +71,7 @@ services:
     ports:
       - "8080:8080"
       - "7077:7077"
+      - "6066:6066"      
     expose:
       - 8080
       - 7077
@@ -81,11 +82,13 @@ services:
     volumes:
        - ./spark-apps:/opt/spark-apps
        - ./spark-data:/opt/spark-data
+       - ./spark-conf/master:/conf       
     environment:
       - "SPARK_LOCAL_IP=fictizia-spark-master"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_MASTER_WEBUI_PORT=8080"
       - "SPARK_MASTER_LOG=/spark/logs"
+      - "SPARK_CONF_DIR=/conf"      
 
 networks:
   fictizia:
@@ -141,6 +144,7 @@ SPARK_WORKER_CORES=1
 SPARK_WORKER_MEMORY=1G
 SPARK_DRIVER_MEMORY=128m
 SPARK_EXECUTOR_MEMORY=256m
+SPARK_CONF_DIR=/conf 
 ```
 
 A continuación podemos incluir la información de cada uno de nuestros workers en el fichero de configuración, siendo la configuración de cada uno de los nodos la siguiente:
@@ -155,15 +159,17 @@ fictizia-spark-worker-1:
     - fictizia-spark-master
   ports:
     - "8081:8081"
-  env_file: ./config/config_workers.sh
+  env_file: ./config_spark/config_worker.sh
   environment:
-    - "SPARK_LOCAL_IP=spark-worker-1"
+    - "SPARK_LOCAL_IP=fictizia-spark-worker-1"        
   networks: 
     fictizia:
       ipv4_address: 10.18.0.3
   volumes:
      - ./spark-apps:/opt/spark-apps
      - ./spark-data:/opt/spark-data
+     - ./spark-conf/worker-1:/conf         
+     
 ```
 
 Para cada uno de los trabajadores es necesarios definir una serie de variables exclusivas que son el nombre del contenedor y las siguientes propiedades:
