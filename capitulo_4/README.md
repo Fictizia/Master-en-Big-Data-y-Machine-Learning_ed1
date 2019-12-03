@@ -18,21 +18,23 @@ El objetivo de esta arquitectura es construir un sistema robusto tolerante a fal
 La principal característica de esta arquitectura es que divide el procesamiento de la información en dos capas: la primera capa, es la capa de procesamiento de datos en modo batch, mientras que la segunda capa es la capa de procesamiento de datos en modo stream o tiempo (semi)-real. Es decir, la capa de procesamiento batch se encargará de procesar conjuntos de información almacenados o generados mediante periodos largos de tiempo (Por ejemplo cada 15 minutos, cada 12 horas o una vez a día). Mientras que la capa de procesamiento en stream nos permitirá procesar datos almacenados o generados de forma continua casi de manera instantanea (Por ejemplo, cada 100 milisegundos). Como se puede observar en la anterior imagen el funcionamiento genérico de una arquitectura lambsa se basa en la generación de dos flujos de información paralelos:
 
 - La nueva información ingestada en el sistema se envía tanto a la capa de batch como a la capa de streaming.
-- La capa batch (Batch Layer) tiene dos funciones: (1) procesar la información en bruto añadiendo la nueva información al  sistema de almacenamiento maestro (Este sistema suele ser un almacenamiento de tipo inmutable que sólo permiten incluir nueva informaciṕon); (2) tratar la información con el fin de generar las denominadas "batch views" que son utilizadas para mostar la información mediante la capa de servicio. 
+- La capa batch (Batch Layer) tiene dos funciones: (1) procesar la información en bruto añadiendo la nueva información al  sistema de almacenamiento maestro (Este sistema suele ser un almacenamiento de tipo inmutable que sólo permiten incluir nueva información); (2) tratar la información con el fin de generar las denominadas "batch views" que son utilizadas para mostar la información mediante la capa de servicio. 
 - La capa stream (speed Layer) procesa la información en tiempo real permitiendo su visualización en la capa de presentación de manera "instantanea" compensando las altas latencias de las escrituras. 
 - La capa de presentación (serving Layer) genera la respuesta a las consultas realizadas por el usuario donde la información de respuesta se construye combinando la información almacenada en las "Batch Views" y la información en tiempo real procesada. 
 
-El objetivo de las arquitecturas lambda es implementar sistemas de la información que combinan ambas modalidades de procesamiento de datos: batch y stream. Esto nos da lo mejor de dos mundos, ya que el modo batch nos brinda un alcance completo y confiable mientras que el modo stream nos da los datos en línea para decisiones instantáneas.
+El __principal objetivo__ de las arquitecturas Lambda es implementar sistemas de la información que combinan ambas modalidades de procesamiento de datos: batch y stream. Esto nos da lo mejor de dos mundos, ya que el modo batch nos brinda un alcance completo y confiable mientras que el modo stream nos da los datos en línea para decisiones instantáneas.
 
 **Ventajas**
-- Los datos se mantienen sin ningún tipo de tratamiento.
-- El almacenamiento de datos sin tratamiento previo permite aplicar diferentes proceso de análisis sobre las diferentes vistas.
+- Los datos de entrada se almacenan (Master dataset) sin que se ha hay producido ningún tipo de procesamiento sobre ellos.
+- Permite análisis de manera independiente de los dos flujos de procesamiento de datos. 
+- Permite el reprocesamiento de la información. Facilitando así la evolución del funcionamiento de la aplicación y la corrección de errores.
+. Combina resultados obtenidos mediante los dos sistema de procesamiento de información: batch y en tiempo (semi)-real.
 
 **Desventajas**
 
-- Mantener sistema distribuidos de procesamiento diferentes con el objetivo de producir el mismo resultado suele tener un coste muy elevado a nivel de computación y mantenimiento. 
-- Normalmente para el desarrollo de este tipo de arquitecture se utilizan tecnologías, como Apache Hadoop (MapReduce) y Apache Spark donde existen grandes diferencias a la hora de desarrollar los diferentes algoritmo. 
-
+- Incremento en los coste de mantenimiento en sistemas de procesamiento de la información diferentes que generan el mismo resultado. 
+- Incremento en la complejidad de desarrollo debido a la necesidad de construir dos procesos similares utilizando tecnologías en muchos casos diferentes. 
+- La complejidad operacional de las tecnologías que se utilizan para el procesamiento en batch y stream supone un gran problema a la hora de ofrecer cambios o modificaciones. 
 
 [Recursos y ejemplos de Arquitectura Lambda]
 =================
@@ -64,4 +66,28 @@ El término Arquitectura Kappa fue introducido en 2014 por [Jay Kreps]() en su a
 Esta propuesta se debía a que el procesamiento de la capa batch se puede considerar como un subconjunto de la capa streaming, debido a que un proceso batch se puede entender como un stream acotado temporalmente. Esta propuesta consistía en una simplificación de la Arquitectura Lambda, en la que se eliminaba la capa batch y todo el procesamiento se realiza en una sola capa denominada capa de tiempo real (Real-time Layer), dando soporte a procesamientos tanto batch como en tiempo real mediante un único flujo de datos. 
 
 <img src="./img/kappa.png" alt="Arquitectura Kappa" width="800"/>
+
+La arquitectura Lambda está orientada a aplicaciones que han sido construidas alrededor de transformaciones asíncronas complejas que necesitan ejecutarse con latencia baja (segundos a minutos). Un ejemplo tipo de arquiectura lambda, sería un sistema de recomendación de noticias, el cual necesita extraer la información de las noticias de diferentes fuentes de datos, procesarlas, normalizarlas, indexarlas, ponderarlas y almacenarlas para que estén disponibles en base a ciertor criterios. La principal característica de esta arquitectura es que utiliza una única capa de procesamiento de datos en modo stream o tiempo (semi)-real. Es decir, toda la información es considerada un stream de datos y procesada de forma continua casi de manera instantanea (Por ejemplo, cada 100 milisegundos). Como se puede observar en la anterior imagen el funcionamiento genérico de una arquitectura Kappa se basa en la generación de un único flujo de información:
+
+- La capa stream (real-time Layer) procesa la información en tiempo real permitiendo la manipulación y/o visualización en la capa de presentación de manera "instantanea". 
+- La capa de presentación (serving Layer) genera la respuesta a las consultas realizadas por el usuario donde la información de respuesta se construye mediante la información procesada en tiempo real. Esto no es totalmente cierto, ya que en muchos sistemas basados en este tipo de arquitectura, se realiza un procesamiento a posteriori que enriquece o mejora la información procesada en tiempo real. 
+
+El principal objetivo de las arquitecturas Kappa es implementar sistemas de la información que permitan tomar decisiones de forma instanea y que elimine el tiempo de espera para el procesamiento de la información, mediante la utilización de diferentes niveles de procesamiento en tiempo real que permitan realizar las diferentes fases de procesamiento de la información. 
+
+**Ventajas**
+
+- Es una simplificación de la arquitectura Lambda, ya que se elimina el uso de la capa de procesamiento en batch.
+- Los datos se almacenan en diferentes estados, es decir, se pueden almacenar procesados y sin procesar. 
+- La arquitectura Kappa permite que la migración y la reorganización de la información a partir de diversas fuentes de información se ejecuten de manera más eficiente permitiendo el acceso a la información de manera rápida a través de la capa de streaming. 
+- Se miniminzan los costes de actualización. Debido a la ausencia de la capa de batch, sólo se debe mantener un código.
+
+**Desventajas**
+
+- Requiere de mayor espacio de almacenamiento debido a que la información se puede almacenar en diferentes estados del rproceso de transformación.
+- Los sistemas de almacenamiento de la información (Bases de datos) deben de soportar escritura de grandes volúmenes de registros para el reprocesamiento.
+- Las capacidades del hardware requerido para realizar el reprocesamiento de la información deben considerar un pequeño porcentaje adicional debido a los diferentes procesos de tratamiento de la información en tiempo real.
+
+### Arquitectura Zetta ###
+
+
 
