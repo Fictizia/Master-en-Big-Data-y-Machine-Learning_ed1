@@ -133,21 +133,7 @@ Además podremos acceder a la página web donde se puede observar el estado de n
 
 **Paso 4: Generación del fichero de despliegue II**
 
-Una vez que hemos conseguido desplegar nuestro Maestro, pasaremos a desplegar nuestros esclavos (trabajadores). La distribución más común para desplegar un entorno de pruebas de Apache Spark consiste en desplegar tres nodos esclavos, por lo que tendremos que introducir tres nuevos nodos en nuestro fichero de despliegue. Aunque antes, tenemos que crear un fichero de configuración con las variables de entorno comunes los diferentes nodos esclavos. Para la creación de nuestro fichero de configuración, creamos un archivo denominado __config_slaves.sh__ en la carpeta __config__ que deberá contener la siguiente información 
-
-```
-#Parametros de conexión al maestro
-SPARK_MASTER=spark://fictizia-spark-master:7077
-
-#Parametros de configuración de nodos
-SPARK_WORKER_CORES=1
-SPARK_WORKER_MEMORY=1G
-SPARK_DRIVER_MEMORY=128m
-SPARK_EXECUTOR_MEMORY=256m
-SPARK_CONF_DIR=/conf 
-```
-
-A continuación podemos incluir la información de cada uno de nuestros workers en el fichero de configuración, siendo la configuración de cada uno de los nodos la siguiente:
+Una vez que hemos conseguido desplegar nuestro Maestro, pasaremos a desplegar nuestros esclavos (trabajadores). La distribución más común para desplegar un entorno de pruebas de Apache Spark consiste en desplegar tres nodos esclavos, por lo que tendremos que introducir tres nuevos nodos en nuestro fichero de despliegue. Para ello debemos incluir la información de cada uno de nuestros workers en el fichero de configuración, siendo la configuración de cada uno de los nodos la siguiente:
 
 ```
 fictizia-spark-worker-1:
@@ -331,7 +317,11 @@ Mediante este fichero extenderemos la funcionalidad del servidor de notebooks in
         ipv4_address: 10.18.0.10
 ```
 
-Ahora podemos volver a desplegar nuestros notebooks en python 2.7 y podemos ejecutar correctamente nuestros scripts. Para ellos volveremos a introducir el siguiente códigmo en nuestro notebook. 
+Ahora podemos volver a desplegar nuestros notebooks en python 2.7 y podemos ejecutar correctamente nuestros scripts. 
+
+**Paso 7: Probando nuestra conexión a Spark**
+
+Para comprobar el correcto funcionamient a spark vamos a crear un función sencilla que nos permitirá aproximar el valor del número PI. Para ellos deberemos crear primer una session a spark utilizando el siguiente código. Esto nos permitirá crear una sesión con el nodo maestro para la ejecución de un aplicación denominada __spark-cluster__. 
 
 ```
 from pyspark.sql import SparkSession
@@ -339,13 +329,29 @@ from pyspark.sql import SparkSession
 if __name__ == "__main__":
 
     spark = SparkSession.builder.master('spark://10.18.0.2:7077').appName('spark-cluster').getOrCreate()
-    print(spark)
-    exit(0)
 ```
 
-**Paso 8: Añadiendo complejidad a nuestro procesos de spark**
+Una vez creada la sesión podemos lanzar nuestras funciones para ejecutarlas en los diferentes trabajadores. Para ello crearemos una función que se llamara __execution__ (para su funcionamiento deberemos importar la libreria random de python) y que contendrá el siguiente código:
 
-Una vez que hemos configurado correctamente nuestros procesos en apache spark podemos comenzar a utilizar modelos ms complejos que incluyan funciones que deben ser paralelizadas. 
+```
+import random
+
+def execution(p):
+    x, y = random.random(), random.random()
+    return x*x + y*y < 1
+```
+
+Una vez creada nuestra función deberemos implementa el código para su ejecución en los workers, introduciendo el siguiente fragemento de codigo en el método main:
+
+```
+    NUM_SAMPLES = 10
+
+    count = spark.sparkContext.parallelize(range(0, NUM_SAMPLES)).filter(execution).count()
+    print(count)
+    print('Pi is roughly {}'.format(4.0 * count / NUM_SAMPLES))
+```
+
+Mediante este código ejecutaremos n veces (NUM_SAMPLES) la función execution contanto sólo aquella ejecuciones donde la función haya devuelto true como resultado. Una vez obtenido este valor lo multiplicaremos por 4 y lo dividiremos entre el número de ejecuciones. El código completo debera ser el siguiente:
 
 ```
 from pyspark.sql import SparkSession
@@ -365,13 +371,96 @@ if __name__ == "__main__":
     count = spark.sparkContext.parallelize(range(0, NUM_SAMPLES)).filter(execution).count()
     print(count)
     print('Pi is roughly {}'.format(4.0 * count / NUM_SAMPLES))
-    
-    exit(0)
 ```
 
-En este caso hemos paralelizado la ejecución de la función execution que devuelve true cada vez que el resultado de la operación matemática es menor que 1. Cada vez que el resulado de la función es True, se cuenta como un elemento válido mediante el método count. 
+Esta forma de recuperar la sesion nos permite recuperar una sesión creada previamente con el nombre de la aplicación. De manera que si ha sido creada previamente podremos recuperarla. 
 
-**Paso 9: Trabajando con nuestro fichero de películas**
+**Paso 8: Trabajando con el contexto**
+
+Una vez que hemos desplegado nuestro servidor de notebooks conectado a nuestro servidor spark, podemos comenzar a crear nuestro scripts utilizando el contexto de Spark. Para ello deberemos crear nuestro contexto en spark (SparkContext). El contexto es el punto de acceso a cualquiera de las funcionalidades disponibles en spark. Es decir, cuando queremos desarrollar cualquier tipo de funcionalidad en Spark debemos comenzar inicializando el contexto con el fin de tener acceso al cluster. Una vez inicializado el contexto podemos ejecutar nuestras funciones, las cuales ejecutarán sus operaciones distribuidas en los workers. Para poder crear nuestro contexto utilizaremos la clase __SparkContext__ de pyspark que nos permite configurar una serie de elemento para definir la forma en la que desplegaremos nuestra aplicación:
+
+```
+class pyspark.SparkContext (
+   master = None,
+   appName = None, 
+   sparkHome = None, 
+   pyFiles = None, 
+   environment = None, 
+   batchSize = 0, 
+   serializer = PickleSerializer(), 
+   conf = None, 
+   gateway = None, 
+   jsc = None, 
+   profiler_cls = <class 'pyspark.profiler.BasicProfiler'>
+)
+```
+
+Cada uno de estos parametros permite configurar ciertos aspectos de las aplicaciones que queramos desplegar en Spark, siendo el significado de las más importantes el siguiente:
+
+- Master: Es la url del cluster al que nos vamos a conectar. Se corresponde con la url del maestro. 
+- appName: Es el nombre de la aplicación que vamos lanzar. En spark se denomina trabajo. 
+- sparkHome: Es el path absoluto del directorio de instalación de Spark. 
+- pyFiles: El el conjunto de archivo .py o .zip que serán enviados al cluster o incluido en la variable PYTHONPATH
+- Environment: Son la variables de entorno que queremos incluir en los workers. 
+- Serializer: Es el tipo de serializador que utilizaremos para los RDD. La clase de serializado por defecto es [PickleSerializer](https://spark.apache.org/docs/1.1.0/api/python/pyspark.serializers.PickleSerializer-class.html).
+- Conf: Es una objeto de tipo SparkConf que permite la definición de la propiedades de spark con el el fin de variar algunos elementos de la configuración.  to set all the Spark properties.
+- JSS: Es el objeto de contexto en Java (JavaSparkContext).
+- profiler_cls: Es la clase para la realización de tipo profilinf. El tipo de clase para profiling utilizada por defecto es [BasicProfiler](https://spark.apache.org/docs/latest/api/python/_modules/pyspark/profiler.html).
+
+Para poder crear nuestro contexto de spark tenemos que utilizar el siguiente código:
+
+```
+from pyspark import SparkContext
+
+if __name__ == "__main__":
+
+    sc = SparkContext('spark://10.18.0.2:7077', 'Spark App with context')
+    print(sc)
+```
+
+Aunque en este caso no podremos volver a crear otro contexto de spark, por lo que cuando vayamos a crear un contexto, será mejor comprobar si existe otro previamente creado, para ello utilizaremos la función __getOrCreate__ que crea un nuevo contexto o recupera el que ha sido creado previamente. 
+
+```
+from pyspark import SparkContext
+
+if __name__ == "__main__":
+
+    sc = SparkContext('spark://10.18.0.2:7077', 'Spark App with context').getOrCreate()
+    print(sc)
+```
+
+**Paso 10: Utilizando la función filtro**
+
+Una vez que hemos configurado creado nuestro contexto podemos comenzar a trabajar con Spark. Para ello tenemos que almacenar nuestro archivos en spark con el fin de que puedan utilizarlos nuestros trabajadores. La primera función que vamos a utilizar es la función __filter__. La función filter, es una función típica en programación funcional, que nos permite crear un iterador . Para la realización de este ejercicio vamos a utilizar el fichero de películas que utilizamos en el ejercicio 5 del capitulo 3, pero en vez de descargarlo utilizando los conectores de google cloud storage, vamos a convertirlo en un archivo público y descargarlo mediante las utilidades que ofrece la clase wget. 
+
+```
+!pip install wget pandas
+from pyspark import SparkContext
+from pyspark.sql import SparkSession
+from os import path
+import pandas as pd
+import wget
+
+if __name__ == "__main__":
+
+    file_name = './movies_metadata.csv'
+    
+    if not path.exists(file_name):
+        file_name = wget.download('https://00e9e64bac19628f22a62c40588735b38dc0dc82c8c3ab1f62-apidata.googleusercontent.com/download/storage/v1/b/fictizia/o/movies_metadata.csv?qk=AD5uMEt8_CFU3-V8emb0hcWDY5nmWos-KAP4or1EXSFtx4MyzbF7Boceff2t2Gtg7qGQjtC2XmLsB1BdPBtt-8m4vMrHEuzURnHaAhRJxm0Lqj6o9izegPrmKfZlzzrcT8X6E-elzTPsR7NiTWqE77w87QORh2YGCWOgGBGlc-78hgcAZlA1UOmAMRwNXigjzMLY4UawjUUyXepEvfQunHnEONg6-rd7iBbX0odNnWP5SNmMtJ5mFw0SijC2UXVztWgTl_IGGpOR3FGOpWKiGVTAnxH3ygOcNVHkkgJW1B5rRqm4huNjOcjZu9B5t_0hQAPvWR-XLGSGzQ77JC85q0cIgYfcz1qkp3OJBf4pKNSEVgPhLTvIIG4mKs567SLLLucHgkv_kotE78BKlvYajSGcce5TCo9XTBRV6_DDuxoBtMC30TulV2wcDrTX7xxw7GcTkBIqwPCLPgPJ8gqIpRJUUN2wHzNWrPS2s3QpIgpuqLxT8j9hUOolmYpNjJJzUxKhqSMNffLppp58Qg175do1MS13vecFeDKImiFF8ZUgmiVmqgm4y2FehRIvtAyvsk7SkzywPqTWLW9V287Q5d5U2975ruPkq29q52WBWdXgqKZHLlwUPTEfJZVm7o_eyLpaSbTScd-U_deOaP0gqPkvyJ8rcGK8gxH-Yn_-MuIeZuRhBuMB4oXGtx1WsWAWNihd-lG7Avwfeg0fcVviTK6doEzxIROBf9f-OCPjMyTaDVJbLYZwN1bvGaaEYVJk9h5ncJCl9lQWWjIxawzrKLQe07thlelycr0nD5CvG3Jn1cOLJ3T9ofk')
+    
+    data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+    years = data['release_date'].values.tolist()
+    year = 2001
+    app_name = 'prueba_2'
+    
+    sc = SparkContext('spark://10.18.0.2:7077', 'prueba_2').getOrCreate()
+    
+    rdd = sc.parallelize(years)
+    result = rdd.filter(lambda x: year in x)
+    print(result.take(10))
+    
+    exit(1)
+```
 
 
 
