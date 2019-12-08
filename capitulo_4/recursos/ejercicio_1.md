@@ -429,38 +429,151 @@ if __name__ == "__main__":
     print(sc)
 ```
 
-**Paso 10: Utilizando la función filtro**
+**Paso 10: Transformando nuestro datos para su procesamiento**
 
-Una vez que hemos configurado creado nuestro contexto podemos comenzar a trabajar con Spark. Para ello tenemos que almacenar nuestro archivos en spark con el fin de que puedan utilizarlos nuestros trabajadores. La primera función que vamos a utilizar es la función __filter__. La función filter, es una función típica en programación funcional, que nos permite crear un iterador . Para la realización de este ejercicio vamos a utilizar el fichero de películas que utilizamos en el ejercicio 5 del capitulo 3, pero en vez de descargarlo utilizando los conectores de google cloud storage, vamos a convertirlo en un archivo público y descargarlo mediante las utilidades que ofrece la clase wget. 
+Puesto que estamos trabajando sobre un Jupyter Notebook es necesario realizar la instalación de aquellas librerias que no han sido desplegadas en nuestro entorno de desarrollo. Para la instalación de nuevas librerias en python cuando estamos trabajando sobre un Jupyter Notebook debemos utilizar el instalar de paqueste pip incluyendo al comiento el simbolo de !. Para la realización de este paso vamos a necesitar utilizar dos librerias de python que tendrán que ser intaladas incluyendo al comienzo de nuestro notebook la siguiente linea:
 
 ```
 !pip install wget pandas
+```
+
+A continuación podemos realizar nuestro proceso de transformación de datos. Para ello vamos a utilizar la función __Map__. La función map es una de las funciones más utilizada en programación lineal y se basa en la aplicación de una transformación lineal sobre un conjunto de datos con el fin de generar otro conjunto de datos de igual tamaño. En el caso de Apache Spark, la función mapea la entrada, normalmente formada por pares the tipo clave/valor a un conjunto de pares clave/valor tras la aplicación de un determinada función. En este paso vamos a aplicar una función de limpieza con el objetivo de modificar aquellos valores de tipo __NaN__ que existen en el fichero. Para ellos debemos construir una función en python que modifique el valor de aquellos registros que contengan el NaN mediante el siguiente código:
+
+```
+def clean_data(p):
+    if isinstance(p, str):
+        return int(p[:-6])
+    else:
+        return int(1915)
+```
+
+Mediante esta función extraemos el año de la fecha y para aquellas peliculas que no tienen ningún año asignado, le asignado el año 1800 (Hemos decidido utilizar este código debido a que en la lista no existen películas que se correspondan con esta fecha de producción con el objetivo de identificarlas de manera sencilla). Una vez definida la función que utilizaremos para mapear nuestro datos, vamos a escribir el código necesario para la ejecución de la función map.  Para la realización de este ejercicio vamos a utilizar el fichero de películas que utilizamos en el ejercicio 5 del capitulo 3, pero en vez de descargarlo utilizando los conectores de google cloud storage (no están disponibles para la versión 2.7 de python), vamos a convertirlo en un archivo público y descargarlo mediante las funcionalidades que ofrece la clase wget. 
+
+```
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from os import path
 import pandas as pd
 import wget
 
+def clean_data(p):
+    if isinstance(p, str):
+        return int(p[:-6])
+    else:
+        return int(1800)
+
 if __name__ == "__main__":
 
     file_name = './movies_metadata.csv'
     
     if not path.exists(file_name):
-        file_name = wget.download('https://00e9e64bac19628f22a62c40588735b38dc0dc82c8c3ab1f62-apidata.googleusercontent.com/download/storage/v1/b/fictizia/o/movies_metadata.csv?qk=AD5uMEt8_CFU3-V8emb0hcWDY5nmWos-KAP4or1EXSFtx4MyzbF7Boceff2t2Gtg7qGQjtC2XmLsB1BdPBtt-8m4vMrHEuzURnHaAhRJxm0Lqj6o9izegPrmKfZlzzrcT8X6E-elzTPsR7NiTWqE77w87QORh2YGCWOgGBGlc-78hgcAZlA1UOmAMRwNXigjzMLY4UawjUUyXepEvfQunHnEONg6-rd7iBbX0odNnWP5SNmMtJ5mFw0SijC2UXVztWgTl_IGGpOR3FGOpWKiGVTAnxH3ygOcNVHkkgJW1B5rRqm4huNjOcjZu9B5t_0hQAPvWR-XLGSGzQ77JC85q0cIgYfcz1qkp3OJBf4pKNSEVgPhLTvIIG4mKs567SLLLucHgkv_kotE78BKlvYajSGcce5TCo9XTBRV6_DDuxoBtMC30TulV2wcDrTX7xxw7GcTkBIqwPCLPgPJ8gqIpRJUUN2wHzNWrPS2s3QpIgpuqLxT8j9hUOolmYpNjJJzUxKhqSMNffLppp58Qg175do1MS13vecFeDKImiFF8ZUgmiVmqgm4y2FehRIvtAyvsk7SkzywPqTWLW9V287Q5d5U2975ruPkq29q52WBWdXgqKZHLlwUPTEfJZVm7o_eyLpaSbTScd-U_deOaP0gqPkvyJ8rcGK8gxH-Yn_-MuIeZuRhBuMB4oXGtx1WsWAWNihd-lG7Avwfeg0fcVviTK6doEzxIROBf9f-OCPjMyTaDVJbLYZwN1bvGaaEYVJk9h5ncJCl9lQWWjIxawzrKLQe07thlelycr0nD5CvG3Jn1cOLJ3T9ofk')
+        file_name = wget.download('')
     
     data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
     years = data['release_date'].values.tolist()
-    year = 2001
-    app_name = 'prueba_2'
+    app_name = 'Map function'
     
-    sc = SparkContext('spark://10.18.0.2:7077', 'prueba_2').getOrCreate()
+    sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
     
     rdd = sc.parallelize(years)
-    result = rdd.filter(lambda x: year in x)
+    result = rdd.map(clean_data)
     print(result.take(10))
     
-    exit(1)
 ```
 
+Mediante este código aplicamos la función clean_data mediante la operación map limpiando nuestros datos de manera que podremos aplicar otro tipo de funciones sobre el resultados generado. Para la realización de este paso hemos incluido un nuevo elemento denominad __RDD__. Los Resilient Distributed Dataset (RDD) son conjuntos de datos con tolerancia a fallos que pueden ser manipulados/consultados mediante operaciones paralelas. Existen dos maneras de crear RDDs en Apache Spark: (1) paralelizando un colección de datos; o (2) referenciando un conjunto de datos (dataset) que se encuenta almacenada un sistema de almacenamiento externo, como HDFS o HBase. Para la creación de un RDD para este paso hemos utilizado la primera opción paralelizando una colección de datos mediante la utilización de la función __parallelize__.
+
+
+**Paso 11: Filtrando nuestros datos**
+
+A continuación vamos a utilizar el resultado obtenido de la anterior operación para aplicar un filtro y obtener así información referente a los datos con los que estamos trabajando, para ello vamos a utilizar es la función __filter__. La función filter, es una función típica en programación funcional, que nos permite filtrar la información sobre un conjunto de datos utilizando un función boleana. Es decir, la función filter sólo nos devolverá aquellos valores donde la función booleana devuelva True. En este caso vamos a seleccionar aquellas películas que han sido publicadas en un determinado año, inicialmente seleccionaremos el año 1800, con el objetivo de conocer cuantas películas eran erroneas. 
+
+
+```
+def choose_data_by_year(p):
+    return p == 1800
+```
+
+Mediante esta función seleccionaremos aquellas películas cuya fecha de publicación es 1800. De manera que el RDD que obtendremos será mucho más pequeño. Una vez obtenido el resultado aplicaremos la función __count__ que nos permite contar los elementos del RDD. Para ello utilizaremos el siguiente código.  
+
+```
+from pyspark import SparkContext
+from pyspark.sql import SparkSession
+from os import path
+import pandas as pd
+import wget
+
+def clean_data(p):
+    if isinstance(p, str):
+        return int(p[:-6])
+    else:
+        return int(1800)
+
+def choose_data_by_year(p):
+    return p == 1800
+
+if __name__ == "__main__":
+
+    file_name = './movies_metadata.csv'
+    
+    if not path.exists(file_name):
+        file_name = wget.download('')
+    
+    data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+    years = data['release_date'].values.tolist()
+    app_name = 'Map and filter function'
+    
+    sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
+    
+    rdd = sc.parallelize(years)
+    mapped_data = rdd.map(clean_data)
+    result = mapped_data.filter(choose_data_by_year)
+    print(result.count())
+```
+
+Ademas es posible incluir parámetros a nuestro función con el objetivo de hacerlas más reutilizables. Para ellos será necesario moficiar la definición de la función y la llamada de la siguiente forma:
+
+```
+from pyspark import SparkContext
+from pyspark.sql import SparkSession
+from os import path
+import pandas as pd
+import wget
+
+def clean_data(p):
+    if isinstance(p, str):
+        return int(p[:-6])
+    else:
+        return int(1800)
+
+def choose_data_by_year(p, year):
+    return p == year
+
+if __name__ == "__main__":
+
+    file_name = './movies_metadata.csv'
+    
+    if not path.exists(file_name):
+        file_name = wget.download('')
+    
+    data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+    years = data['release_date'].values.tolist()
+    app_name = 'Map and filter function'
+    year = 1800
+    
+    sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
+    
+    rdd = sc.parallelize(years)
+    mapped_data = rdd.map(clean_data)
+    result = mapped_data.filter(choose_data_by_year(year))
+    print(resutl.count())
+```
+
+**Paso 12: Reduciendo nuestros datos a sólo uno**
+
+Hasta ahora sólo habiamos utilizado funciones de transformación que nos permiten realizar transformaciones sobre nuestro datos. Eso no es cierto, hemos utilizado un función de acción que nos permite contar el número de elementos de un RDD, pero no nos habíamos datos cuenta. A continuación vamos a utilizar la función de acción más famosa de datos. La función __Reduce__ nos permite agregar los elementos de conjunto de datos (dataset) utilizando una función de tipo communtativo o associativo de manera que pueda ser ejecutada en paralela. Esta función debe tomar dos argumentos y devolver sólo uno. 
+
+
+**Paso 13: Cargando nuestros datos en nuestra base de datos**
 
 
