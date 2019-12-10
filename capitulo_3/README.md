@@ -17,7 +17,7 @@ El web scraping es un técnica de obtención de la información mediante la extr
 
 - [Ingestión de datos mediante mediante scrapers](./clase_1.md)
 
-** Métodos pasivos - Colas de mensajes**
+**Métodos pasivos - Colas de mensajes**
 
 El crecimiento exponencial del uso de ciertas aplicaciones hicieron aparecer problemas en su rendimiento a la hora de procesar y almacenar la información introducida por los usuarios, ya que los servicios de inserción en las bases de datos no eran capaces de soportar el número de peticiones por segundos producidas por los usuarios. Con el fin de solventar este problema se desarrollaron las colas de mensajes, que son un sistema de comunicación de información asíncrona entre servicios (productor y consumidor) que se usa en arquitecturas de microservicios en las que no existe un servidor principal con el fin de evitar los posible cuellos de botellas. Este tipo de sistemas de comunicación utilizan dos tipos de microservicios: un productor que inserta mensajes en la cola y un consumir que extrae y/o eliminar mensaje de cola. De forma que los mensajes son almacenados en la cola de manera temporal hasta que son consumidos y/o eliminados.
 
