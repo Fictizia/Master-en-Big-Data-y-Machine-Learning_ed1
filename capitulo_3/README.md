@@ -61,7 +61,7 @@ Los datos semi-estructurados son aquellos que no pueden catalogarse en ninguno d
 
 - El lenguaje de notación de objetos de JavaScript (JavaScript Object Notation, JSON en sus siglas en inglés)[5] es un lenguaje basado en la notación literal de objetos utilizada por el lenguaje de scripting JavaScript. Debido a su simplicidad y naturaleza se ha convertido en el actual estandar para el transferencia de información superando a XML en parte debido a que puede ser procesado (parseado) mediante la función eval de javascript que está presente en casi todos los navegadores web simplificando en el proceso de análisis sintáctico que tiene cualquier lenguaje. En la Figura 4 se presenta un ejemplo de un fichero de tipo JSON.
   
-**Sistemas de almancenamiento de la información**
+**Sistemas de almacenamiento de la información**
 
 - [Bases de datos relacionales](./clase_sql.md)
 - [Bases de datos no sólo relacionales: Documentales](./clase_doc.md)
