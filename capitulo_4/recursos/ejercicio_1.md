@@ -483,8 +483,6 @@ if __name__ == "__main__":
         years = data['release_date'].values.tolist()
         app_name = 'Map function'
 
-        sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
-
         rdd = sc.parallelize(years)
         result = rdd.map(clean_data)
         print(result.take(10))
