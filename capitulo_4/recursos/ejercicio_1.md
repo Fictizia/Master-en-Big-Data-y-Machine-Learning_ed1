@@ -456,6 +456,9 @@ from os import path
 import pandas as pd
 import wget
 
+YEAR = 2001
+URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
+
 def clean_data(p):
     if isinstance(p, str):
         return int(p[:-6])
@@ -463,22 +466,36 @@ def clean_data(p):
         return int(1800)
 
 if __name__ == "__main__":
+    
+    spark_url = 'spark://10.18.0.2:7077'
+    app_name = 'filter app'
+    
+    sc = SparkContext(spark_url, app_name).getOrCreate()
+    
+    try:
+    
+        file_name = './movies_metadata.csv'
 
-    file_name = './movies_metadata.csv'
+        if not path.exists(file_name):
+            file_name = wget.download(URL)
+
+        data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+        years = data['release_date'].values.tolist()
+        app_name = 'Map function'
+
+        sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
+
+        rdd = sc.parallelize(years)
+        result = rdd.map(clean_data)
+        print(result.take(10))
     
-    if not path.exists(file_name):
-        file_name = wget.download('')
+    except Exception as e:
     
-    data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
-    years = data['release_date'].values.tolist()
-    app_name = 'Map function'
-    
-    sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
-    
-    rdd = sc.parallelize(years)
-    result = rdd.map(clean_data)
-    print(result.take(10))
-    
+        print('Se ha producido un error')
+        print(e)
+        
+    finally:
+        sc.stop()
 ```
 
 Mediante este código aplicamos la función clean_data mediante la operación map limpiando nuestros datos de manera que podremos aplicar otro tipo de funciones sobre el resultados generado. Para la realización de este paso hemos incluido un nuevo elemento denominad __RDD__. Los Resilient Distributed Dataset (RDD) son conjuntos de datos con tolerancia a fallos que pueden ser manipulados/consultados mediante operaciones paralelas. Existen dos maneras de crear RDDs en Apache Spark: (1) paralelizando un colección de datos; o (2) referenciando un conjunto de datos (dataset) que se encuenta almacenada un sistema de almacenamiento externo, como HDFS o HBase. Para la creación de un RDD para este paso hemos utilizado la primera opción paralelizando una colección de datos mediante la utilización de la función __parallelize__.
@@ -503,6 +520,9 @@ from os import path
 import pandas as pd
 import wget
 
+YEAR = 2001
+URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
+
 def clean_data(p):
     if isinstance(p, str):
         return int(p[:-6])
@@ -510,25 +530,40 @@ def clean_data(p):
         return int(1800)
 
 def choose_data_by_year(p):
-    return p == 1800
+    return p == YEAR
 
 if __name__ == "__main__":
 
-    file_name = './movies_metadata.csv'
+    spark_url = 'spark://10.18.0.2:7077'
+    app_name = 'filter app'
     
-    if not path.exists(file_name):
-        file_name = wget.download('')
+    sc = SparkContext(spark_url, app_name).getOrCreate()
     
-    data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
-    years = data['release_date'].values.tolist()
-    app_name = 'Map and filter function'
+    try:
     
-    sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
+        file_name = './movies_metadata.csv'
+
+        if not path.exists(file_name):
+            file_name = wget.download(URL)
+
+        data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+        years = data['release_date'].values.tolist()
+        app_name = 'Map and filter function'
+
+        sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
+
+        rdd = sc.parallelize(years)
+        mapped_data = rdd.map(clean_data)
+        result = mapped_data.filter(choose_data_by_year)
+        print(result.count())
     
-    rdd = sc.parallelize(years)
-    mapped_data = rdd.map(clean_data)
-    result = mapped_data.filter(choose_data_by_year)
-    print(result.count())
+    except Exception as e:
+    
+        print('Se ha producido un error')
+        print(e)
+        
+    finally:
+        sc.stop()
 ```
 
 Ademas es posible incluir parámetros a nuestro función con el objetivo de hacerlas más reutilizables. Para ello será necesario modificiar la definición de la función y la llamada de la siguiente manera:
@@ -553,22 +588,38 @@ def choose_data_by_year(p, year):
 
 if __name__ == "__main__":
 
-    file_name = './movies_metadata.csv'
+    spark_url = 'spark://10.18.0.2:7077'
+    app_name = 'filter app'
     
-    if not path.exists(file_name):
-        file_name = wget.download(URL)
+    sc = SparkContext(spark_url, app_name).getOrCreate()
     
-    data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
-    years = data['release_date'].values.tolist()
-    app_name = 'Map and filter function'
-    year = 1800
+    try:
+        file_name = './movies_metadata.csv'
+
+        if not path.exists(file_name):
+            file_name = wget.download(URL)
+
+        data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+        years = data['release_date'].values.tolist()
+        app_name = 'Map and filter function'
+        year = 1800
+
+        sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
+
+        rdd = sc.parallelize(years)
+        mapped_data = rdd.map(clean_data)
+        result = mapped_data.filter(choose_data_by_year(year, 1800))
+        
+        print(resutl.count())
+        
+    except Exception as e:
     
-    sc = SparkContext('spark://10.18.0.2:7077', app_name).getOrCreate()
-    
-    rdd = sc.parallelize(years)
-    mapped_data = rdd.map(clean_data)
-    result = mapped_data.filter(choose_data_by_year(year, 1800))
-    print(resutl.count())
+        print('Se ha producido un error')
+        print(e)
+        
+    finally:
+        sc.stop()
+          
 ```
 
 El enlace al archivo es temporal, por lo que puede que no funcione correctamente. En caso de querer ejecutar el ejemplo correctamente deberas descagar el dataset completo en el siguiente (link)[], descomprimirlo y cargar el fichero __movies_metadata.csv__ en un repositorio como Google Cloud Storage y hacer el archivo Público. 
@@ -577,9 +628,134 @@ El enlace al archivo es temporal, por lo que puede que no funcione correctamente
 
 Hasta ahora sólo habiamos utilizado funciones de transformación que nos permiten realizar transformaciones sobre nuestro datos. Eso no es cierto, hemos utilizado un función de acción que nos permite contar el número de elementos de un RDD, pero no nos habíamos datos cuenta. A continuación vamos a utilizar la función de acción más famosa de datos. La función __Reduce__ nos permite agregar los elementos de conjunto de datos (dataset) utilizando una función de tipo communtativo o associativo de manera que pueda ser ejecutada en paralela. Esta función debe tomar dos argumentos y devolver sólo uno. 
 
+```
+from os import path
+from pyspark import SparkContext
+
+import pandas as pd
+import wget
+
+YEAR = 2001
+URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
+
+def clean_data(s):
+    if isinstance(s, str):
+        return int(s[:4])
+    else:
+        return 1995
+
+def my_filter(i, year):
+    return i == YEAR
+
+
+if __name__ == "__main__":
+    
+    spark_url = 'spark://10.18.0.2:7077'
+    app_name = 'reduce app'
+    
+    sc = SparkContext(spark_url, app_name).getOrCreate()
+    
+    try:
+
+        url = URL
+        file_name = './movies_metadata.csv'
+
+        if not path.exists(file_name):
+            file_name = wget.download(url)
+
+        data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+        years = data['release_date'].values.tolist()
+        year = 2001
+
+        rdd = sc.parallelize(years)
+
+        only_years = rdd.map(clean_data).filter(my_filter)
+
+        print(only_years.count())
+        print(only_years.reduce(lambda a, b: a+b))
+
+        sc.stop()
+        
+    except Exception as e:
+    
+        print('Se ha producido un error')
+        print(e)
+        
+    finally:
+        sc.stop()
+    
+    
+```
+
+En este ejemplo hemos aplicado una operación de map + reduce completo con un filtro. Como se puede observar en el código, hemos realizado un map para eliminar aquellos elementos que no tenían un año de lanzamiento, añadiendoles a estos elementos el año 1995, a continuación hemos aplicado un filter, con el fin de seleccionar sólo aquellas películas que fueron lanzadas en el año 2001 y finalmente hemos aplicado dos acciones: (1) la primera para contar el número de registros obtenido tras aplicar el filtro y (2) la segunda para realizar una operación de suma entre dos valores. 
+
+¿Podeis ver alguna correlación entre los dos valores que hemos imprimer al final del proceso de MapReduce?
 
 **Paso 13: Procesando datasets más complejos**
 
 En los anteriores ejemplos hemos trabajado con un Dataset muy sencillo formado por un único campo, pero vamos a utilizar conjuntos de datos de datos más complejos para trabajar con nuestro RDD. PAra ello vamos a construir un RDD formado por múltiples campos. 
 
+
+```
+from os import path
+from pyspark import SparkContext
+
+import pandas as pd
+import wget
+
+YEAR = 2001
+URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
+
+def clean_data(s):
+    if isinstance(s, str):
+        return int(s[:4])
+    else:
+        return 1995
+
+def my_filter(i):
+    return i == 
+
+
+if __name__ == "__main__":
+    
+    spark_url = 'spark://10.18.0.2:7077'
+    app_name = 'big RDD app'
+    
+    sc = SparkContext(spark_url, app_name).getOrCreate()
+    
+    try:
+
+        url = URL
+        file_name = './movies_metadata.csv'
+
+        if not path.exists(file_name):
+            file_name = wget.download(url)
+
+        data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
+        short_data = list()
+        year = 2001
+        
+        for k, d in data.iterrows():
+            tmp = list()
+            tmp['id'] = d['id']
+
+        rdd = sc.parallelize(years)
+
+        only_years = rdd.map(clean_data).filter(my_filter(year))
+
+        print(only_years.count())
+        print(only_years.reduce(lambda a, b: a+b))
+
+        sc.stop()
+        
+    except Exception as e:
+    
+        print('Se ha producido un error')
+        print(e)
+        
+    finally:
+        sc.stop()
+    
+    
+```
 
