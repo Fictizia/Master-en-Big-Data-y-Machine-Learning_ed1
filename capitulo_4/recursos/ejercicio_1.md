@@ -531,7 +531,7 @@ if __name__ == "__main__":
     print(result.count())
 ```
 
-Ademas es posible incluir parámetros a nuestro función con el objetivo de hacerlas más reutilizables. Para ellos será necesario moficiar la definición de la función y la llamada de la siguiente forma:
+Ademas es posible incluir parámetros a nuestro función con el objetivo de hacerlas más reutilizables. Para ello será necesario modificiar la definición de la función y la llamada de la siguiente manera:
 
 ```
 from pyspark import SparkContext
@@ -539,6 +539,8 @@ from pyspark.sql import SparkSession
 from os import path
 import pandas as pd
 import wget
+
+URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
 
 def clean_data(p):
     if isinstance(p, str):
@@ -554,7 +556,7 @@ if __name__ == "__main__":
     file_name = './movies_metadata.csv'
     
     if not path.exists(file_name):
-        file_name = wget.download('')
+        file_name = wget.download(URL)
     
     data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
     years = data['release_date'].values.tolist()
@@ -565,15 +567,19 @@ if __name__ == "__main__":
     
     rdd = sc.parallelize(years)
     mapped_data = rdd.map(clean_data)
-    result = mapped_data.filter(choose_data_by_year(year))
+    result = mapped_data.filter(choose_data_by_year(year, 1800))
     print(resutl.count())
 ```
+
+El enlace al archivo es temporal, por lo que puede que no funcione correctamente. En caso de querer ejecutar el ejemplo correctamente deberas descagar el dataset completo en el siguiente (link)[], descomprimirlo y cargar el fichero __movies_metadata.csv__ en un repositorio como Google Cloud Storage y hacer el archivo Público. 
 
 **Paso 12: Reduciendo nuestros datos a sólo uno**
 
 Hasta ahora sólo habiamos utilizado funciones de transformación que nos permiten realizar transformaciones sobre nuestro datos. Eso no es cierto, hemos utilizado un función de acción que nos permite contar el número de elementos de un RDD, pero no nos habíamos datos cuenta. A continuación vamos a utilizar la función de acción más famosa de datos. La función __Reduce__ nos permite agregar los elementos de conjunto de datos (dataset) utilizando una función de tipo communtativo o associativo de manera que pueda ser ejecutada en paralela. Esta función debe tomar dos argumentos y devolver sólo uno. 
 
 
-**Paso 13: Cargando nuestros datos en nuestra base de datos**
+**Paso 13: Procesando datasets más complejos**
+
+En los anteriores ejemplos hemos trabajado con un Dataset muy sencillo formado por un único campo, pero vamos a utilizar conjuntos de datos de datos más complejos para trabajar con nuestro RDD. PAra ello vamos a construir un RDD formado por múltiples campos. 
 
 
