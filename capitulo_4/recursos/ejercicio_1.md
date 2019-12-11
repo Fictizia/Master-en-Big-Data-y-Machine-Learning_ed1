@@ -713,13 +713,13 @@ def clean_data(s):
         return 1995
 
 def my_filter(i):
-    return i == 
+    return i == YEAR
 
 
 if __name__ == "__main__":
     
     spark_url = 'spark://10.18.0.2:7077'
-    app_name = 'big RDD app'
+    app_name = 'big RDD app 2'
     
     sc = SparkContext(spark_url, app_name).getOrCreate()
     
@@ -732,21 +732,20 @@ if __name__ == "__main__":
             file_name = wget.download(url)
 
         data = pd.read_csv(file_name, header=0, low_memory=False, error_bad_lines=False)
-        short_data = list()
-        year = 2001
         
-        for k, d in data.iterrows():
-            tmp = list()
-            tmp['id'] = d['id']
-
-        rdd = sc.parallelize(years)
-
-        only_years = rdd.map(clean_data).filter(my_filter(year))
-
-        print(only_years.count())
-        print(only_years.reduce(lambda a, b: a+b))
-
-        sc.stop()
+        years = data['release_date'].values.tolist()
+        titles = data['title'].values.tolist()
+        ids = data['id'].values.tolist()
+        descriptions = data['overview'].values.tolist()
+        
+        tmp = list()
+        
+        for i in range(len(years)): 
+            tmp.append((ids[i], years[i], titles[i], descriptions[i]))
+        
+        rdd = sc.parallelize(tmp)
+        
+        print(rdd.take(25))
         
     except Exception as e:
     
@@ -755,7 +754,9 @@ if __name__ == "__main__":
         
     finally:
         sc.stop()
-    
-    
+   
 ```
+
+Mediante el bucle hemos creado un dataset más complejo que nos permite trabajar con un conjunto mayor de datos. Esto no sólo es una ventaja, es también una desventaja, ya que aumentamos la cantidad de información que estamos utilizando de cara a realizar todas las operaciones.
+
 
