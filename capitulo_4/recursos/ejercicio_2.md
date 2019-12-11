@@ -321,8 +321,9 @@ Ahora podemos volver a desplegar nuestros notebooks en python 2.7 y podemos ejec
 
 **Paso 8: Creando nuestro stream de datos**
 
-Como vimos en el ejercicio anterior, los RDD son los contenedores básicos de información utilizados por Apache Spark. Estos  
-es un contenedor que contiene todos sus datos, como una especie de hoja de cálculo. Bueno, y un D-Stream es una hoja de cálculo, y luego otra, luego otra a medida que avanzan en el tiempo. Obtenemos un flujo de datos, lo discretizamos, lo congelamos en un momento, luego otro momento y luego otro momento. En cierto modo, no tenemos que esperar a que se acumulen todos los datos para hacer un RDD gigante, tomamos una porción de RDD y luego procesamos rápidamente y luego damos un poco más de datos y el procesamiento continúa en el pequeño porción de los datos. De esta manera, no tenemos que esperar a que todos los datos den las respuestas, podemos llegar a una respuesta basada en los datos que tenemos. Esto es realmente una gran victoria, si su cliente está en el tablero, no podemos pedirle que espere respuestas durante una semana más o menos. En general, quieren saber algo de inmediato. En pocas palabras, "Los resultados rápidos son valiosos".
+Como vimos en el ejercicio anterior, los RDD son los contenedores básicos de información utilizados por Apache Spark. Estos __super conjuntos__ de datos no permiten trabajar en paralelo de forma que podamos operar y manipular nuestro datos, pero para construir estos conjuntos de datos debemos esperar a que el conjunto esté complemente creado. En ocasiones debemos experar demasiado tiempo para poder generar nuestro conjuntos de datos, por lo que una opción es procesar la información en tiempo real según la vamos recibiendo. Para poder realizar este proceso, podemos utilizar un D-Stream que es como una secuencia de datos a nivel temporal (eventos), esto produce un discontinuo de datos, que dependerá de la información que vayamos recibiendo. Cada uno de los elementos de la secuencia de datos puede ser considerado como un evento lo discretizamos, lo congelamos en un momento, luego otro momento y luego otro momento. 
+
+Esto nos permite no tener que esperar a un super para crear un __super conjunto__ de datos (RDD), sino que vamos procesando pequeños conjuntos de datos, de forma más rapida. Para ellos vamos a crear un nuevo proceso en Apache Spark utilizar la clase __(StreamingContext)[https://spark.apache.org/docs/2.2.1/api/python/_modules/pyspark/streaming/context.html]__ que nos permite crear un contexto de tipo streaming utilizando un contexto de Spark previo. En este caso hemos definido un contexto de streaming sobre el contexto de spark (sc) y con una duración de 1 segundo para el procesamiento de cada uno de los mini batches (Cada uno de los elementos procesados en considerado un batch). 
 
 
 ```
@@ -342,10 +343,10 @@ if __name__ == "__main__":
     
     try:
         
-        rddQueue = []
+        rdd_queue = []
         
         for i in range(5):
-            rddQueue += [ssc.sparkContext.parallelize([i, i+1])]
+            rdd_queue += [ssc.sparkContext.parallelize([i, i+1])]
             
         inputStream = ssc.queueStream(rddQueue)
         
@@ -360,5 +361,7 @@ if __name__ == "__main__":
         print(e)
         
     finally:
+        ssc.awaitTerminationOrTimeout(10)
+        ssc.stop()
         sc.stop()
  ```
