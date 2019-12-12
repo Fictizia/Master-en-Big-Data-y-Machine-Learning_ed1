@@ -7,7 +7,7 @@
 
 El objetivo de este ejercicio es desplegar un cluster de Apache Spark compuesto por un nodo maestro y tres nodos esclavos (trabajadores) con el fin de ejecutar un proceso de manipulación y acceso a datos recolectados mediante un proceso de tipo batch. 
 
-![Infraestructura](../img/fictizia_capitulo4_ejercicio_1.png)
+<img src="../img/fictizia_capitulo4_ejercicio_1.png" alt="Infraestructura" width="800"/>
 
 ### Recursos ###
 
