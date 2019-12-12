@@ -3,18 +3,22 @@
 # [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
 ### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
-## Capítulo 4 - Ejercicio 01: Trabajando con datos en bathc ##
+## Capítulo 4 - Ejercicio 01: Trabajando con datos en batch ##
 
 El objetivo de este ejercicio es desplegar un cluster de Apache Spark compuesto por un nodo maestro y tres nodos esclavos (trabajadores) con el fin de ejecutar un proceso de manipulación y acceso a datos recolectados mediante un proceso de tipo batch. 
+
+![Infraestructura](fictizia_capitulo4_ejercicio_1.png)
 
 ### Recursos ###
 
 Para el desarrollo de este ejercicio vamos a utilizar las diferentes tecnologías y recursos.
 
 - [Python](https://www.python.org/) como lenguaje de programación para el desarrollo de nuestros procesos. 
-- [Apache Spark]() como sistema de procesamiento y acceso a la información.
-- [PySpark]() como librería de interacción entre Apache Spark y nuestro nodos del cluster Spark.
 - [Docker](https://docs.docker.com/) para construir el contenedor donde se desplegará nuestro servidor. 
+- [Apache Spark](https://spark.apache.org/) como sistema de procesamiento y acceso a la información.
+- [PySpark](https://spark.apache.org/docs/2.2.0/api/python/pyspark.html) como librería de interacción entre Apache Spark y nuestro nodos del cluster Spark.
+- [Pandas](https://pandas.pydata.org/) para la manipulación de los ficheros csv que contienen los datos. 
+- [Wget](https://pypi.org/project/wget/) para la descarga de archivos desde un repositorio (Bucket) de Google Cloud Platform. 
 
 ### Solución paso a paso ###
 
@@ -23,18 +27,20 @@ Para el desarrollo de este ejercicio vamos a utilizar las diferentes tecnología
 Para la creación del proyecto se recomienda crear una nueva carpeta denominado ejercicio_1 que deberá contener los siguientes archivos y directorios.
 
 ```
-drwxr-xr-x 7 momartin momartin 4096 nov  1 11:55 .
-drwxr-xr-x 8 momartin momartin 4096 nov  1 11:55 ..
-drwxrwxr-x 2 momartin momartin 4096 nov  1 11:54 bin
--rw-r--r-- 1 momartin momartin  288 oct 31 21:30 Dockerfile
-drwxrwxr-x 2 momartin momartin 4096 nov  1 11:53 include
-drwxrwxr-x 3 momartin momartin 4096 nov  1 11:53 lib
-drwxrwxr-x 2 momartin momartin 4096 nov  1 11:53 local
--rw-r--r-- 1 momartin momartin  612 oct 31 21:11 requirements.txt
-drwxr-xr-x 4 momartin momartin 4096 nov  1 12:56 src
+total 44
+drwxrwxr-x 10 momartin momartin 4096 dic  3 16:03 .
+drwxrwxr-x  3 momartin momartin 4096 dic  2 21:55 ..
+drwxrwxr-x  2 momartin momartin 4096 dic  2 23:10 config
+-rw-r--r--  1 momartin momartin 2716 dic  3 16:03 docker-compose.yml
+drwxrwxr-x  2 momartin momartin 4096 dic  3 15:59 jupyter
+drwxrwxrwx  3 momartin momartin 4096 dic 11 16:13 notebooks
+drwxrwxr-x  4 momartin momartin 4096 dic  3 06:39 procesamiento
+drwxr-xr-x  2 momartin momartin 4096 dic  2 22:50 spark-apps
+drwxr-xr-x  3 momartin momartin 4096 dic  3 07:54 spark-conf
+drwxr-xr-x  2 momartin momartin 4096 dic  2 22:50 spark-data
 ```
 
-Donde se deberán la carpeta config se corresponde con la configuración de las diferentes variables de entorno de los esclavos (workers) y el maestro. 
+Donde se deberán la carpeta config se corresponde con la configuración de las diferentes variables de entorno de los esclavos (workers) y el maestro. La carpetas que comienza con spark serán los diferentes volumenes compartidos de las diferentes máquinas del cluster de Apache Spark, la carpeta jupyter se corresponde con los elementos para le despliguee de un servidor Jupyter y la carpeta notebooks se corresponde con el volumen compartido para que nuestros notebooks sean persistenes (Es importante qie la carpeta de notebooks tenga permios de escritura con el objetivo de poder almacenar nuestro notebooks una vez que la imagen se pare o elimine).  
 
 **Paso 2: Definión del fichero de configuración de los esclavos**
 
@@ -48,9 +54,9 @@ SPARK_MASTER=spark://fictizia-spark-master:7077
 #Parametros de configuracion de los workers
 
 SPARK_WORKER_CORES=1
-SPARK_WORKER_MEMORY=1G
-SPARK_DRIVER_MEMORY=128m
-SPARK_EXECUTOR_MEMORY=256m
+SPARK_WORKER_MEMORY=2G
+SPARK_DRIVER_MEMORY=256m
+SPARK_EXECUTOR_MEMORY=512m
 ```
 
 **Paso 3: Generación del fichero de despliegue I**
@@ -447,7 +453,16 @@ def clean_data(p):
         return int(1915)
 ```
 
-Mediante esta función extraemos el año de la fecha y para aquellas peliculas que no tienen ningún año asignado, le asignado el año 1800 (Hemos decidido utilizar este código debido a que en la lista no existen películas que se correspondan con esta fecha de producción con el objetivo de identificarlas de manera sencilla). Una vez definida la función que utilizaremos para mapear nuestro datos, vamos a escribir el código necesario para la ejecución de la función map.  Para la realización de este ejercicio vamos a utilizar el fichero de películas que utilizamos en el ejercicio 5 del capitulo 3, pero en vez de descargarlo utilizando los conectores de google cloud storage (no están disponibles para la versión 2.7 de python), vamos a convertirlo en un archivo público y descargarlo mediante las funcionalidades que ofrece la clase wget. 
+Mediante esta función extraemos el año de la fecha y para aquellas peliculas que no tienen ningún año asignado, le asignado el año 1800 (Hemos decidido utilizar este código debido a que en la lista no existen películas que se correspondan con esta fecha de producción con el objetivo de identificarlas de manera sencilla). Una vez definida la función que utilizaremos para mapear nuestro datos, vamos a escribir el código necesario para la ejecución de la función map.  Para la realización de este ejercicio vamos a utilizar el fichero de películas que utilizamos en el ejercicio 5 del capitulo 3, pero en vez de descargarlo utilizando los conectores de google cloud storage (no están disponibles para la versión 2.7 de python), vamos a convertirlo en un archivo público y descargarlo mediante las funcionalidades que ofrece la librera (wget)[https://pypi.org/project/wget/]. Para ello comprobasmos si no hemos descarhado el 
+
+```
+file_name = './movies_metadata.csv'
+
+if not path.exists(file_name):
+    file_name = wget.download(URL)
+```
+
+Mediante e
 
 ```
 from pyspark import SparkContext
@@ -456,7 +471,6 @@ from os import path
 import pandas as pd
 import wget
 
-YEAR = 2001
 URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
 
 def clean_data(p):
@@ -468,7 +482,7 @@ def clean_data(p):
 if __name__ == "__main__":
     
     spark_url = 'spark://10.18.0.2:7077'
-    app_name = 'filter app'
+    app_name = 'map app'
     
     sc = SparkContext(spark_url, app_name).getOrCreate()
     
@@ -496,7 +510,7 @@ if __name__ == "__main__":
         sc.stop()
 ```
 
-Mediante este código aplicamos la función clean_data mediante la operación map limpiando nuestros datos de manera que podremos aplicar otro tipo de funciones sobre el resultados generado. Para la realización de este paso hemos incluido un nuevo elemento denominad __RDD__. Los Resilient Distributed Dataset (RDD) son conjuntos de datos con tolerancia a fallos que pueden ser manipulados/consultados mediante operaciones paralelas. Existen dos maneras de crear RDDs en Apache Spark: (1) paralelizando un colección de datos; o (2) referenciando un conjunto de datos (dataset) que se encuenta almacenada un sistema de almacenamiento externo, como HDFS o HBase. Para la creación de un RDD para este paso hemos utilizado la primera opción paralelizando una colección de datos mediante la utilización de la función __parallelize__.
+Mediante este código aplicamos la función clean_data mediante la operación map limpiando nuestros datos de manera que podremos aplicar otro tipo de funciones sobre el resultados generado. Para la realización de este paso hemos incluido un nuevo elemento denominad __RDD__. Los Resilient Distributed Dataset (RDD) son conjuntos de datos con tolerancia a fallos que pueden ser manipulados/consultados mediante operaciones paralelas. Existen dos maneras de crear RDDs en Apache Spark: (1) paralelizando un colección de datos; o (2) referenciando un conjunto de datos (dataset) que se encuenta almacenada un sistema de almacenamiento externo, como HDFS o HBase. Para la creación de un RDD para este paso hemos utilizado la primera opción paralelizando una colección de datos mediante la utilización de la función __parallelize__. El resultado de aplicar esta operación sería una lista de 10 años.
 
 
 **Paso 11: Filtrando nuestros datos**
@@ -518,7 +532,6 @@ from os import path
 import pandas as pd
 import wget
 
-YEAR = 2001
 URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
 
 def clean_data(p):
@@ -528,7 +541,7 @@ def clean_data(p):
         return int(1800)
 
 def choose_data_by_year(p):
-    return p == YEAR
+    return p == 1800
 
 if __name__ == "__main__":
 
@@ -620,7 +633,7 @@ if __name__ == "__main__":
           
 ```
 
-El enlace al archivo es temporal, por lo que puede que no funcione correctamente. En caso de querer ejecutar el ejemplo correctamente deberas descagar el dataset completo en el siguiente (link)[], descomprimirlo y cargar el fichero __movies_metadata.csv__ en un repositorio como Google Cloud Storage y hacer el archivo Público. 
+El enlace al archivo es temporal, por lo que puede que no funcione correctamente. En caso de querer ejecutar el ejemplo correctamente deberas descagar el dataset completo en el siguiente (enlace)[https://www.kaggle.com/rounakbanik/the-movies-dataset], descomprimirlo y cargar el fichero __movies_metadata.csv__ en un repositorio como Google Cloud Storage y hacer el archivo Público. 
 
 **Paso 12: Reduciendo nuestros datos a sólo uno**
 
@@ -671,8 +684,6 @@ if __name__ == "__main__":
 
         print(only_years.count())
         print(only_years.reduce(lambda a, b: a+b))
-
-        sc.stop()
         
     except Exception as e:
     
@@ -681,18 +692,49 @@ if __name__ == "__main__":
         
     finally:
         sc.stop()
-    
-    
 ```
 
-En este ejemplo hemos aplicado una operación de map + reduce completo con un filtro. Como se puede observar en el código, hemos realizado un map para eliminar aquellos elementos que no tenían un año de lanzamiento, añadiendoles a estos elementos el año 1995, a continuación hemos aplicado un filter, con el fin de seleccionar sólo aquellas películas que fueron lanzadas en el año 2001 y finalmente hemos aplicado dos acciones: (1) la primera para contar el número de registros obtenido tras aplicar el filtro y (2) la segunda para realizar una operación de suma entre dos valores. 
+En este ejemplo hemos aplicado una operación de map + reduce completa con la ayuda de un filtro. Como se puede observar en el código, hemos realizado un map para eliminar aquellos elementos que no tenían un año de lanzamiento, añadiendoles a estos elementos el año 1995, a continuación hemos aplicado un filter, con el fin de seleccionar sólo aquellas películas que fueron lanzadas en el año 2001 y finalmente hemos aplicado dos acciones: (1) la primera para contar el número de registros obtenido tras aplicar el filtro y (2) la segunda para realizar una operación de suma entre dos valores. 
 
-¿Podeis ver alguna correlación entre los dos valores que hemos imprimer al final del proceso de MapReduce?
+¿Podeis ver alguna correlación entre los dos valores que hemos impreso al final del proceso de MapReduce?
+
+El primer valor se corresponde con el número de elementos que se obtiene tras la aplicación del filtro y a continuación se realiza una operación de tipo __reduce__ que realiza la suma de todos los valores. En este caso está sumando todos los años del conjunto obtenido tras la aplicación del filtro. De manera que el resultado del proceso de reducción nos generá como resultado la multiplicación del número de elementos por el año que hemos utilizado para el filtro. 
 
 **Paso 13: Procesando datasets más complejos**
 
-En los anteriores ejemplos hemos trabajado con un Dataset muy sencillo formado por un único campo, pero vamos a utilizar conjuntos de datos de datos más complejos para trabajar con nuestro RDD. PAra ello vamos a construir un RDD formado por múltiples campos. 
+En los anteriores ejemplos hemos trabajado con un Dataset muy sencillo formado por un único campo, pero vamos a utilizar conjuntos de datos de datos más complejos para trabajar con nuestro RDD. PAra ello vamos a construir un RDD formado por múltiples campos mediante el siguiente fragmento de código:
 
+```
+years = data['release_date'].values.tolist()
+titles = data['title'].values.tolist()
+ids = data['id'].values.tolist()
+descriptions = data['overview'].values.tolist()
+
+tmp = list()
+
+for i in range(len(years)): 
+    tmp.append((ids[i], years[i], titles[i], descriptions[i]))
+    
+rdd = sc.parallelize(tmp)    
+```
+
+Mediante este bucle construimos una lista de tuplas (listas de datos que no pueden ser modificadas) para la construcción de nuestro RDD. A continuación deberemos utilizar esta lista para rear nuestro RDD mediante la función __parallelize__. Además será necesario modificar la función que utilizabamos para hacer el proceso de __map__ debido a que la estructura de los datos ha cambiado. Para ello crearemos una nueva función que modificará el contenido de cada una de las tuplas de nuestro RDD. 
+
+```
+def clean_data(data):
+    tmp = list(data)
+    year = tmp[1]
+
+    if isinstance(year, str):
+        if len(year) == 10:
+            tmp.append(int(year[:-6]))
+        else:
+            tmp.append(int(1900))
+    else:
+        tmp.append(int(1800))
+```
+
+Esta función transforma la variables data (tuple) en una lista con el objetivo de poder manipularla. A continuación se selecciona el según valor de la tupla que se corresponde con el año y se comprueba si este tiene un valor valido (se considera como valor valido una fecha con el formado yyyy-mm-dd). En caso de que la fecha sea correcta se seleccionad el año, en caso de que el valor de la fecha sea la cadena vacia, se incluye el año 1900 y en el caso de que el valor de la fecha sea una valor de un tipo invalido (NaN) se incluye el valor 1800. Una vez incluidos todos estos cambios, el código definitivo será el siguiente: 
 
 ```
 from os import path
@@ -704,15 +746,22 @@ import wget
 YEAR = 2001
 URL = 'https://storage.googleapis.com/fictizia/movies_metadata.csv'
 
-def clean_data(s):
-    if isinstance(s, str):
-        return int(s[:4])
+def clean_data(data):
+    tmp = list(data)
+    year = tmp[1]
+
+    if isinstance(year, str):
+        if len(year) == 10:
+            tmp.append(int(year[:-6]))
+        else:
+            tmp.append(int(1900))
     else:
-        return 1995
+        tmp.append(int(1800))
+
+    return tuple(tmp)
 
 def my_filter(i):
     return i == YEAR
-
 
 if __name__ == "__main__":
     
@@ -743,7 +792,7 @@ if __name__ == "__main__":
         
         rdd = sc.parallelize(tmp)
         
-        print(rdd.take(25))
+        print(rdd.take(1))
         
     except Exception as e:
     
@@ -755,6 +804,11 @@ if __name__ == "__main__":
    
 ```
 
-Mediante el bucle hemos creado un dataset más complejo que nos permite trabajar con un conjunto mayor de datos. Esto no sólo es una ventaja, es también una desventaja, ya que aumentamos la cantidad de información que estamos utilizando de cara a realizar todas las operaciones.
+Mediante el bucle hemos creado un dataset más complejo que nos permite trabajar con un conjunto mayor de datos. Esto no sólo es una ventaja, es también una desventaja, ya que aumentamos la cantidad de información que estamos utilizando de cara a realizar todas las operaciones de filtrado, mapeado y reducción necesarias para manipular nuestro datos. . De forma que al ejecutar este script obtendriamos como resultado el siguiente resultado:
+
+
+```
+('862', '1995-10-30', 'Toy Story', "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene. Afraid of losing his place in Andy's heart, Woody plots against Buzz. But when circumstances separate Buzz and Woody from their owner, the duo eventually learns to put aside their differences.", 1995)
+```
 
 
