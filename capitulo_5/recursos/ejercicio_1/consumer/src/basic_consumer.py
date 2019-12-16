@@ -34,8 +34,13 @@ if __name__ == "__main__":
         for message in consumer:
             message = message.value.decode("utf-8")
             print(message + " recibido")
+    
     except Exception as ex:
         print('Exception while connecting Kafka')
         print(str(ex))    
+    
+    finally:
+        consumer.close()
+    
     exit(0)
 
