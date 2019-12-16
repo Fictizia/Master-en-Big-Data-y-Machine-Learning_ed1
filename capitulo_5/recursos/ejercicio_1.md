@@ -627,7 +627,7 @@ Ahora ya podemos desplegar nuestro entorno de nuevo mediante el siguiente comand
 $ docker-compose -f docker_compose.yml up -d 
 ```
 
-**Paso 10: Creando mi comsumidor **
+**Paso 10: Creando mi comsumidor**
 
 Para la insercción de nuestro nuevo consumir vamos a incluir en nuestro fichero de despligue, una variación del proceso de consumición que creamos en los primeros paso de este ejercicio. La nueva versión consumirá los mensajes de un topic e insertará cada uno de ellos en una colección dentro de nuestro mongo DB. Para ello añadiremos un nuevo servicio en nuestra infraestructura de contenedores que se denominará __consumer__. Para ello deberemos crear una nuevo servicio de la siguiente manera:
 
