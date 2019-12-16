@@ -268,7 +268,7 @@ if __name__ == "__main__":
         count = 0
 
         for document in data:
-            producer.send(topic, document) 
+            producer.send(topic, document, document['id']) 
             count += 1
         producer.flush()
         print("Se han enviado " + str(count) + " mensajes")
@@ -277,8 +277,10 @@ if __name__ == "__main__":
         print('Exception while connecting Kafka')
         print(str(ex))
     
+    finally:
+        producer.close()
+    
     exit(0)
-
 ```
 
 Para el correcto funcionamiento del código fuente hemos creada una carpeta data donde hemos descargado el fichero de datos que vamos a utilizar en este ejercicio. Aunque también es posible descargarlo directamente de la fuente en cada ejecución utilizando el siguiente código:
@@ -695,9 +697,12 @@ if __name__ == "__main__":
 
     except Exception as ex:
         print('Exception while connecting Kafka')
-        print(str(ex))    
+        print(str(ex)) 
+        
+    finally:
+        consumer.close()
+        
     exit(0)
-    
 ```
 
 Para construir correctamente nuestro url, podemos crear una función que la construya mediante el siguiente código:
