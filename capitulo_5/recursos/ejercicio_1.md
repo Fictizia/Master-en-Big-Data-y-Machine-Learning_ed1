@@ -607,7 +607,21 @@ Esta función devuelve un código 200, si se ha realizado una insercción correc
 }
 
 ```
-Una vez configurada nuestra API, podemos deplegar nuestro entorno de nuevo mediante el siguiente comando:
+Una vez configurada nuestra API, podemos añadir un nuevo servicio en nuestro fichero de despliegue de la siguiente manera:
+
+```
+  mongo_api:
+    restart: always
+    build: ./api
+    container_name: api 
+    ports:
+      - "5005:5005" 
+    networks:
+      fictizia_kafka:
+        ipv4_address: 172.20.1.7
+```
+
+Ahora ya podemos desplegar nuestro entorno de nuevo mediante el siguiente comando:
 
 ```
 $ docker-compose -f docker_compose.yml up -d 
