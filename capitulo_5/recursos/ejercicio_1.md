@@ -200,9 +200,14 @@ if __name__ == "__main__":
         for message in consumer:
             message = message.value.decode("utf-8")
             print(message + " recibido")
+    
     except Exception as ex:
         print('Exception while connecting Kafka')
-        print(str(ex))    
+        print(str(ex)) 
+        
+    finally:
+        consumer.close()
+    
     exit(0)
 ```
 
@@ -358,7 +363,7 @@ $ docker-compose -f docker_compose.yml up --build -d
 
 **Paso 8: Desplegando nuestra API sobre Mongo**
 
-Una vez que hemos definido nuestros contenedores de carga, vamos a construir una API REST para acceder a los datos de nuestra base de datos mongo, construyendo una API REST con dos métodos de acceso. Para ello es necesario crear un nuevo proyecto la creación del proyecto se recomienda crear una nueva carpeta denominado __api__ que deberá contener los siguientes archivos y directorios. 
+Una vez que nuestro contenedor de almacenamiento, vamos a construir una API REST para acceder y manipular los datos de nuestra base de datos mongo, construyendo una API REST con dos métodos de acceso. Para ello es necesario crear un nuevo proyecto la creación del proyecto se recomienda crear una nueva carpeta denominado __api__ que deberá contener los siguientes archivos y directorios. 
 
 ```
 drwxr-xr-x 7 momartin momartin 4096 nov  1 11:55 .
@@ -718,7 +723,7 @@ def generate_url(url, data):
 Al igual que en el caso del productor hemos tenido que modificar los procesos de deserialización de los mensajes. Ahora estamos recibiendo documentos como cadenas de texto que tienen que manipularse como documento de tipo json. Por lo que es necesario deserializar la información y convertirla en documentos json (dict en python). Para ello aplicaremos la siguiente función lambda (Es posible generar una función y añadirla directamente obviando la función lambda). 
 
 ```
-lambda m: json.loads(m.decode('ascii')
+lambda m: json.loads(m.decode('utf-8')
 ```
 
 Esta función lambda se debe incluirse como valor de la propiedades __value_serializer__ y __key_serializer__, de forma que al utilizarla cada documento (m) en formato utf-8 que hemos recibido debe ser decódificiado (String) y a continuación debe ser transformado a un documento de tipo json (dict en python). Es posible utilizar otros formatos de codifición como en el caso del productor, pero el formato del productor y el consumidor debe ser el mismo. Además es posible tener topic con diferentes formatos de mensajes, pero de nuevo tanto el consumidor como el productor deben utilizar el mismo tipo de codificación. Una vez realizados todos estos cambios es posible desplegar de nuevo nuestro productor utilizando nuestro fichero de despliegue mediante el siguiente comando:
