@@ -49,6 +49,9 @@ if __name__ == "__main__":
         print('Exception while connecting Kafka')
         print(str(ex))
     
+    finally:
+        consumer.close()
+    
     exit(0)
 
 
