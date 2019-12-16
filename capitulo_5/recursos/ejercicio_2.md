@@ -6,14 +6,14 @@
 ## Capítulo 5 - Ejercicio 01: Trabajando con colas de mensajes (RabbitMQ) ##
 
 El objetivo de este ejercicio es crear una aplicación que procese la información de uno o más ficheros de datos mediante la utilización de una cola de mensajes. Esta información será almacenada a continuación en un sistema de almacenamiento externo.  
-Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servicio Kafka. Existen diferentes formas de construir nuestro contenedor Kafka, (1) mediante la utilización de la imagen; o (2) mediante la generación de un fichero de despliegue (docker-compose.yml). En este caso vamos a realizarlo mediante un fichero de despliegue, ya que para desplegar nuestra cola kafka tenemos que desplegar también un servidor de Zookeeper. 
+Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servicio RabbitMQ. Existen diferentes formas de construir nuestro contenedor RabbitMQ, (1) mediante la utilización de la imagen; o (2) mediante la generación de un fichero de despliegue (docker-compose.yml). En este caso vamos a realizarlo mediante un fichero de despliegue.
 
-**Paso 1: Descargando la imagen de kafka**
+**Paso 1: Descargando la imagen de RabbitMQ**
 
-En primer lugar vamos a descargar la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [Spotify](https://hub.docker.com/r/spotify/kafka/dockerfile). Además de la imagen ofrecida por la empresa Bitnami, existen diferentes versiones de cola de mensajes que pueden ser utilizadas, accediendo al listado de imagenes desarrolladas por diferentes compañias [Kafka](https://registry.hub.docker.com/search?q=Kafka&type=image).
+En primer lugar vamos a descargar la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [RabbitMQ](hhttps://hub.docker.com/_/rabbitmq). En este caso, la propia compañia que desarrollado la cola de mensajes tiene un conjunto de imágenes disponibles. Para este ejercicio vamos a utilizar la versión 3.8 de tipo gestionada (rabbitmq:3.8-management). 
 
 ```
-$ docker pull spotify/kafka:latest
+$ docker pull rabbitmq:3.8-management
 ```
 
 A continuación comprobaremos si la imagen se ha descargado correctamente y está disponible en nuestro repositorio local de imágenes, mediante el siguiente comando:
@@ -27,23 +27,27 @@ Obteniendo la siguiente salida que nos indica que hemos descargado la imagen mon
 
 ```
 REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
-spotify/kafka              latest              a9e0a5b8b15e        3 years ago         443MB
+rabbitmq                   3.8-management      6bd1749b8197        5 days ago          181MB
 ```
 
 **Paso 2: Creando nuestro fichero de despliegue**
 
-Una vez que hemos descargado la imagen de nuestro servicio kafka, podemos crear los diferentes elementos en nuestro fichero de despliegue, por lo que es necesario crear un proyecto con la siguiente estructura
+Una vez que hemos descargado la imagen de nuestro sistema de colas basado en RabbitMQ, podemos crear los diferentes elementos en nuestro fichero de despliegue, por lo que es necesario crear un proyecto con la siguiente estructura
 
 ```
-total 16
-drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
-drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
-drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 consumer
--rw-rw-r-- 1 momartin momartin    0 dic 10 06:31 docker-compose.yml
-drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 producer
+total 32
+drwxr-xr-x 10 momartin momartin 4096 dic 12 09:28 .
+drwxrwxr-x  4 momartin momartin 4096 dic 11 07:30 ..
+drwxrwxr-x  6 momartin momartin 4096 nov 14 17:33 api
+drwxr-xr-x  2 momartin momartin 4096 dic 11 07:36 config
+drwxrwxr-x  4 momartin momartin 4096 dic 11 07:53 consumer
+-rw-rw-r--  1 momartin momartin 1463 dic 11 10:49 docker-compose.yml
+drwxr-xr-x  4 momartin momartin 4096 dic 11 14:33 mongoData
+drwxrwxr-x  5 momartin momartin 4096 dic 11 07:43 producer
+drwxr-xr-x  5 momartin momartin 4096 dic 11 07:36 rabbitmq
 ```
 
-Donde se deberán encontrar el fichero de compose donde se definirián los diferentes contenedores necesarios para la utilización de colas de mensajes mediante Kafka y los ficheros los dos carpetas, mediante las que crearemos nuestro productor y nuestro consumidor. Una vez construido nuestro proyecto podemos pasar a definir nuestro fichero de despligue mediante docker-compose. Para ello deberemos incluir primero la configuración de una red mediante el siguiente código:
+Donde se deberán encontrar el fichero de compose donde se definirián los diferentes contenedores necesarios para la utilización de colas de mensajes mediante RabbitMQ y los ficheros los dos carpetas, mediante las que crearemos nuestro productor y nuestro consumidor. Una vez construido nuestro proyecto podemos pasar a definir nuestro fichero de despligue mediante docker-compose. Para ello deberemos incluir primero la configuración de una red mediante el siguiente código:
 
 ```
 version: '3.4'
@@ -63,25 +67,28 @@ A continuación vamos la configuración de nuestro contenedor kafka. Para ello i
 
 ```
 services:
-  kafka:
+  rabbit:
     restart: always
-    container_name: kafka    
-    image: 'spotify/kafka:latest'
-    hostname: kafka
+    container_name: rabbitmq    
+    image: 'rabbitmq:3-management'
+    hostname: rabbitmq
     ports:
-      - '9092:9092'
-      - '2181:2181'
+      - '15672:15672'
+      - '5672:5672'
+      - '5671:5671'
+      - '25672:25672'
     volumes:
-      - ./kafka-logs:/tmp/kafka-logs
+      - ./rabbitmq:/var/lib/rabbitmq
+      - ./config:/etc/rabbitmq/rabbitmq.config
     environment: 
-      - ADVERTISED_PORT=9092
-      - ADVERTISED_HOST=localhost
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password 
     networks:
       fictizia_kafka:
         ipv4_address: 172.20.1.3
 ```
 
-Una vez construido nuestro fichero de despliegue podremos lanzar nuestro servidor kafka, mediante el siguiente comando:
+Una vez construido nuestro fichero de despliegue podremos lanzar nuestro servidor de colas de mensaje RabbitMq, mediante el siguiente comando:
 
 ```
 docker-compose -f docker-compose.yml up --build -d
@@ -90,8 +97,8 @@ docker-compose -f docker-compose.yml up --build -d
 Si todo ha funcionado correctamente deberemos observar los siguiente contenedores al ejecutar el comando docker ps:
 
 ```
-CONTAINER ID        IMAGE                  COMMAND             CREATED             STATUS              PORTS                                            NAMES
-4466a40ff5c9        spotify/kafka:latest   "supervisord -n"    3 seconds ago       Up 2 seconds        0.0.0.0:2181->2181/tcp, 0.0.0.0:9092->9092/tcp   kafka
+CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS              PORTS                                                                                                       NAMES
+806eadf7a02d        rabbitmq:3-management         "docker-entrypoint.s…"   5 seconds ago       Up 2 seconds        4369/tcp, 0.0.0.0:5671-5672->5671-5672/tcp, 0.0.0.0:15672->15672/tcp, 15671/tcp, 0.0.0.0:25672->25672/tcp   rabbitmq
 ```
 
 **Paso 3: Produciendo mis primeros mensajes**
@@ -108,43 +115,53 @@ drwxrwxr-x 2 momartin momartin 4096 dic 10 06:53 src
 drwxrwxr-x 5 momartin momartin 4096 dic 10 06:53 venv
 ```
 
-Donde se deberán encontrar el fichero de requistos del proyecto (requirements.txt), el directorio con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y el directorio venv donde se almacenarar los diferentes directorios del entorno virtual. Una vez creados los diferentes elementos del entorno deberemos instalar los paquetes necesarios para la utilización de kafka mediante python utilizando el comando pip3. 
+Donde se deberán encontrar el fichero de requistos del proyecto (requirements.txt), el directorio con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y el directorio venv donde se almacenarar los diferentes directorios del entorno virtual. Una vez creados los diferentes elementos del entorno deberemos instalar los paquetes necesarios para la utilización de RabbitMQ mediante python utilizando el comando pip3. 
 
 ```
-pip3 install kafka-python
+pip3 install pika
 ```
 
-**IMPORTANTE: Recondar que una vez instalados los diferentes paquetes es necesario ejecutar el siguiente comando para incluir los paquetes en el fichero de requisitos (requirements.txt).**
+**IMPORTANTE: Recordar que una vez instalados los diferentes paquetes es necesario ejecutar el siguiente comando para incluir los paquetes en el fichero de requisitos (requirements.txt).**
 
 ```
 pip3 freeze > requirements.txt
 ```
 
-Una vez instalados los paquetes necesarios podemos comenzar a introducir nuestro datos mediante la creación de nuestro consumidor, para ello tendremos que conectarnos a kafka de la siguiente manera. 
+Una vez instalados los paquetes necesarios podemos comenzar a introducir nuestro datos mediante la creación de nuestro productor, para ello tendremos que conectarnos a RabbitMQ a través del puerto 5672, de la siguiente manera. 
 
 ```
 #!/usr/bin/env python3
 
-from kafka import KafkaProducer
+import pika
 
 HOSTNAME = 'localhost'
-PORT = 9092
+PORT = 5672
 
 if __name__ == "__main__":
 
-    topic = 'test'
+    topic = 'fictizia'
 
     try:
 
-        producer = KafkaProducer(bootstrap_servers=HOSTNAME+':'+str(PORT))
+        credentials = pika.PlainCredentials('user', 'password')
+        parameters = pika.ConnectionParameters(HOSTNAME,
+                                               PORT,
+                                               '/',
+                                               credentials)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
+        channel.queue_declare(queue=topic)
+        
         for i in range(100):
             message = 'mensaje ' + str(i)
-            producer.send(topic, message.encode('ascii'))
+            channel.basic_publish(exchange='', routing_key=topic, body=message)
             print(message + " enviado.")
+        connection.close()
     except Exception as ex:
         print('Exception while connecting Kafka')
         print(str(ex))    
     exit(0)
+
 ```
 
 Mediante este fragmento de código hemos insertado 100 mensajes en nuestro topic __test__ los cuales se almacerán en la cola de mensajes hasta que sean eliminados. 
@@ -163,10 +180,10 @@ drwxrwxr-x 2 momartin momartin 4096 dic 10 06:53 src
 drwxrwxr-x 5 momartin momartin 4096 dic 10 06:53 venv
 ```
 
-Donde se deberán encontrar el fichero de requistos del proyecto (requirements.txt), el directorio con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y el directorio venv donde se almacenarar los diferentes directorios del entorno virtual. Una vez creados los diferentes elementos del entorno deberemos instalar los paquetes necesarios para la utilización de kafka mediante python utilizando el comando pip3. 
+Donde se deberán encontrar el fichero de requistos del proyecto (requirements.txt), el directorio con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y el directorio venv donde se almacenarar los diferentes directorios del entorno virtual. Una vez creados los diferentes elementos del entorno deberemos instalar los paquetes necesarios para la utilización de rabbitMQ mediante python utilizando el comando pip3. 
 
 ```
-pip3 install kafka-python
+pip3 install pika
 ```
 
 **IMPORTANTE: Recondar que una vez instalados los diferentes paquetes es necesario ejecutar el siguiente comando para incluir los paquetes en el fichero de requisitos (requirements.txt).**
@@ -175,35 +192,43 @@ pip3 install kafka-python
 pip3 freeze > requirements.txt
 ```
 
-Una vez instalados los paquetes necesarios podemos comenzar a introducir nuestro datos mediante la creación de nuestro consumidor, para ello tendremos que conectarnos a kafka de la siguiente manera. 
+Una vez instalados los paquetes necesarios podemos comenzar a recolectar nuestro datos mediante la creación de nuestro consumidor, para ello tendremos que conectarnos a kafka de la siguiente manera. 
 
 ```
 #!/usr/bin/env python3
 
-from kafka import KafkaConsumer
+import pika
 import json
 
 HOSTNAME = 'localhost'
-PORT = 9092
+PORT = 5672
+
+def procesar_mensaje(ch, method, properties, body):
+    print("mensaje [%r] recibido" % body)
 
 
 if __name__ == "__main__":
 
-    topic = 'test'
+    topic = 'fictizia'
 
     try:
 
-        consumer = KafkaConsumer(bootstrap_servers=HOSTNAME+':'+str(PORT),
-                                 auto_offset_reset='earliest',
-                                 enable_auto_commit=True)
-        consumer.subscribe([topic])
-        for message in consumer:
-            message = message.value.decode("utf-8")
-            print(message + " recibido")
+        credentials = pika.PlainCredentials('user', 'password')
+        parameters = pika.ConnectionParameters(HOSTNAME,
+                                               PORT,
+                                               '/',
+                                               credentials)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel() 
+        channel.queue_declare(queue=topic)
+        channel.basic_consume(queue=topic, auto_ack=True, on_message_callback=procesar_mensaje)
+        channel.start_consuming()
+
     except Exception as ex:
         print('Exception while connecting Kafka')
         print(str(ex))    
     exit(0)
+
 ```
 
 Mediante este fragmento de código podemos recibir los mensajes asignados a un conjunto de topics. Los consumidores se deben suscribir a un conjunto de topics que se expresan como un array. 
@@ -222,7 +247,7 @@ Para ello vamos a incluir en nuestro fichero de despligue, una variación del pr
     build: ./producer
     container_name: producer
     depends_on:
-      - kafka
+      - rabbit
     networks:
       fictizia_kafka:
         ipv4_address: 172.20.1.5
@@ -243,34 +268,36 @@ pip3 freeze > requirements.txt
 Una vez instalados los diferentes paquetes y actualizado nuestro fichero de requisitos, es necesario implementar una serie de variaciones en el código fuente de nuestro productor. En primer lugar es necesario descargar el (fichero)[https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data] con la información que insertaremos en la cola e incluir el siguiente código para procesarlo y cargar cada uno de los registros (lineas) en nuestra cola de mensajes:
 
 ```
-from kafka import KafkaProducer
+import pika
 import pandas as pd
 import json
 
 FILE = '../data/breast-cancer-wisconsin.data'
-HOSTNAME = '172.20.1.3'
-PORT = 9092
+HOSTNAME = 'localhost'
+PORT = 5672
 
 if __name__ == "__main__":
-
-    raw_data = pd.read_csv(FILE, ',', header=0)
-    tmp = raw_data.to_json(orient='records')
-    data = json.loads(tmp)
 
     topic = 'fictizia'
 
     try:
 
-        producer = KafkaProducer(bootstrap_servers=HOSTNAME+':'+str(PORT),
-                                 key_serializer=lambda m: json.dumps(m).encode('utf-8'),
-                                 value_serializer=lambda m: json.dumps(m).encode('utf-8'),
-                                 retries=3)
-        count = 0
+        credentials = pika.PlainCredentials('user', 'password')
+        parameters = pika.ConnectionParameters(HOSTNAME,
+                                               PORT,
+                                               '/',
+                                               credentials)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
+        channel.queue_declare(queue=topic)
+        count = 1
 
         for document in data:
-            producer.send(topic, document) 
+            message = document.encode('utf-8')
+            channel.basic_publish(exchange='', routing_key=topic, body=message)
+            print(message + " enviado.")
             count += 1
-        producer.flush()
+        
         print("Se han enviado " + str(count) + " mensajes")
 
     except Exception as ex:
@@ -292,13 +319,7 @@ if not path.exists(FILE):
 
 ```
 
-También hemos modificado los procesos de serialización de los mensajes. Ahora estamos enviado documentos de tipo json y tenemos que realizar algunas moficaciones en la configuración del productor con el fin de no tener problemas a la hora de enviar la información. Para ello debemos incluir dos funciones lambda para los procesos de serialización de la información:
-
-```
-lambda m: json.dumps(m).encode('utf-8')
-```
-
-Esta función lambda se debe incluirse como valor de la propiedades __value_serializer__ y __key_serializer__, de forma que al utilizarla cada documento (m) de tipo json (dict en python) es transformado en una cadena de caracteres (String) y códificado en formato utf-8. Es posible utilizar otros formatos de codifición como por ejemplo __ascii__. Una vez realizados todos estos cambios es posible desplegar de nuevo nuestro productor utilizando nuestro fichero de despliegue mediante el siguiente comando:
+Una vez realizados todos estos cambios es posible desplegar de nuevo nuestro productor utilizando nuestro fichero de despliegue mediante el siguiente comando:
 
 ```
 $ docker-compose -f docker_compose.yml up --build -d 
@@ -623,7 +644,7 @@ Para la insercción de nuestro nuevo consumir vamos a incluir en nuestro fichero
     build: ./consumer
     container_name: consumer
     depends_on:
-      - kafka
+      - rabbit
     networks:
       fictizia_kafka:
         ipv4_address: 172.20.1.4
@@ -644,41 +665,44 @@ pip3 freeze > requirements.txt
 Una vez instalados los diferentes paquetes y actualizado nuestro fichero de requisitos, es necesario implementar una serie de variaciones en el código fuente de nuestro consumidor. Para ello incluiremos las siguiente lineas de código:
 
 ```
-from kafka import KafkaConsumer
+import pika
 import json
 import requests
 
-HOSTNAME = '172.20.1.3'
-PORT = 9092
+HOSTNAME = 'localhost'
+PORT = 5672
 URL = 'http://172.20.1.7:5005/fictizia/1.0/analysis'
 
+def procesar_mensaje(ch, method, properties, body):
+    def generate_url(url, data):
+        url = url + '?'
+        for k,v in data.items():
+            url = url + str(k) + '=' + str(v) + '&'
+        return url
 
-def generate_url(url, data):
-    url = url + '?'
-    for k,v in data.items():
-        url = url + str(k) + '=' + str(v) + '&'
-    return url
-
+    url = generate_url(URL, message.value.decode('utf-8'))
+    response = requests.post(url)
+    if response.status_code == 400:
+        print(url)
+  
 
 if __name__ == "__main__":
 
-    topic = 'fictizia'
+    topic = 'test'
 
     try:
 
-        consumer = KafkaConsumer(bootstrap_servers=HOSTNAME+':'+str(PORT),
-                                 auto_offset_reset='earliest',
-                                 key_deserializer=lambda m: json.loads(m.decode('utf-8')),
-                                 value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-                                 enable_auto_commit=True)
-        
-        consumer.subscribe([topic])
-        for message in consumer:
-            url = generate_url(URL, message.value)
-            response = requests.post(url)
-            if response.status_code == 400:
-                print(url)
-
+        credentials = pika.PlainCredentials('user', 'password')
+        parameters = pika.ConnectionParameters(HOSTNAME,
+                                               PORT,
+                                               '/',
+                                               credentials)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel() 
+        channel.queue_declare(queue=topic)
+        channel.basic_consume(queue=topic, auto_ack=True, on_message_callback=procesar_mensaje)
+        channel.start_consuming()
+  
     except Exception as ex:
         print('Exception while connecting Kafka')
         print(str(ex))    
@@ -686,13 +710,7 @@ if __name__ == "__main__":
     
 ```
 
-Al igual que en el caso del productor hemos tenido que modificaro los procesos de desserialización de los mensajes. Ahora estamos recibiendo documentos como cadenas de texto que tienen que manipularse como documento de tipo json. Por lo que es necesario deserializar la información y convertirla en documentos json (dict en python). Para ello aplicaremos la siguiente función lambda (Es posible generar una función y añadirla directamente obviando la función lambda). 
-
-```
-lambda m: json.loads(m.decode('ascii')
-```
-
-Esta función lambda se debe incluirse como valor de la propiedades __value_serializer__ y __key_serializer__, de forma que al utilizarla cada documento (m) en formato utf-8 que hemos recibido debe ser decódificiado (String) y a continuación debe ser transformado a un documento de tipo json (dict en python). Es posible utilizar otros formatos de codifición como en el caso del productor, pero el formato del productor y el consumidor debe ser el mismo. Además es posible tener topic con diferentes formatos de mensajes, pero de nuevo tanto el consumidor como el productor deben utilizar el mismo tipo de codificación. Una vez realizados todos estos cambios es posible desplegar de nuevo nuestro productor utilizando nuestro fichero de despliegue mediante el siguiente comando:
+Una vez realizados todos estos cambios es posible desplegar de nuevo nuestro productor utilizando nuestro fichero de despliegue mediante el siguiente comando:
 
 ```
 $ docker-compose -f docker_compose.yml up --build -d 
