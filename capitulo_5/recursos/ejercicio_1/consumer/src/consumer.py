@@ -27,7 +27,7 @@ def generate_url(url, data):
     url = url + '?'
     for k,v in data.items():
         url = url + str(k) + '=' + str(v) + '&'
-    return url
+    return url[:-1]
 
 
 if __name__ == "__main__":
@@ -52,5 +52,6 @@ if __name__ == "__main__":
     except Exception as ex:
         print('Exception while connecting Kafka')
         print(str(ex))    
+    
     exit(0)
 
