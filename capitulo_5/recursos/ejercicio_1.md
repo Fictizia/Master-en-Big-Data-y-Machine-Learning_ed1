@@ -671,7 +671,7 @@ def generate_url(url, data):
     url = url + '?'
     for k,v in data.items():
         url = url + str(k) + '=' + str(v) + '&'
-    return url
+    return url[:-1]
 
 
 if __name__ == "__main__":
@@ -700,7 +700,17 @@ if __name__ == "__main__":
     
 ```
 
-Al igual que en el caso del productor hemos tenido que modificaro los procesos de desserialización de los mensajes. Ahora estamos recibiendo documentos como cadenas de texto que tienen que manipularse como documento de tipo json. Por lo que es necesario deserializar la información y convertirla en documentos json (dict en python). Para ello aplicaremos la siguiente función lambda (Es posible generar una función y añadirla directamente obviando la función lambda). 
+Para construir correctamente nuestro url, podemos crear una función que la construya mediante el siguiente código:
+
+```
+def generate_url(url, data):
+    url = url + '?'
+    for k,v in data.items():
+        url = url + str(k) + '=' + str(v) + '&'
+    return url[:-1]
+```
+
+Al igual que en el caso del productor hemos tenido que modificar los procesos de deserialización de los mensajes. Ahora estamos recibiendo documentos como cadenas de texto que tienen que manipularse como documento de tipo json. Por lo que es necesario deserializar la información y convertirla en documentos json (dict en python). Para ello aplicaremos la siguiente función lambda (Es posible generar una función y añadirla directamente obviando la función lambda). 
 
 ```
 lambda m: json.loads(m.decode('ascii')
