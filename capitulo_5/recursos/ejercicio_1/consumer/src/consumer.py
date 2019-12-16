@@ -18,7 +18,7 @@ from kafka import KafkaConsumer
 import json
 import requests
 
-HOSTNAME = '172.20.1.3'
+HOSTNAME = '172.20.1.3'  #Este valor dependerá del que hayamos incluido en nuestro fichero de despliegue (docker-compose)
 PORT = 9092
 URL = 'http://172.20.1.7:5005/fictizia/1.0/analysis'
 
