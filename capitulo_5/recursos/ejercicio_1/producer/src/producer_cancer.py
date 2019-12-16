@@ -50,7 +50,7 @@ if __name__ == "__main__":
         print(str(ex))
     
     finally:
-        consumer.close()
+        producer.close()
     
     exit(0)
 
