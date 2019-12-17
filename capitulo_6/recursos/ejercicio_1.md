@@ -112,4 +112,33 @@ CONTAINER ID        IMAGE                   COMMAND                  CREATED    
 
 ```
 
+**Paso 4: Creando nuestros ficheros DAGS**
+
+Una vez que hemos desplegado nuestra arquitectura, podemos comenzar con la creación de nuestros workflows. Para ellos es necesario describir tres conceptos básicos de Airflow:
+
+- Operador (Operators): Los operadores representan un proceso que realiza un conjunto de acciones, es decir se corresponde con un fragmento de código que se considera atómico. Específicamente, un operador representa una única tarea dentro del flujo de trabajo. Airflow proporciona muchas clases predefinidas que se pueden ejecutar como tareas. Esto incluye clases para tareas muy comunes, como BashOperator, PythonOperator, EmailOperator, OracleOperator, etc. Además de la multitud de clases de operadores disponibles, Airflow permite definir nuestras propios operadores. Como resultado, una tarea en su DAG puede hacer casi cualquier cosa que desee, y puede programarse y monitorizarse utilizando el core de Airflow.
+
+- Tareas (Tasks): Una tarea es una instancia en ejecución de un operador. Durante la creación de instancias, puede definir parámetros específicos asociados con el operador y la tarea parametrizada se convierte en un nodo del workflow.
+
+- DAGs (Directed Acyclic Graph (DAG)): Un DAG es una estructura de definición de tareas que está formada por las diferentes tareas que quieres ser ejecutadas, así como las relaciones y dependencias que existen entre las tareas. Los DAG se pueden representar visualmente mediante un gráfico con nodos y arcos, donde los nodos representan las tareas y los arcos representan dependencias entre las tareas (es decir, el orden en que deben ejecutarse las tareas). Esencialmente, los DAG representan el flujo de ejecución que desea orquestar y monitorizar emdiante Apache Airflow. Estos grafos deben Ser "acíclicos", es decir,  el gráfo __no tiene ciclos__; Esto significa que el flujo de trabajo deben tener un comienzo y un final (si hubiera un ciclo, el flujo de trabajo se atascaría en un bucle infinito y nunca finalizara).
+
+```
+from datetime import datetime
+from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
+
+def print_hello():
+    return 'Hello world!'
+
+dag = DAG('hello_world', description='Simple tutorial DAG',
+          schedule_interval='0 12 * * *',
+          start_date=datetime(2017, 3, 20), catchup=False)
+
+dummy_operator = DummyOperator(task_id='dummy_task', retries=3, dag=dag)
+
+hello_operator = PythonOperator(task_id='hello_task', python_callable=print_hello, dag=dag)
+
+dummy_operator >> hello_operator
+```
 
