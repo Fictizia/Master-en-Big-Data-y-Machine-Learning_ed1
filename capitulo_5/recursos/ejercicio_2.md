@@ -3,7 +3,7 @@
 # [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
 ### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
-## Capítulo 5 - Ejercicio 01: Trabajando con colas de mensajes (RabbitMQ) ##
+## Capítulo 5 - Ejercicio 02: Trabajando con colas de mensajes (RabbitMQ) ##
 
 El objetivo de este ejercicio es crear una aplicación que procese la información de uno o más ficheros de datos mediante la utilización de una cola de mensajes. Esta información será almacenada a continuación en un sistema de almacenamiento externo.  
 Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servicio RabbitMQ. Existen diferentes formas de construir nuestro contenedor RabbitMQ, (1) mediante la utilización de la imagen; o (2) mediante la generación de un fichero de despliegue (docker-compose.yml). En este caso vamos a realizarlo mediante un fichero de despliegue.
