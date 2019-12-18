@@ -48,7 +48,7 @@ La otra alternativa a la creación de nuestro contenedor por linea de comando, e
 version: '3.4'
 services:
   
-  mongo:
+  jupyter:
     restart: always
     image: jupyter/datascience-notebook:latest
     container_name: jupyter_server 
@@ -59,7 +59,7 @@ services:
     environment:
       - JUPYTER_ENABLE_LAB=yes
     networks:
-      fictizia:
+      fictizia_ml:
         ipv4_address: 172.24.1.3
 
 networks:
@@ -77,5 +77,45 @@ Una vez construido nuestro fichero de despliegue podemos lanzar nuestro fichero 
 
 ```
 $ docker-compose -f docker_compose.yml up --build -d
+```
+
+**Paso 3: Accediendo a nuestro Jupyter Notebook server**
+
+Una vez que hemos desplegado correctamente nuestro servidor Jupyter Notebook podremos acceder a el mediante la siguiente url:
+
+```
+http://localhost:8888/
+```
+
+Pero al intentarlo nos solicitará un token de acceso. Para obtener el token de acceso es necesario acceder a los logs del contenedor que hemos desplegado mediante el siguiente comando:
+
+
+```
+$ docker logs jupyter_server
+```
+
+La salida de este comando nos mostará todo el log del contenedor donde podremos encontrar el token de acceso para acceder a nuestro servidor Jupyter Notebooks. 
+
+```
+Executing the command: jupyter lab
+[I 06:21:03.420 LabApp] Writing notebook server cookie secret to /home/jovyan/.local/share/jupyter/runtime/notebook_cookie_secret
+[I 06:21:04.777 LabApp] JupyterLab extension loaded from /opt/conda/lib/python3.7/site-packages/jupyterlab
+[I 06:21:04.778 LabApp] JupyterLab application directory is /opt/conda/share/jupyter/lab
+[I 06:21:05.881 LabApp] Serving notebooks from local directory: /home/jovyan
+[I 06:21:05.881 LabApp] The Jupyter Notebook is running at:
+[I 06:21:05.881 LabApp] http://5778cabb64d7:8888/?token=1e6d710c051275c055ab068fe46b7ef9f5b8a6eb24519bc0
+[I 06:21:05.881 LabApp]  or http://127.0.0.1:8888/?token=1e6d710c051275c055ab068fe46b7ef9f5b8a6eb24519bc0
+[I 06:21:05.881 LabApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 06:21:05.886 LabApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///home/jovyan/.local/share/jupyter/runtime/nbserver-6-open.html
+    Or copy and paste one of these URLs:
+        http://5778cabb64d7:8888/?token=1e6d710c051275c055ab068fe46b7ef9f5b8a6eb24519bc0
+     or http://127.0.0.1:8888/?token=1e6d710c051275c055ab068fe46b7ef9f5b8a6eb24519bc0
+```
+
+
+
 
 
