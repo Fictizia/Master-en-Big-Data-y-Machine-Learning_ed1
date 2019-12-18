@@ -5,24 +5,18 @@
 
 ## Capítulo 7 - Ejercicio 01: Creando nuestra regresión lineal ##
 
-El objetivo de este ejercicio es crear un contenedor que contenga una base de datos no sólo relacion con el fin de explotar el funcionamiento de este tipo de bases de datos. En este primer ejercicio vamos a explorar el funcionamiento de las bases de datos documentales. 
+El objetivo de este ejercicio es crear un contenedor que contenga un servidor Jupyter Notebooks fin de poder desarrollar diferentes tipos de algoritmos de manera sencilla. En este primer ejercicio vamos a desarrollar una regresión lineal simple mediante la utilización de tensorflow.
 
-### Desplegando nuestro contenedor MongoDb
+### Desplegando nuestro contenedor Jupyter Notebook
 
-Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servidor de bases de datos MongoDB. Existe diferente formas de construir nuestro contenedor Mongo, (1) mediante la utilización de la imagen; o (2) mediante la generación de un fichero de despliegue (docker-compose.yml)
+Docker nos permite desplegar de forma sencilla contenedores utilizando imágenes previamente creadas, para aprender como reutilizar estas imágenes vamos a desplegar un servidor Jupyter Notebook. Existe diferentes maneras de construir nuestro contenedor Jupyter Notebook, (1) mediante la utilización el despligue de una imagen; o (2) mediante la generación de un fichero de despliegue (docker-compose.yml)
 
 **Paso 1.1: Descargando la imagen**
 
-En primer lugar vamos a descarga la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes del servidor [MongoDB](https://hub.docker.com/_/mongo) disponibles en dockerhub. 
+En primer lugar vamos a descarga la imagen que queremos instalar, para comprobar que imágenes tenemos disponibles podemos ir acceder al listado de imágenes disponibles en dockerhub. Para este ejercicio vamos a utilizar una imagen espécifica para Data Scientisth, que puede descargarse en el siguiente [enlace](https://hub.docker.com/r/jupyter/datascience-notebook/) . 
 
 ```
-$ docker pull mongo:3.4-xenial
-```
-
-En este caso vamos a descargar la imagen instalada en xenial en su versión 3.4 para ello utilizamos el tag "3.4-xenial". Si no nos importa la versión o el sistema operativo que queremos instalar podemos indicar simplemente que queremos descargar mongo. 
-
-```
-$ docker pull mongo
+$ docker pull jupyter/datascience-notebook:latest
 ```
 
 A continuación comprobaremos si la imagen se ha descargado correctamente y está disponible en nuestro repositorio local de imágenes, mediante el siguiente comando:
@@ -31,12 +25,11 @@ A continuación comprobaremos si la imagen se ha descargado correctamente y est�
 $ docker images 
 ```
 
-
 Obteniendo la siguiente salida que nos indica que hemos descargado la imagen mongo en su versión (tag) 3.4.21-xenial hace 6 semanas. 
 
 ```
-REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-mongo                     3.4.21-xenial       e73a2394fcf4        3 months ago        428MB
+REPOSITORY                     TAG                 IMAGE ID            CREATED             SIZE
+jupyter/datascience-notebook   latest              9e64f3a158ed        2 weeks ago         4.91GB
 ```
 
 **Paso 1.2: Desplegandando la imagen **
@@ -44,7 +37,7 @@ mongo                     3.4.21-xenial       e73a2394fcf4        3 months ago  
 Una vez que hemos descargado la imagen podemos deplegarla para levantas nuestro servidor MongoDB, mediante el siguiente comando:
 
 ```
-$ docker run --name=mongo_db -p 27017:27017 -v $(pwd)/mongo_data:/data/db -d mongo
+$ docker run --name=jupyter_server -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes jupyter/datascience-notebook:latest -d
 ```
 
 **Paso 2: Desplegandando la imagen mediante compose**
@@ -57,30 +50,32 @@ services:
   
   mongo:
     restart: always
-    image: mongo:3.6
-    container_name: mongo_db  
+    image: jupyter/datascience-notebook:latest
+    container_name: jupyter_server 
     ports:
-      - "27017:27017"
+      - "8888:8888"
     volumes:
-      - ./mongoData:/data/db
+      - ./notebooks:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
     networks:
       fictizia:
-        ipv4_address: 172.18.1.3
+        ipv4_address: 172.24.1.3
 
 networks:
-  fictizia:
+  fictizia_ml:
     driver: bridge
     driver_opts:
       com.docker.network.enable_ipv6: "true"
     ipam:
       driver: default
       config:
-        - subnet: 172.18.1.0/24
+        - subnet: 172.24.1.0/24
 ```
 
 Una vez construido nuestro fichero de despliegue podemos lanzar nuestro fichero de despliegue mediante el siguiente comando:
 
 ```
-$ docker-compose -f docker_compose.yml up --build -
+$ docker-compose -f docker_compose.yml up --build -d
 
 
