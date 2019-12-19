@@ -9,5 +9,4 @@ COPY requirements.txt /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
 WORKDIR /app/src
-EXPOSE 5005
 CMD ["python3", "consumer.py"]

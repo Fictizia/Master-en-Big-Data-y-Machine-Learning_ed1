@@ -20,8 +20,16 @@ import requests
 
 HOSTNAME = '172.20.1.3'  #Este valor dependerá del que hayamos incluido en nuestro fichero de despliegue (docker-compose)
 PORT = 9092
-URL = 'http://172.20.1.7:5005/fictizia/1.0/analysis'
+URL = 'http://172.20.1.8:5005/fictizia/1.0/analysis'
 
+def is_full(data):
+    if len(data) == 12:
+        return True
+    return False
+
+def add_data(data, value):
+    for k, v in value.items():
+        data[k] = v
 
 def generate_url(url, data):
     url = url + '?'
@@ -32,7 +40,10 @@ def generate_url(url, data):
 
 if __name__ == "__main__":
 
-    topic = 'fictizia'
+    topic_1 = 'fictizia'
+    topic_2 = 'fictizia_dates'
+
+    full_data = dict()
 
     try:
 
@@ -42,12 +53,21 @@ if __name__ == "__main__":
                                  value_deserializer=lambda m: json.loads(m.decode('ascii')),
                                  enable_auto_commit=True)
         
-        consumer.subscribe([topic])
+        consumer.subscribe([topic_1, topic_2])
+        
         for message in consumer:
-            url = generate_url(URL, message.value)
-            response = requests.post(url)
-            if response.status_code == 400:
-                print(url)
+
+            data = message.value
+
+            if data['id'] not in full_data:
+                full_data[data['id']] = dict()
+            add_data(full_data[data['id']], data)
+
+            if is_full(full_data[data['id']]):
+                url = generate_url(URL, full_data[data['id']])
+                response = requests.post(url)
+                if response.status_code == 400:
+                    print(url)
 
     except Exception as ex:
         print('Exception while connecting Kafka')
@@ -56,4 +76,3 @@ if __name__ == "__main__":
         consumer.close()
     
     exit(0)
-
