@@ -21,7 +21,7 @@ from bson.objectid import ObjectId
 
 import json
 
-HOST = '172.20.1.6' #IP del servidor mongo
+HOST = '172.20.1.7' #IP del servidor mongo
 PORT = 27017
 DATABASE = 'fictizia'
 COLLECTION = 'data'
