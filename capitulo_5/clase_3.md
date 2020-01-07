@@ -55,6 +55,27 @@ Un Web Scraper es un programa diseñado para la extracción de información de p
 
 En esencia el funcionamiento de un web crawler y un web scraper es el mismo, ya que ambos analizan páginas web buscando información que les permita seguir navegando y analizando más información. Es en el tipo de información y su tratamiento donde reside la gran diferencia entre ambos. Los web crawlers sólo se centran en la información de los enlaces, mientras que los web scraper, se centran en cualquier información que sea útil en base a la programación del sistema de parseo. 
 
-<img src="./img/web-scraping-vs-web-crawling-png" alt="Diferencias entre scraping y crawling" width="800"/>
+<img src="./img/web-scraping-vs-web-crawling.png" alt="Diferencias entre scraping y crawling" width="800"/>
 
 ### SCRAPY: A web Scraper para Python
+
+<img src="./img/scrapy.png" alt="Funcionamiento de Scrapy" width="800"/>
+
+El proceso de funcionamiento de Scrapy se basa en un sistema de ejecución compuesto por diferentes etapas descrito en la anterior figura:
+
+- 1. El sistema de ejecución (Engine) realiza una solicitud (Requests) inicial de __crawleo__ mediante una araña.
+- 2. El sistema de ejecución (Engine) añade la solictud al planificador (Scheduler) y solicita la siguiente solicitud (Requests) para crawlear.
+- 3. El planificador (Scheduler) devuelve la siguiente solitud al sistema de ejecución (Engine).
+- 4. El sistema de ejecución envía la solicitud al descargador (Downloader), mediante el sistema de descargadores (Downloader Middlewares).
+- 5. Una vez que la página web ha sido descargada, el descargador (Downloader) genera una respuesta que es enviada al sistema de ejecución mediante el sistema de descargadores (Downloader Middlewares).
+- 6. El sistema de ejecución (Engine) recibe la respuesta desde el descargador y lo envia a la araña, mediante el gestor de arañas (Spider Middleware), para que el resultado pueda ser procesado.
+- 7. La araña procesa la respuesta y devuelve los elementos que han sido extraidos junto a la nueva solicitud (Requests) al sistema de ejecución (Requests) a través del gestor de arañas (Spider Middleware).
+- 8. El sistema de ejecución (Engine) envía los items procesados mediante el gestor de items (Item Pipelines) y las solicitudes (Requests) al planificador (Scheduler).
+- 9. Este proceso se repite (desde el paso 1) hasta que no queden más solicitudes en el planificador.
+
+**Recursos**
+
+- [Installation guide](https://docs.scrapy.org/en/latest/intro/install.html#intro-install)
+- [Basic tutorial about Scrapy](https://docs.scrapy.org/en/latest/intro/tutorial.html)
+- [Full documentation about Scrapy](https://docs.scrapy.org/en/latest/)
+- [Download information about acrapy - Python](https://pypi.org/project/Scrapy/)
