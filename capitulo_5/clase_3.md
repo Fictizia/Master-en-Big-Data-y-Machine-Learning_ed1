@@ -7,14 +7,20 @@
 
 ### ¿Cómo extraemos información de Internet?
 
-Internet está lleno de información. Esta información puede ser utilizada para simplicar el proceso de búsqueda de información como han demostrado los buscadores web que almacenan la información de las páginas web con el fin de facilitar el proceso de búsqueda o el acceso a la información sin conexión
+<img src="./img/map.gif" alt="El mundo interconectado" width="800"/>
+
+Internet está lleno de información. Esta información ha sido y es utilizado para simplicar el proceso de búsqueda de información como han demostrado los buscadores web que almacenan la información de las páginas web con el fin de facilitar el proceso de búsqueda o el acceso a la información sin conexión. Aunque en los últimos años, toda esta información ha comenzado a ser utilizada para aporta nuevo valor mediante la utilización de datos:
+
+- Recopilación de información para la generación de nuevas aplicaciones.
+- Recolección de información para la comparación de precios. 
+- Recolección de información para la generación de conjuntos de datos para aprendizaje. 
+- Recolección de información para el aprendizaje de respuestas o comentarios de usuarios. 
 
 **Recursos**
 
 ### ¿Qué es un web robot?
 
 Los robot web (tambien denominados Web Wanderers) son programas que navegan por la web automáticamente la web. Este tipo de programas son comunmente utilizados por los navegadores web como Google o Bing para la indexación de contenido o por los sistema de spam para la detección de direcciones de correo electrónico. El modo de funcinamiento de los robots web puede ser configurado mediante la utilización del fichero robots.txt que puede ser incluido en cualquier aplicación web.    
-
 
 Los propietarios de sitios web pueden crear un archivo denominado __robots.txt__ que permite dar instrucciones a los robots web acerca de las acciones que pueden realizar sobre la web. La utilización de este tipo de archivo se denomina protocolo de exclusión de robots, ya que permiten minimizar las acciones que pueden realizar este tipo de programas. Por ejemplom si un robot quisiera acceder a la página web __https://fictizia-example.com__ debería acceder primer a la url __https://fictizia-example.com/robots.txt__ donde encontraría la siguiente información: 
 
@@ -33,6 +39,7 @@ En este caso el fichero de robots contiene dos directivas: (1) la primera se cor
 - [Cómo Crear el Archivo Robots.txt Perfecto Para SEO - Neil Patel](https://neilpatel.com/es/blog/robots-txt-seo/)
 - [The web robot page - Everything about robots.txt](https://www.robotstxt.org/)
 - [How to Address Security Risks with Robots.txt Files](https://www.searchenginejournal.com/robots-txt-security-risks/289719/)
+- [Especificaciones robots.txt](https://developers.google.com/search/reference/robots_txt?hl=es)
 
 ### ¿Qué es un web Crawler?
 
@@ -46,4 +53,8 @@ Un Web Scraper es un programa diseñado para la extracción de información de p
 
 ### Diferencias entre un web crawler y un web scraper
 
+En esencia el funcionamiento de un web crawler y un web scraper es el mismo, ya que ambos analizan páginas web buscando información que les permita seguir navegando y analizando más información. Es en el tipo de información y su tratamiento donde reside la gran diferencia entre ambos. Los web crawlers sólo se centran en la información de los enlaces, mientras que los web scraper, se centran en cualquier información que sea útil en base a la programación del sistema de parseo. 
 
+<img src="./img/web-scraping-vs-web-crawling-png" alt="Diferencias entre scraping y crawling" width="800"/>
+
+### SCRAPY: A web Scraper para Python
