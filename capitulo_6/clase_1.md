@@ -26,6 +26,7 @@ En mayo de 2018 Google Cloud Composer fue desplegado como servicio integrado de 
 - [Ejemplos de Apache Airflow](https://airflow.apache.org/docs/stable/tutorial.html)
 - [Download information about apache AirFlow - Python](https://pypi.org/project/apache-airflow/)
 - [Listado de operadores](https://airflow.apache.org/docs/stable/_api/airflow/operators/index.html)
+- [Documentación acerca de Jinja](https://jinja.palletsprojects.com/en/2.10.x/)
 
 <img src="./img/airloflow_1.png" alt="Logotipo de apache airflow" width="800"/>
 
@@ -44,3 +45,7 @@ Cada una de las tareas que componen un DAG de Airflow se corresponden con un Ope
 - EmailOperator: Permite el envio del emails. 
 - SimpleHttpOperator: Permite la creación de peticiones de tipo HTTP y manipular el resultado de la petición. 
 - Operadores bases de datos: Permite la ejecución de consultas sobre diferentes servidores de base de datos (MySqlOperator, SqliteOperator, PostgresOperator, MsSqlOperator, OracleOperator, JdbcOperator, etc)
+
+### Ejercicio de despligue y trabajo de Apache AirFlow ###
+
+Para aprender a utilizar Apache Airflow, se propone el siguiente [ejercicio](https://github.com/Fictizia/Master-en-Big-Data-y-Machine-Learning_ed1/blob/master/capitulo_6/recursos/ejercicio_1.md) en el cual aprenderemos como desplegar Apache Airflow en docker y como construir varios dags con diferentes tareas que incluyen diferentes tecnologías. 
