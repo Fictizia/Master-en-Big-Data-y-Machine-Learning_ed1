@@ -13,7 +13,7 @@ Apache Airflow es una plataforma para crear, programar y monitorizar flujos de t
 
 - Extensible: Airflow pemirte extender de forma muy sencilla tanto la funcionalidad que tiene la libreria, así como la creación de nuevos operadores y ejecutores.
 
-- Elegante: Airflow describe los flujos de tareas de forma sencilla y explicita. La parametrización de las tareas se puede realizar mediante el motor de plantillas [Jinja]() que se encuentra integrado en el nucleo de Airflow. 
+- Elegante: Airflow describe los flujos de tareas de forma sencilla y explicita. La parametrización de las tareas se puede realizar mediante el motor de plantillas [Jinja](https://jinja.palletsprojects.com/en/2.10.x/) que se encuentra integrado en el nucleo de Airflow. 
 
 - Escalable: Airflow está construido mediante una arquiecture modulos que utiliza una cola de mensajes para orquestar la ejecución de tareas en los trabajoadores.
 
