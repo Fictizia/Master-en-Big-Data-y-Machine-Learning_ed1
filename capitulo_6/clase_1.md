@@ -27,7 +27,7 @@ En mayo de 2018 Google Cloud Composer fue desplegado como servicio integrado de 
 - [Download information about apache AirFlow - Python](https://pypi.org/project/apache-airflow/)
 - [Listado de operadores](https://airflow.apache.org/docs/stable/_api/airflow/operators/index.html)
 
-<img src="./img/airflow_1.png" alt="Logotipo de apache airflow" width="800"/>
+<img src="./img/airloflow_1.png" alt="Logotipo de apache airflow" width="800"/>
 
 Apache Airflow nos permite crear flujos de trabajo de manera sencilla mediante la utilización de gráficos acíclicos dirigidos de tareas (Directed Aciclic Graphs DAGs). 
 
@@ -35,7 +35,7 @@ Apache Airflow nos permite crear flujos de trabajo de manera sencilla mediante l
 
 En Apache Airflow, un DAG (Directed Aciclic Graphs DAGs), o un gráfico acíclico dirigido formado por una colección de todas las tareas que van a ser ejecutadas, donde los __nodos__ del grafo se corresponden con las tareas y los __arcos__ se corresponden con las intereacciones (dirigidas) entre las tareas. Es decir, los arcos definen el flujo de ejecución de las diferentes tareas.
 
-<img src="./img/airflow_2.png" alt="Logotipo de apache airflow" width="800"/>
+<img src="./img/airloflow_2.png" alt="Logotipo de apache airflow" width="800"/>
 
 Cada una de las tareas que componen un DAG de Airflow se corresponden con un Operator en Airflow. Es decir, para definir un DAG tendremos que definir cada uno de los Operators necesarios y establecer las relaciones y dependencias entre ellos, mediante módulos de código python. Existen multitud de Operators predefinidos aunque podemos extender los operadores para crear nuestros propios operadores. Algunos de los operadores predefinidos más utilizados son los siguientes:
 
