@@ -1,13 +1,46 @@
+![WideImg](https://fictizia.com/img/github/Fictizia-plan-estudios-github.jpg)
 
+# [→ Máster en Big Data y Machine Learning](https://fictizia.com/formacion/master-big-data)
+### Big Data, Machine Learning, Tensor Flow, Data Science, Data Analytics, Arquitecturas Big Data, Plataformas Big Data
 
-Apache Airflow es una plataforma para crear, programar y monitorizar flujos de trabajo (Pipelines). Un flujo de trabajo espues, "la secuencia de procesos por los que atraviesa una parte del trabajo, desde su inicio hasta su finalización." Para ponerlo fácil, es el método que estableces para lograr terminar tus actividades.
+## Capítulo 6 - Clase 1: Flujo de trabajo mediante Apache AirFlow ##
 
-Tus "actividades" puede ser lo que sea: desde una lista de quehaceres semanales hasta un proyecto más exhaustivo como la escritura de un libro, o la configuración de un sistema de facturas para tus clientes.
+### Introducción a Apache Airflow ###
 
-De hecho, probablemente aplicas flujos de trabajo en tu vida cotidiana sin darte cuenta. Por ejemplo, supongamos que la lavandería queda de paso hacia la práctica de fútbol de tu hijo, que también resulta ser la ruta que pasa por tu tienda de dulces favorita. Así que cada miércoles, cuando tu hijo tiene práctica de fútbol, pasas a dejar la ropa a la lavandería y luego de regreso a cas, le alegras el día a todos con los dulces que compraste en la dulcería. La optimización que hiciste de la ruta para tener esa experiencia, es esencialmente un ejemplo de flujo de trabajo en su forma más simple.
+Apache Airflow es una plataforma para crear, programar y monitorizar flujos de trabajo (Pipelines). Un flujo de trabajo es un  secuencia de procesos que deben ser ejecutados para completar una tarea o trabajo, desde su inicio hasta su finalización. Es una forma sencilla de dividir una tarea compleja en una secuencia de tareas más sencilla que puede se reutilizadas durante el mismo flujo de trabajo o en diferentes. Apache Airflow ha sido desarrollado en base a cuatro principios:
 
-Cuando se trata de la productividad día con día, tu vida sería mucho más fácil si tuvieras un flujo de trabajo. Buscar entre tus correos electrónicos o entre tus papeles para encontrar información, es una pérdida de tiempo. ¡Existe una manera más fácil!
+- Dinamico: Airflow permite construir flujos de tareas (pipelines) mediante fragmentos de código (Python), permitiendo la genereación dinámica de nuevos flujos de tareas. Esto permite la creación de nuevas tareas de manera dinámica. 
 
+- Extensible: Airflow pemirte extender de forma muy sencilla tanto la funcionalidad que tiene la libreria, así como la creación de nuevos operadores y ejecutores.
 
-Utilice el flujo de aire para crear flujos de trabajo como gráficos acíclicos dirigidos (DAG) de tareas. El programador de flujo de aire ejecuta sus tareas en una matriz de trabajadores mientras sigue las dependencias especificadas. Las ricas utilidades de la línea de comandos facilitan la realización de cirugías complejas en DAG. La rica interfaz de usuario facilita la visualización de tuberías que se ejecutan en producción, supervisa el progreso y soluciona problemas cuando sea necesario.
-Básicamente, ayuda a automatizar los scripts para realizar tareas. Airflow está basado en Python, pero puede ejecutar un programa independientemente del idioma. Por ejemplo, la primera etapa de su flujo de trabajo tiene que ejecutar un programa basado en C ++ para realizar análisis de imagen y luego un programa basado en Python para transferir esa información a S3. Las posibilidades son infinitas.
+- Elegante: Airflow describe los flujos de tareas de forma sencilla y explicita. La parametrización de las tareas se puede realizar mediante el motor de plantillas [Jinja]() que se encuentra integrado en el nucleo de Airflow. 
+
+- Escalable: Airflow está construido mediante una arquiecture modulos que utiliza una cola de mensajes para orquestar la ejecución de tareas en los trabajoadores.
+
+En mayo de 2018 Google Cloud Composer fue desplegado como servicio integrado de Google Cloud Platform (GCP), que es un servicio gestionado de Apache Airflow totalmente integrado en la plataforma de Google Cloud y que se convierte en una de las piedras angulares para orquestar servicios gestionados en Google Cloud.
+
+**Recursos**
+
+- [Guía de instalación](https://airflow.apache.org/docs/stable/)
+- [Tutorial básico sobre Apache Airflow](https://airflow.apache.org/docs/stable/installation.html)
+- [Ejemplos de Apache Airflow](https://airflow.apache.org/docs/stable/tutorial.html)
+- [Download information about apache AirFlow - Python](https://pypi.org/project/apache-airflow/)
+- [Listado de operadores](https://airflow.apache.org/docs/stable/_api/airflow/operators/index.html)
+
+<img src="./img/airflow_1.png" alt="Logotipo de apache airflow" width="800"/>
+
+Apache Airflow nos permite crear flujos de trabajo de manera sencilla mediante la utilización de gráficos acíclicos dirigidos de tareas (Directed Aciclic Graphs DAGs). 
+
+### El concepto de DAG ###
+
+En Apache Airflow, un DAG (Directed Aciclic Graphs DAGs), o un gráfico acíclico dirigido formado por una colección de todas las tareas que van a ser ejecutadas, donde los __nodos__ del grafo se corresponden con las tareas y los __arcos__ se corresponden con las intereacciones (dirigidas) entre las tareas. Es decir, los arcos definen el flujo de ejecución de las diferentes tareas.
+
+<img src="./img/airflow_2.png" alt="Logotipo de apache airflow" width="800"/>
+
+Cada una de las tareas que componen un DAG de Airflow se corresponden con un Operator en Airflow. Es decir, para definir un DAG tendremos que definir cada uno de los Operators necesarios y establecer las relaciones y dependencias entre ellos, mediante módulos de código python. Existen multitud de Operators predefinidos aunque podemos extender los operadores para crear nuestros propios operadores. Algunos de los operadores predefinidos más utilizados son los siguientes:
+
+- BashOperator: Permite la ejecución de comando de tipo bash. 
+- PythonOperator: Permite la creación de fragmentos de códigos de tipo python. 
+- EmailOperator: Permite el envio del emails. 
+- SimpleHttpOperator: Permite la creación de peticiones de tipo HTTP y manipular el resultado de la petición. 
+- Operadores bases de datos: Permite la ejecución de consultas sobre diferentes servidores de base de datos (MySqlOperator, SqliteOperator, PostgresOperator, MsSqlOperator, OracleOperator, JdbcOperator, etc)
