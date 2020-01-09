@@ -38,6 +38,11 @@ En Apache Airflow, un DAG (Directed Aciclic Graphs DAGs), o un gráfico acíclic
 
 <img src="./img/airloflow_2.png" alt="Logotipo de apache airflow" width="800"/>
 
+Tasks
+Tasks represent each node of a defined DAG. They are visual representations of the work being done at each step of the workflow, with the actual work that they represent being defined by Operators.
+
+### Operadores ###
+
 Cada una de las tareas que componen un DAG de Airflow se corresponden con un Operator en Airflow. Es decir, para definir un DAG tendremos que definir cada uno de los Operators necesarios y establecer las relaciones y dependencias entre ellos, mediante módulos de código python. Existen multitud de Operators predefinidos aunque podemos extender los operadores para crear nuestros propios operadores. Algunos de los operadores predefinidos más utilizados son los siguientes:
 
 - BashOperator: Permite la ejecución de comando de tipo bash. 
@@ -45,6 +50,28 @@ Cada una de las tareas que componen un DAG de Airflow se corresponden con un Ope
 - EmailOperator: Permite el envio del emails. 
 - SimpleHttpOperator: Permite la creación de peticiones de tipo HTTP y manipular el resultado de la petición. 
 - Operadores bases de datos: Permite la ejecución de consultas sobre diferentes servidores de base de datos (MySqlOperator, SqliteOperator, PostgresOperator, MsSqlOperator, OracleOperator, JdbcOperator, etc)
+
+Los operadores son procesos aislados entre sí, ya que no comparten información con los otros operadores, pero su orden de ejecución puede ser definido con el objetivo de simplificar la ejecución de ciertas tareas.
+
+### Hooks ###
+
+Los connectores (hooks) de Airflow son intefaces que permitene interactuar con systemas de terceros (third-party systems). Su objetivo es ofrecer sistemas sencillos de conexión con apis externas o bases de datos (Apache Hive, AWS S3, GCS, MySQL, Postgres, etc). Su funcionamiento es similar al de los operadores. 
+
+- MySqlOperator
+- SqliteOperator
+- PostgresOperator
+- MsSqlOperator 
+- OracleOperator
+- JdbcOperator
+
+Toda la información referente a los credenciales para el acceso a los recursos se encuentra fuera de hooks mediante la utilización conexiones (connections) que almacenan metadados encripatados. 
+
+### Plugins ### 
+
+Los plugins de Airflow son una combinación de Hooks y operadores que permiten realizar ciertas tareas especiales o poco comundes, como por ejemplo transferir información desde un sistema de almacenamiento a otro. Para más información, es posible obtener la lista de plugins disponibles en el siguiente (enlace)[https://airflow.apache.org/docs/stable/plugins.html]
+
+### Conexiones ### 
+Las conexiones (connections) en Airflow son los sistemas de almacenamiento de información para credenciales o tokens de conexión. Este tipo de sistema se gestiona directamente sonre la UI web.
 
 ### Ejercicio de despligue y trabajo de Apache AirFlow ###
 
