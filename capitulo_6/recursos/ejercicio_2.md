@@ -224,6 +224,12 @@ for filter in filters:
   image_code += 1
 ```
 
+Además de el filtro de rotación, existen un gran número de posibles filtros que pueden ser utilizados para manipular nuestras imágenes. La [API](https://imgaug.readthedocs.io/en/latest/source/api.html) completa con todos los filtros puede aplicarse utilizando esta librería. Algunos ejemplos son:
+
+- Fliplr - Permite girar las imagenes horizontalmente. 
+- Flipud - Permite girar las imagenes verticalmente. 
+- Grayscale - Permite transformar la imagen a escala de grises. 
+
 **Paso 7: Augmentando una imágen mediante Albumentations**
 
 **Paso 8: Augmentado una imágen desde Apache Airflow**
