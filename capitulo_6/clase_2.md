@@ -17,6 +17,7 @@ Uno de los campos en los cuales esta falta de información es más significativa
 - [Instalación de Imgaug mediante Pypi](https://pypi.org/project/imgaug/)
 - [Documentación sobre el paquete albumentations](https://github.com/albumentations-team/albumentations)
 - [Instalación de Imgaug mediante Pypi](https://pypi.org/project/albumentations/)
+- [Survey acerca de augmentación de datos para Deep Learning](https://link.springer.com/article/10.1186/s40537-019-0197-0)
 
 ### El concepto de Augmentación ###
 
