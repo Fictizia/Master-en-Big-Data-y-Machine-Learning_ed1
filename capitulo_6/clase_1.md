@@ -24,7 +24,7 @@ En mayo de 2018 Google Cloud Composer fue desplegado como servicio integrado de 
 - [Guía de instalación](https://airflow.apache.org/docs/stable/)
 - [Tutorial básico sobre Apache Airflow](https://airflow.apache.org/docs/stable/installation.html)
 - [Ejemplos de Apache Airflow](https://airflow.apache.org/docs/stable/tutorial.html)
-- [Download information about apache AirFlow - Python](https://pypi.org/project/apache-airflow/)
+- [Instalación de Apache Airflow mediante Pypi - Python](https://pypi.org/project/apache-airflow/)
 - [Listado de operadores](https://airflow.apache.org/docs/stable/_api/airflow/operators/index.html)
 - [Documentación acerca de Jinja](https://jinja.palletsprojects.com/en/2.10.x/)
 
