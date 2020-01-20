@@ -9,15 +9,15 @@
 
 Apache Airflow es una plataforma para crear, programar y monitorizar flujos de trabajo (Pipelines). Un flujo de trabajo es un  secuencia de procesos que deben ser ejecutados para completar una tarea o trabajo, desde su inicio hasta su finalización. Es una forma sencilla de dividir una tarea compleja en una secuencia de tareas más sencilla que puede se reutilizadas durante el mismo flujo de trabajo o en diferentes. Apache Airflow ha sido desarrollado en base a cuatro principios:
 
-- Dinamico: Airflow permite construir flujos de tareas (pipelines) mediante fragmentos de código (Python), permitiendo la genereación dinámica de nuevos flujos de tareas. Esto permite la creación de nuevas tareas de manera dinámica. 
+- Dinamico: Airflow permite construir flujos de tareas (pipelines) mediante fragmentos de código (Python), permitiendo la generación dinámica de nuevos flujos de tareas. Esto permite la creación de nuevas tareas de manera dinámica o la modificación de las existentes.
 
-- Extensible: Airflow pemirte extender de forma muy sencilla tanto la funcionalidad que tiene la libreria, así como la creación de nuevos operadores y ejecutores.
+- Extensible: Airflow pemirte extender de forma muy sencilla tanto las funcionalidades existentes en Airflow, así como la creación de nuevos operadores y ejecutores.
 
 - Elegante: Airflow describe los flujos de tareas de forma sencilla y explicita. La parametrización de las tareas se puede realizar mediante el motor de plantillas [Jinja](https://jinja.palletsprojects.com/en/2.10.x/) que se encuentra integrado en el nucleo de Airflow. 
 
-- Escalable: Airflow está construido mediante una arquiecture modulos que utiliza una cola de mensajes para orquestar la ejecución de tareas en los trabajoadores.
+- Escalable: Airflow está construido mediante una arquiectura de modulos que utiliza una cola de mensajes para orquestar la ejecución de tareas que se ejecutarán en los nodos de trabajo (workers).
 
-En mayo de 2018 Google Cloud Composer fue desplegado como servicio integrado de Google Cloud Platform (GCP), que es un servicio gestionado de Apache Airflow totalmente integrado en la plataforma de Google Cloud y que se convierte en una de las piedras angulares para orquestar servicios gestionados en Google Cloud.
+En mayo de 2018 Google Cloud Composer fue desplegado como servicio integrado de Google Cloud Platform (GCP), que es un servicio gestionado de Apache Airflow totalmente integrado en la plataforma de Google Cloud y que se ha convertido en una de las piedras angulares para orquestar servicios gestionados en Google Cloud.
 
 **Recursos**
 
@@ -39,9 +39,6 @@ En matemáticas y ciencias de la computación, un gráfico acíclico dirigido (D
 En Apache Airflow, un DAG (Directed Aciclic Graphs DAGs), o un gráfico acíclico dirigido formado por una colección de todas las tareas que van a ser ejecutadas, donde los __nodos__ del grafo se corresponden con las tareas y los __arcos__ se corresponden con las intereacciones (dirigidas) entre las tareas. Es decir, los arcos definen el flujo de ejecución de las diferentes tareas.
 
 <img src="./img/airloflow_2.png" alt="Logotipo de apache airflow" width="800"/>
-
-Tasks
-Tasks represent each node of a defined DAG. They are visual representations of the work being done at each step of the workflow, with the actual work that they represent being defined by Operators.
 
 ### Operadores ###
 
