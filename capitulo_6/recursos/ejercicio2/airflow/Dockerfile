@@ -1,4 +1,4 @@
-# VERSION 1.1
+# VERSION 1.0
 # AUTHOR: Moisés Martínez based on the version of Matthieu "Puckel_" Roisil
 # DESCRIPTION: Extended Airflow container
 # SOURCE: https://github.com/puckel/docker-airflow
@@ -71,6 +71,12 @@ RUN set -ex \
     && pip install pyasn1 \
     && pip install imageio \
     && pip install imgaug \
+    && pip install imgaug \
+    && pip install google-cloud \ 
+    && pip install google-api-python-client \ 
+    && pip install google-auth-httplib2 \ 
+    && pip install google-cloud-storage \ 
+    && pip install kafka-python \ 
     && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
     && pip install 'redis==3.2' \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
@@ -87,12 +93,8 @@ RUN set -ex \
 
 RUN chown -R airflow: ${AIRFLOW_HOME}
 
-RUN airflow initdb
-
 COPY ./script/entrypoint.sh /entrypoint.sh
 COPY ./config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
-
-RUN chmod 777 -R ${AIRFLOW_HOME}/logs
 
 EXPOSE 8080 5555 8793
 
