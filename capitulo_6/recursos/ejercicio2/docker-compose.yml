@@ -4,15 +4,34 @@ services:
   airflow:
     restart: always
     container_name: airflow    
-    build: ./docker-airflow
+    build: ./airflow
     ports:
       - '8080:8080'
+      - '5555:5555'
+      - '8793:8793'
     volumes:
       - './dags:/usr/local/airflow/dags'
-      - './dags:/usr/local/airflow/logs'
+      - './logs:/usr/local/airflow/logs'
+      - './config:/usr/local/airflow/config'      
     networks:
       fictizia_airflow:
         ipv4_address: 172.30.1.3
+  kafka:
+    restart: always
+    container_name: kafka    
+    image: 'spotify/kafka:latest'
+    hostname: kafka
+    ports:
+      - '9092:9092'
+      - '2181:2181'
+    volumes:
+      - ./kafka-logs:/tmp/kafka-logs
+    environment: 
+      - ADVERTISED_PORT=9092
+      - ADVERTISED_HOST=172.30.1.4
+    networks:
+      fictizia_airflow:
+        ipv4_address: 172.30.1.4
 
 networks:
   fictizia_airflow:
