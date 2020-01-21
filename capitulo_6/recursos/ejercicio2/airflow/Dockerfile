@@ -34,15 +34,8 @@ RUN apt-get update -yqq \
 	python3-dev \
      	python3-pip 
 
-RUN python3.6 --version
-
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-
-RUN python3.6 --version
-
-RUN pip3 --version
-RUN pip --version
 
 RUN set -ex \
     && buildDeps=' \
@@ -92,19 +85,18 @@ RUN set -ex \
         /usr/share/doc \
         /usr/share/doc-base
 
+RUN chown -R airflow: ${AIRFLOW_HOME}
+
 RUN airflow initdb
 
-COPY script/entrypoint.sh /entrypoint.sh
-COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
+COPY ./script/entrypoint.sh /entrypoint.sh
+COPY ./config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 
-RUN chown -R airflow: ${AIRFLOW_USER_HOME}
+RUN chmod 777 -R ${AIRFLOW_HOME}/logs
 
 EXPOSE 8080 5555 8793
 
-WORKDIR /usr/local/airflow
-RUN chmod 777 -R /usr/local/airflow/logs
-
 USER airflow
-WORKDIR ${AIRFLOW_USER_HOME}
+WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["webserver"]
