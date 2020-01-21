@@ -1,12 +1,14 @@
 from datetime import datetime
 from airflow import DAG
+from airflow import models
+from airflow.utils.dates import days_ago
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
-from airflow.contrib.operators.gcs_download_operator import GoogleCloudStorageDownloadOperator
 from airflow.contrib.operators.file_to_gcs import FileToGoogleCloudStorageOperator
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from imgaug import augmenters as iaa
+from google.cloud import storage
 
 import imageio
 import numpy
@@ -18,9 +20,13 @@ numpy.random.bit_generator = numpy.random._bit_generator
 
 IMAGE_INPUT_PATH = '/data/'
 IMAGE_OUTPUT_PATH = '/new_data/'
+CREDENTIALS_PATH = '/credentials/gcs.json'
+GS_PATH = 'fictizia'
 TOPIC = 'fictizia'
 HOSTNAME = '172.30.1.4'
 PORT = 9092
+
+default_args = {"start_date": days_ago(1)}
 
 class Augmentations:
 
@@ -47,13 +53,18 @@ class Augmentations:
     def get_filters(self):
         return self.__filters.items()
 
+def data_destruction():
+
+    for base, dirs, files in os.walk(IMAGE_OUTPUT_PATH):
+        for file in files:
+            os.remove(base + '/' +  file)
+
 
 def data_augmentation():
 
     augs = Augmentations([15, 30, 45, 60, 75, 90], [0.25, 0.50, 0.75])
 
     for base, dirs, files in os.walk(IMAGE_INPUT_PATH):
-        print(base)
         for file in files:
             image = imageio.imread(base + '/' +  file)
 
@@ -63,16 +74,36 @@ def data_augmentation():
             for id, filter in augs.get_filters():
                 image_augmented = filter.augment_images([image])[0]
                 imageio.imwrite(augs.output_folder + name + '_' + id + '.' + ext, image_augmented)
-                print(augs.output_folder + name + '_' + id + '.' + ext, image_augmented)
+
+with models.DAG(
+    'ejercicio_5', 
+    description='Ejercicio 5 - clase 2',
+    default_args=default_args, 
+    schedule_interval=None, 
+) as dag:
+
+    remove_operator = PythonOperator(task_id='remove', python_callable=data_destruction)
+
+    augmentation_operator = PythonOperator(task_id='augmentation', python_callable=data_augmentation)
+
+    remove_operator >> augmentation_operator
+
+    count = 1
+    operators = list()
+
+    for base, dirs, files in os.walk(IMAGE_OUTPUT_PATH):
+        for file in files:
+            load_operator = FileToGoogleCloudStorageOperator(task_id='upload_file_' + str(count), 
+                bucket='fictizia',
+                src=base + file,
+                dst='images_2/' + file,
+                google_cloud_storage_conn_id='google_cloud_default',
+                dag=dag)
+            operators.append(load_operator)
+            count += 1
 
 
-dag = DAG('ejercicio_1', description='Ejercicio 1 - clase 2',
-          schedule_interval='0 1 * * *',
-          start_date=datetime(2020, 1, 1),
-          catchup=False)
+    augmentation_operator >> operators[0]
 
-dummy_operator = DummyOperator(task_id='dummy_task', retries=3, dag=dag)
-
-augmented_operator = PythonOperator(task_id='augmentation', python_callable=data_augmentation, dag=dag)
-
-dummy_operator > augmented_operator
+    for i in range(1, len(operators)):
+        operators[i-1] >> operators[i]
