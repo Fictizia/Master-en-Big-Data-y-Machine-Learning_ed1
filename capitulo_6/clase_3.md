@@ -9,6 +9,10 @@ ETL (Extract, transform and Load) se definen como proceso de extracción de dato
 
 <img src="./img/etl.png" alt="Estructura básica de una ETL" width="800"/>
 
+Pero no todo son ETLs, tambien podemos tener ELTs. Es posible construir procesos de extración, tranformación y carga de datos intercambiando el orden de las fases de tratamiento y carga con el fin de sacar ventaja a la tecnología. 
+
+<img src="./img/etl-vs-elt.png" alt="Extructura básica de una etl en apache airflow" width="800"/>
+
 **Recursos**
 
 - [Tutorial básico sobre Apache Airflow](https://airflow.apache.org/docs/stable/installation.html)
