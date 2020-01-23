@@ -18,7 +18,9 @@ Pero no todo son ETLs, tambien podemos tener ELTs. Es posible construir procesos
 - [Tutorial básico sobre Apache Airflow](https://airflow.apache.org/docs/stable/installation.html)
 - [Ejemplos de Apache Airflow](https://airflow.apache.org/docs/stable/tutorial.html)
 - [Creando ETLs con Apache Airflow](https://gtoonstra.github.io/etl-with-airflow/)
-- []()
+- [Documentación de ETL libre para python denominada PETL](petl.readthedocs.io)
+- [Documentación de ETL libre para python denominada PYETL](https://github.com/JohnOmernik/pyetl)
+- [ETL vs ESB by MuleSoft](https://www.mulesoft.com/resources/esb/etl-tools-vs-esb)
 
 <img src="./img/etl-airflow.png" alt="Extructura básica de una etl en apache airflow" width="800"/>
 
