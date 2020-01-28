@@ -42,3 +42,10 @@ __Conceptos básicos__
 - PCollection o "colecciones": Son representaciones abstractas de un conjunto de datos de elementos múltiples que puede distribuirse. Una canalización puede contener un conjunto de datos de un tamaño fijo o un conjunto de datos no delimitado de una fuente de datos que se actualiza continuamente.
 
 - PTransform o "transformaciones": Son operación de procesamiento que realizan transformaciones sobre los datos contenidos en una colección. Una transformación utiliza uno o más objetos de tipo PCollection como entrada, realiza una operación sobre cada uno de los elementos de esa colección y genera uno o más objetos PCollection como salida. Una transformación puede realizar casi cualquier tipo de operación de procesamiento, lo que incluye cálculos matemáticos, conversiones de datos de un formato a otro, agrupación, lectura y escritura, filtrado, etc. 
+
+- Conectores de Entrada/Salida: Los conectores de Entrada y Salida (I/O) de Apache Beam permiten leer y escribir datos a través de las canalizaciones. Un conector de Entrada y salida (I/O) está formado por dos elementos: (1) un origen o fuente y (2) un destino. En Apache Beam los origenes y destinos de los conectores son transformaciones que permiten que las canalizaciones funcionen con datos. 
+
+- ParDo: ParDo es la operación de procesamiento paralelo central de Apache Beam. Esta operación permite invocar una función especificada por el usuario que será aplicada sobre cada uno de los elementos del objeto PCollection que está siendo utilizado como entrada. Este proceso recopila los elementos de salida en un objeto PCollection. Una de las grandes ventajas de la operación ParDo es que permite el procesamiento de los elementos de forma individual y paralelo.
+
+- Agregación: La agregación es una operación de procesamiento que  algunos valores de varios elementos de entrada. El principal patrón de procesamiento para agregación en Apache Beam es agrupar todos los elementos con una clave y ventana comunes. Luego, combina cada grupo de elementos con una operación asociativa y conmutativa.
+Funciones definidas por el usuario (UDF)
