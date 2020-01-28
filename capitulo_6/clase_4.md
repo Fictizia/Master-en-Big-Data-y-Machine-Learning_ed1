@@ -7,7 +7,14 @@
 
 ### Introducción a Cloud DataFlow ###
 
+Cloud Dataflow es un servicio completamente administrado de GCP para transformar y enriquecer datos que son ingeridos mediante proceso de streaming (tiempo real) o batch (lotes). Debido a su enfoque de aprovisionamiento y administración de recursos sin servidores, permite acceder a una capacidad "prácticamente" ilimitada de recursos para el desarollo de sistema de procesamiento de datos. Actualmente existen un amplio número de procesos de transformación, debido a su versatilidad y al amplio uso que está realizando las empresas de servicio. Debido a ellos DataFlow ofrece casos prácticos de procesos de transformación para diferentes áreas, entre los que se incluyen:
 
+- Análisis de flujo de clics, puntos de venta y segmentación en el comercio minorista.
+- Detección de fraude en servicios financieros.
+- Anális de experiencia del usuario personalizada en videojuegos.
+- Análisis y visualización de estadísticas de IoT en la fabricación, salud y logística.
+
+<img src="https://cloud.google.com/dataflow/images/diagram-dataflow.png?hl=es-419" alt="Diagrama de funcionamiento de dataflow" width="800"/>
 
 **Recursos**
 
@@ -17,12 +24,21 @@ https://cloud.google.com/dataflow/docs/quickstarts/quickstart-python?hl=es-419)
 - [Guía de uso rápido de Cloud DataFlow para Java](https://cloud.google.com/dataflow/docs/quickstarts/quickstart-java-maven?hl=es-419)
 - [QuickLabs Cloud DataFlow](https://www.qwiklabs.com/focuses/1100?locale=es&parent=catalog)
 - [Instalación de Cloud DataFlow mediante Pypi - Python](https://pypi.org/project/google-cloud-dataflow/)
+- [Página oficial del proyecto Apache Beam](https://beam.apache.org/)
+- [Documentación oficial del proyecto Apache Beam](https://beam.apache.org/documentation/)
+- [Guía de inicio sobre Apache Beam](https://beam.apache.org/get-started/beam-overview/)
 
 
 ### Introducción a Apache Beam ###
 
-Cloud DataFlow es una tecnología basada en el proyecto [Apache Beam]() del ecosistema Apache. Apache Beam es un modelo de programación que permite desarrollar, de forma sencilla, procesos o aplicaciones para el tratamientos de datos en batch (lotes) y streaming. 
+Cloud DataFlow es una tecnología basada en el proyecto [Apache Beam]() del ecosistema Apache que aparecio en 2016. Apache Beam es un modelo de programación que permite desarrollar, de forma sencilla, procesos o aplicaciones para el tratamientos de datos en batch (lotes) y streaming que pueden ser desplegadas en cualquier "motor de ejecución" utilizando diferentes interfaces de entrada y salida. 
 
-Apache Beam es un modelo de programación unificada que ofrece una forma fácil de implementar tareas de tratamiento de datos por lotes y en streaming y de ejecutarlas en cualquier motor de ejecución con una serie de IO distintas. ¿Suena prometedor, pero le sigue pareciendo confuso? Este el motivo por el que decidí publicar una serie de entradas de blog dedicadas a Apache Beam. En esta y en las siguientes entradas daré varios ejemplos concretos y destacaré determinados casos prácticos de tareas de tratamiento de datos mediante Apache Beam.
+El modelo de Apache Beam se basa en la utilización de abstracciones que te aíslan de los detalles de bajo nivel del procesamiento distribuido, como la coordinación de trabajadores individuales, la fragmentación de conjuntos de datos y otras tareas similares. Este modelo está basa en tres conceptos básicos: 
 
-El tema de hoy es el procesamiento por lotes. Veamos el siguiente ejemplo: Usted trabaja en un concesionario de automóviles y desea analizar las ventas de vehículos a lo largo de un cierto periodo de tiempo (p. ej., cuántos coches de cada marca se vendieron). Esto significa que nuestro conjunto de datos es limitado (cantidad finita de datos) y no se actualizará (las ventas tuvieron lugar en el pasado). En este caso, podemos optar por un proceso por lotes para analizar nuestros datos.
+__Conceptos básicos__
+
+- Pipelines o "Canalizaciones": Un Pipeline es una secuencia de procesos (secuenciales o paralelos) que implica todo el flujo de tratamiento y manipulación de la información. Es decir, un pipeline suele incluir los procesos de lectura de datos de entrada a partir de un sistema de almacenamiento, los diferentes procesos de transformación y la escritura de los datos en un sistema de almacenamiento. Las aplicaciones o programas desarrollados mediante Apache Beam utilizan como base un objeto de tipo Pipeline y, a partir de ahí utilizan ese objeto como base para la creación de las canalizaciones (PColection). 
+
+- PCollection o "colecciones": Son representaciones abstractas de un conjunto de datos de elementos múltiples que puede distribuirse. Una canalización puede contener un conjunto de datos de un tamaño fijo o un conjunto de datos no delimitado de una fuente de datos que se actualiza continuamente.
+
+- PTransform o "transformaciones": Son operación de procesamiento que realizan transformaciones sobre los datos contenidos en una colección. Una transformación utiliza uno o más objetos de tipo PCollection como entrada, realiza una operación sobre cada uno de los elementos de esa colección y genera uno o más objetos PCollection como salida. Una transformación puede realizar casi cualquier tipo de operación de procesamiento, lo que incluye cálculos matemáticos, conversiones de datos de un formato a otro, agrupación, lectura y escritura, filtrado, etc. 
