@@ -22,6 +22,7 @@ https://cloud.google.com/dataflow/docs/quickstarts/quickstart-python?hl=es-419)
 - [Página oficial del proyecto Apache Beam](https://beam.apache.org/)
 - [Documentación oficial del proyecto Apache Beam](https://beam.apache.org/documentation/)
 - [Guía de inicio sobre Apache Beam](https://beam.apache.org/get-started/beam-overview/)
+
 Cómo en los anteriores ejercicios vamos a utilizar Docker como tecnología de creación de contenedores mediante la utilización de imágenes. Existen diferentes maneras de construir nuestra imagen basada en Apache Airflow: (1) mediante la utilización de  una imagen previamente desarrollada y almacenada en Docker Hub; o (2) mediante la generación de un fichero de despliegue (docker-compose.yml). En este caso vamos a utilizar una imagen previamente construir que desplegaremos mediante un fichero de despliegue.
 
 **Paso 1: Activación de DataFlow**
