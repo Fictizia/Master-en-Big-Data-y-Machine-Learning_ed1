@@ -36,7 +36,7 @@ REPOSITORY                     TAG                 IMAGE ID            CREATED  
 jupyter/datascience-notebook   latest              9e64f3a158ed        2 weeks ago         4.91GB
 ```
 
-**Paso 2: Desplegandando la imagen **
+**Paso 2: Desplegandando la imagen**
 
 Una vez que hemos descargado la imagen podemos deplegarla para levantas nuestro servidor MongoDB, mediante el siguiente comando:
 
@@ -177,7 +177,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 En este caso vamos a utilizar los datos contenidos en el dataset de [Zalando sobre ropa](https://github.com/zalandoresearch/fashion-mnist). Además hemos incluido una serie de librerias para la manipulación de los datos (numpy y input_data), otras para el proceso de aprendizaje (tensorflow) y otras para la visualización de los resultados (matplotlib). Además en este caso hemos desactivado la opción del sistema operativo para visualizar dispositivos que utilizan CUDA, con el fin de evitar que nuestro proceso de aprendizaje se ejecute en una GPU. 
 
-**Paso 1.3: Análisis y manipulación de los datos **
+**Paso 1.3: Análisis y manipulación de los datos**
 
 A continuación vamos a cargar nuestro datos. Para ellos vamos a utilizar las funciones contenidas en la librería input_data. Esta libreras podra cargarme mediante el framework de tensorflow:
 
@@ -229,7 +229,7 @@ def plot_image(plt, data, label, size, location):
     plt.title("(Label: " + str(LABELS[label]) + ")")
 ```
 
-**Paso 1.4: Preparación de los datos **
+**Paso 1.4: Preparación de los datos**
 
 El siguiente paso consiste en preparar los datos para que sean utilizados durante el proceso de aprendizaje. En primer lugar definiremos el tamaño de la las imagenes (28 pixeles). A continuación crearemos los conjunto de entrenamiento y test. En este caso no tenemos que aplicar ninguna distribución sobre los datos de entrada, ya que los conjuntos vienen definidos desde el origen. 
 
@@ -243,7 +243,7 @@ train_y = data.train.labels
 test_y = data.test.labels
 ```
 
-**Paso 1.5: Construyendo capas de neuronas **
+**Paso 1.5: Construyendo capas de neuronas**
 
 Una vez que hemos prepado nuestros datos tenemos que construir nuestro algoritmo de aprendizaje. En este caso el algoritmo se divide en dos fases. 
 
@@ -308,7 +308,7 @@ def fully_connected(x, w, b):
 
 Debido a que estamos realizando un proceso de clasificación debemos aplicar una función de fully connected que conecta cada neurona en la capa anterior (última capa convolucional) a cada neurona en la capa siguiente. Este proceso se puede considerar como como la aplicación de perceptrón multicapa (MLP) tradicional. La matriz de aplanada atraviesa una capa completamente conectada para clasificar las imágenes.
 
-**Paso 1.6: Creando nuestra red **
+**Paso 1.6: Creando nuestra red de neuronas**
 
 Una vez que hemos definidos nuestras funciones auxiliares para la creación de la capas de nuestra red vamos construir una función para la generación de redes convolucionales genéricas. Para ellos crearemos la función __generate_network__ que tendrá 6 parámetros de entrada:
 
@@ -377,7 +377,7 @@ Una vez definadas la variables de entrada y salida con su formato (shape) podemo
 
 <img src="./img/neurons_1.png" alt="Estructura de la red de neuronas" width="800"/>
 
-**Paso 1.8: Construyendo nuestro proceso de aprendizaje **
+**Paso 1.8: Construyendo nuestro proceso de aprendizaje**
 
 Para la realización del proceso de aprendizaje es necesario definir algunos elementos básicos. En primer lugar vamos a definir la función de activación de la salida de la red de neuronas. Debido a que estamos construyendo un modelo de clasificación multi-clase utilizaremos un función de activación de tipo __softmax__ sobre las neuronas de salida de forma que obtengamos un valor probabilstico para cada uno de los labels. Esta función será combinada con un  [cross-entropy](https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html) para calcular la función de loss. Vamos a utilizar esta función debido dos propiedades esenciales que se esperan para una función de coste: (1) el resultado es siempre positivo; y (2) el resultado tiende a cero según mejora la salida deseada (y) para todas las entradas del conjunto de entrenamiento (X). 
 
