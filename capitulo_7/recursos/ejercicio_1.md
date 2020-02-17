@@ -380,7 +380,7 @@ Iteración: 100: Coste=71.00587 con a=0.12281656 y b=18.73176
 
 <img src="../img/regresion_results_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[./ejercicio_1/regresion_lineal_simple.ipynb]
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la [solución](./ejercicio_1/regresion_lineal_simple.ipynb)
 
 ### 2. Construyendo nuestra regresión lineal múltiple
 
@@ -631,4 +631,4 @@ Iteración: 100: Loss=21568.828 con as=[[-0.06754547  3.6055403]], b=4.2649207
 
 <img src="../img/regresion_results_2.png" alt="Resultado de regresión lineal multiple (2 variables) tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión multiple sobre el dataset elegido de forma sencilla. Además es posible añadir mas variables independientes al proceso de aprendizaje, aunque sería necesario modificar la función de visualización. Puedes ver el código completo en la (solución)[./ejercicio_1/regresion_lineal_multiple.ipynb]
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión multiple sobre el dataset elegido de forma sencilla. Además es posible añadir mas variables independientes al proceso de aprendizaje, aunque sería necesario modificar la función de visualización. Puedes ver el código completo en la [solución](./ejercicio_1/regresion_lineal_multiple.ipynb)
