@@ -8,8 +8,8 @@
 El objetivo de este ejercicio es construir regresiones lineales de tipo simple y múltiple. Para poder construir nuestros modelos de Machine Learning de forma sencilla vamos a utilizar un servidor de Jupyter Notebooks. Para ello, vamos a construir un contenedor que contenga un servidor Jupyter Notebooks fin de poder desarrollar diferentes tipos de algoritmos de manera sencilla. Este ejercicio ba a estár compuesto de tres fases:
 
 - 1 Desplegando nuestro contenedor Jupyter Notebook
-- 2 Construyendo nuestra regresión lineal simple
-- 3 Construyendo nuestra regresión lineal múltiple
+- 2 Construyendo nuestra red de neuronas convolucional mediante TensorFlow
+- 3 Construyendo nuestra red de neuronas convolucional mediante Keras
 
 ### Desplegando nuestro contenedor Jupyter Notebook
 
@@ -370,31 +370,40 @@ biases.append(tf.get_variable('BOUT', shape=(n_output)))
 
 Una vez definadas la variables de entrada y salida con su formato (shape) podemos construir nuestra red de neuronas que estará compuesta de tres 5 capas: 
 
-- Capa convolucional 1:
-- Capa convolucional 2:
-- Capa convolucional 3:
-- Capa fully connected:
-- Capa salida:
+- Capa convolucional 1: Capa convolucional que aplica un filtro convolucional de 3 x 3, pooling de 2 x 2 con una función de activación ReLU con entrada de 28 neuronas y salida de 32 neuronas. 
+- Capa convolucional 2: Capa convolucional que aplica un filtro convolucional de 3 x 3, pooling de 2 x 2 con una función de activación ReLU con entrada de 32 neuronas y salida de 64 neuronas. 
+- Capa fully connected: Capa fully connected con una función de activación ReLU con entrada de 64 y salida 512 neuronas. 
+- Capa salida: Capa de salida con entrada de 512 neuronas y salida de 10 neuronas (labels). 
+
+<img src="./img/neurons_1.png" alt="Estructura de la red de neuronas" width="800"/>
 
 **Paso 1.8: Construyendo nuestro proceso de aprendizaje **
 
-
+Para la realización del proceso de aprendizaje es necesario definir algunos elementos básicos. En primer lugar vamos a definir la función de activación de la salida de la red de neuronas. Debido a que estamos construyendo un modelo de clasificación multi-clase utilizaremos un función de activación de tipo __softmax__ sobre las neuronas de salida de forma que obtengamos un valor probabilstico para cada uno de los labels. Esta función será combinada con un  [cross-entropy](https://ml-cheatsheet.readthedocs.io/en/latest/loss_functions.html) para calcular la función de loss. Vamos a utilizar esta función debido dos propiedades esenciales que se esperan para una función de coste: (1) el resultado es siempre positivo; y (2) el resultado tiende a cero según mejora la salida deseada (y) para todas las entradas del conjunto de entrenamiento (X). 
 
 ```
 cost = tf.reduce_mean(
     tf.nn.softmax_cross_entropy_with_logits(
         logits=net, 
         labels=y))
+```
 
+A continuación tenemos que definir la función de obtimización que utilizaremos para minimizar el valor de función de coste. Para este ejecicio vamos a utilizar el algoritmo de [Adam](https://arxiv.org/abs/1412.6980https://arxiv.org/abs/1412.6980) con el fin de minimizar el coste del error mediante la función __tf.train.AdamOptimizer__. 
+
+```
 optimizer = tf.train.AdamOptimizer(
     learning_rate=learning_rate).minimize(cost)
+```
 
+Además de las dos operaciones básicas de un proceso de aprendizaje, vamos a añadir dos funciones más a nuestro grafo de operaciones más para realizar el proceso de test. Estas operaciones serán __correct_prediction__ y __accuracy__ que nos permitirán evaluar el modelo después de cada iteración de entrenamiento utilizando todos los elementos del conjunto de entrenamiento. 
+
+```
 correct_prediction = tf.equal(tf.argmax(net, 1), tf.argmax(y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     
 ```
 
-Una vez que se han definido todas las variables y funciones necesarias para el proceso de aprendizaje, podemos construir el bucle en tensorflow. Para ello primero deberemos inicializar la variables mediante el método __tf.global_variables_initializer__. Este método inicializará todas las variables definidas previamente cuando se ejecute dentro de la sesion. A continuación será necesario crear una sesión en tensorflow para poder ejecutar todas nuestras funciones, siendo la primera la que inicializa la variables mediante la ejecución del método __session.run(init)__ de la sesión previamente creada. 
+Una vez que se han definido todas las variables y funciones necesarias para el proceso de aprendizaje, podemos construir el bucle en tensorflow. Para ello primero deberemos inicializar la variables mediante el método __tf.global_variables_initializer__. Este método inicializará todas las variables definidas previamente cuando se ejecute dentro de la sesion. A continuación será necesario crear una sesión en tensorflow para poder ejecutar todas nuestras funciones, siendo la primera la que inicializa la variables mediante la ejecución del método __session.run(init)__ de la sesión previamente creada. A continuación definiremos un conjunto de variables que almacenarán la información de cada una de nuestras iteraciones con el fin de poder visualizar la evolución del proceso. 
 
 ```
     init = tf.global_variables_initializer()
@@ -411,7 +420,7 @@ Una vez que se han definido todas las variables y funciones necesarias para el p
         summary_writer = tf.summary.FileWriter('./output', sess.graph)
 ```
 
-Una vez inicializadas las variables podemos comenzar el bucle de aprendizaje que se ejecutará tantas veces como iteraciones de entrenamiento. Cada una de las iteraciones de este bucle calculará un nuevo valor para la pediente (slope_pred) y el interceptor de la y (y_intercept_pred) mediante el proceso de optimización seleccionado. Para ello se utilizarn todos los ejemplos de entrenamiento. 
+Una vez inicializadas las variables podemos comenzar el bucle de aprendizaje que se ejecutará tantas veces como iteraciones de entrenamiento. Cada iteraciones (epoch) se divirá en un conjunto de micro iteraciones utiliando barch de imágenes. Para cada uno de esto barch se aplicará la función de optimización y luego se obtendrá el coste (loss) y la exactitud (accuracy) del modelo. 
 
 ```
         for epoch in range(training_iters):
@@ -425,18 +434,17 @@ Una vez inicializadas las variables podemos comenzar el bucle de aprendizaje que
                 loss, acc = sess.run([cost, accuracy], feed_dict={x: batch_x,
                                                                   y: batch_y})
 ```
-Los mostraremos cada 25 iteraciones con el fin de visualizar la evolución de nuestro proceso de aprendizaje. 
+Estos valores se mostrarán cada 10 iteraciones con el fin de visualizar la evolución de nuestro proceso de entrenamiento. 
 
 ```
-            if (epoch + 1) % 25 == 0:
-                            cost_error = session.run(cost, feed_dict={X: X_train, Y: Y_train})
-                            slope = session.run(slope_pred)
-                            y_intercept = session.run(y_intercept_pred)
-                            print("Iteración: " + str(epoch+1) + ": Loss=" + str(cost_error) + " con a=" + str(slope) + " y b=" + str(y_intercept))
-
+            if (epoch + 1) % 10 == 0:
+                print("Iteración " + str(epoch+1) + ", Loss= " + \
+                      "{:.6f}".format(loss) + ", Exactitud= " + \
+                      "{:.5f}".format(acc))
+                
 ```
 
-Una vez finalizado el proceso de entrenamiento, utilizaremos el último valor calculado para la pendiente y el interceptor de la y con el fin de calcular el resultado de nuestra recta de regresión sobre el conjunto de entrenamiento y la información que hemos recolectado durante el proceso de entrenenamiento. 
+Una vez finalizado el proceso de entrenamiento, calcularemos los resultados finales con respeto . 
 
 ```
 
@@ -445,71 +453,50 @@ Una vez finalizado el proceso de entrenamiento, utilizaremos el último valor ca
         test_loss.append(valid_loss)
         train_accuracy.append(acc)
         test_accuracy.append(test_acc)
-        print("Testing Accuracy:","{:.5f}".format(test_acc))
+        print("Exactitud test:","{:.5f}".format(test_acc))
 
         summary_writer.close()
         
         return [train_loss, test_loss, train_accuracy, test_accuracy]
-
 ```
 
 **Paso 1.6: Visualizando el resultado del proceso de entrenamiento**
 
-Una vez realizado el proceso de entrenamiento vamos a utilizar la información recolectada por el proceso de entrenamiento con el fin de visualizar su evolución. Para ellos vamos a crear una función que denominaremos __print_chart__ y utilizará 7 parámetros de entrada:
+Una vez realizado el proceso de entrenamiento vamos a utilizar la información recolectada por el proceso de entrenamiento con el fin de visualizar su evolución. Para ellos vamos a crear una función que denominaremos __print_results__ y utilizará 7 parámetros de entrada:
 
-- X_train: Es el conjunto de ejemplos de entrenamiento.
-- Y_train: Es el resultado esperado de cada uno de los ejemplos de entrenamiento. 
-- label_x: Es la etiqueta que se utilizará en la gráfica de aprendizaje para el eje x (Variable independiente). 
-- label_y: Es la etiqueta que se utilizará en la gráfica de aprendizaje para el eje y (Variable dependiente). 
-- result: Es el conjunto de valores utilizando la recta de regresión calculada por el algoritmo de aprendizaje. 
-- history_data: Es el DataFrame generado por el proceso de aprendizaje. 
-- training_epochs: Es el número de iteraciones del proceso de entrenamiento con el fin de minimizar el error y conseguir el mejor modelo. Su valor estár comprendido entre 1 y +inf. 
-
-En la primera parte de la función mostraremos la grafica de evolución del coste (loss) que intentamos minimizar para conseguir la mejor recta de regresión
+- train_loss: Es el conjunto de los valores de coste (loss) del conjunto de entrenamiento en cada iteración. 
+- test_loss: Es el conjunto de los valores de coste (loss) del conjunto de test en cada iteración. 
 
 ```
-def print_chart(X_train, Y_train, label_x, label_y, result, history_data, training_epochs):
+def print_results(train_loss, test_loss):
     
+    plt.plot(range(len(train_loss)), train_loss, 'b', label='Loss entrenamiento')
+    plt.plot(range(len(test_loss)), test_loss, 'r', label='Loss test')
+    plt.title('Entrenamiento y test')
+    plt.xlabel('Iteraciones,fontsize=16)
+    plt.ylabel('Loss',fontsize=16)
+    plt.legend()
     plt.figure()
-    plt.plot(history_data.epoch, history_data.loss, 'ro', label='Evolución del coste')
-    plt.xlabel('Iteración')
-    plt.ylabel('Coste (loss)')
-    plt.legend('Evolución del coste (loss) durante el proceso de aprendizaje')
-
-```
-
-En la segunda parte de la función mostramos la recta de regresión obtenida tras el proceso de aprendizaje sobre el conjunto de entrenamiento. 
-
-```
-    plt.figure()
-    plt.plot(X_train, Y_train, 'ro', label='Aprendizaje tras ' + str(training_epochs) + 'iteraciones')
-    plt.xlabel(label_x)
-    plt.ylabel(label_y)
-    plt.plot(X_train, result, label="Recta de regresión")
     plt.show()
 ```
 
 **Paso 1.7: Ejecutando nuestro proceso de aprendizaje**
 
-Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.06. 
+Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.001 y un tamaño de batch de 128 imágenes. 
 
 ```
-learning_rate = 0.06
-training_epochs = 100
-
-result, history_result = train(X_train, Y_train, n_samples_train, learning_rate, training_epochs)
-print_chart(X_train, Y_train, 'Edad', 'Precio', result, history_result, training_epochs)
+results = train(10, 0.001, 128)
+print_results(results[0], results[1])
 ```
 
 Siendo el resultado obtenido tras ejecutar el codígo el siguiente:
 
 ```
-Iteración: 25: Coste=98.71037 con a=0.26858303 y b=5.9782166
-Iteración: 50: Coste=84.432076 con a=0.20912959 y b=11.179977
-Iteración: 75: Coste=75.92339 con a=0.16129795 y b=15.364909
-Iteración: 100: Coste=71.00587 con a=0.12281656 y b=18.73176
+Iteración 10, Loss= 0.054120, Training Accuracy= 0.99219
+Aprendizaje finalizado!
+Exactitud test: 0.89920
 ```
 
-<img src="./img/regresion_results_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
+<img src="./img/regresion_conv_neurons_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[../ejercicio_1/regresion_lineal_simple.ipynb]
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[../ejercicio_3/convolutional_networks_1.ipynb]
