@@ -380,7 +380,7 @@ Iteración: 100: Coste=71.00587 con a=0.12281656 y b=18.73176
 
 <img src="./img/regresion_results_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[../ejercicio_1/regresion_lineal_multiple.ipynb]
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[../ejercicio_1/regresion_lineal_simple.ipynb]
 
 ### 2. Construyendo nuestra regresión lineal múltiple
 
@@ -539,13 +539,10 @@ Una vez inicializadas las variables podemos comenzar el bucle de aprendizaje que
             })
 ```
 
-Además para cada una de la iteraciones recogeremos una serie de valores (mae, error, slope y y_intercept) con el objetivo de analizar la evolución de estos valores una vez terminado el proceso de entrenamiento. 
+Además para cada una de la iteraciones calcularemos el sólo el mae, ya que el resto de valores son generados en el proceso de aprendizaje, con el objetivo de analizar la evolución de estos valores una vez terminado el proceso de entrenamiento. 
 
 ```
-            mae = mae / len(X_train)
-            cost_error = session.run(cost, feed_dict={X: X_train, Y: Y_train})
-            slope = session.run(slope_pred)
-            y_intercept = session.run(y_intercept_pred)
+            mae = current_loss / len(X_train)
 
 ```
 Los mostraremos cada 25 iteraciones con el fin de visualizar la evolución de nuestro proceso de aprendizaje. 
@@ -553,17 +550,15 @@ Los mostraremos cada 25 iteraciones con el fin de visualizar la evolución de nu
 ```
  
             if (epoch + 1) % 25 == 0:
-                cost_error = session.run(cost, feed_dict={X: X_train, Y: Y_train})
                 slope = session.run(slope_pred)
-                y_intercept = session.run(y_intercept_pred)
-                print("Iteración: " + str(epoch+1) + ": Loss=" + str(cost_error) + " con a=" + str(slope) + " y b=" + str(y_intercept))
+                print("Iteración: " + str(epoch+1) + ": Loss=" + str(current_loss) + " con as=" + str(current_slope) + ", b=" + str(current_y_intercept))
             
-            iteration = [cost_error, mae, slope, y_intercept, epoch+1]
+            iteration = [current_loss, mae, current_slope, current_y_intercept, epoch+1]
             history.append(iteration)    
 
 ```
 
-Una vez finalizar el proceso de entrenamiento, utilizaremos el último valor calculado para la pendiente y el interceptor de la y con el fin de calcular el resultado de nuestra recta de regresión sobre el conjunto de entrenamiento y la información que hemos recolectado durante el proceso de entrenenamiento. 
+Una vez finalizado el proceso de entrenamiento, utilizaremos el último valor calculado para la pendiente y el interceptor de la y con el fin de calcular el resultado de nuestra recta de regresión sobre el conjunto de entrenamiento y la información que hemos recolectado durante el proceso de entrenenamiento. 
 
 ```
 
@@ -599,14 +594,17 @@ def print_chart(X_train, Y_train, label_x, label_y, result, history_data, traini
 
 ```
 
-En la segunda parte de la función mostramos la recta de regresión obtenida tras el proceso de aprendizaje sobre el conjunto de entrenamiento. 
+En la segunda parte de la función mostramos la distribución de los valores en formato 3D con el fin de analizar la distribución de valores utilizados. 
 
 ```
     plt.figure()
-    plt.plot(X_train, Y_train, 'ro', label='Aprendizaje tras ' + str(training_epochs) + 'iteraciones')
-    plt.xlabel(label_x)
-    plt.ylabel(label_y)
-    plt.plot(X_train, result, label="Recta de regresión")
+    ax = plt.axes(projection='3d')
+    
+    xdata = X_train[:,0]
+    ydata = X_train[:,1]
+    zdata = Y_train[:,0]
+   
+    ax.scatter3D(xdata, ydata, zdata, c=zdata, cmap='Greens');
     plt.show()
 ```
 
@@ -625,12 +623,12 @@ print_chart(X_train, Y_train, 'Edad', 'Precio', result, history_result, training
 Siendo el resultado obtenido tras ejecutar el codígo el siguiente:
 
 ```
-Iteración: 25: Coste=98.71037 con a=0.26858303 y b=5.9782166
-Iteración: 50: Coste=84.432076 con a=0.20912959 y b=11.179977
-Iteración: 75: Coste=75.92339 con a=0.16129795 y b=15.364909
-Iteración: 100: Coste=71.00587 con a=0.12281656 y b=18.73176
+Iteración: 25: Loss=57618.28 con as=[[0.15290189 0.987823]], b=1.9863163
+Iteración: 50: Loss=36299.77 con as=[[0.06888402 2.117016]], b=3.0250173
+Iteración: 75: Loss=25638.203 con as=[[-0.01295658  2.999957]], b=3.7998881
+Iteración: 100: Loss=21568.828 con as=[[-0.06754547  3.6055403]], b=4.2649207
 ```
 
-<img src="./img/regresion_results_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
+<img src="./img/regresion_results_2.png" alt="Resultado de regresión lineal multiple (2 variables) tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. 
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión multiple sobre el dataset elegido de forma sencilla. Además es posible añadir mas variables independientes al proceso de aprendizaje, aunque sería necesario modificar la función de visualización. Puedes ver el código completo en la (solución)[../ejercicio_1/regresion_lineal_multiple.ipynb]
