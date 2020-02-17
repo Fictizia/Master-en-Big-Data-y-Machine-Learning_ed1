@@ -234,7 +234,7 @@ def plot_image(plt, data, label, size, location):
 El siguiente paso consiste en preparar los datos para que sean utilizados durante el proceso de aprendizaje. En primer lugar definiremos el tamaño de la las imagenes (28 pixeles). A continuación crearemos los conjunto de entrenamiento y test. En este caso no tenemos que aplicar ninguna distribución sobre los datos de entrada, ya que los conjuntos vienen definidos desde el origen. 
 
 ```
-size = 28 #784 = 28 x 28
+size = 28 #pixeles
 
 train_X = data.train.images
 test_X = data.test.images
@@ -258,7 +258,7 @@ Para la construcción de la red de neuronas vamos a definir una serie de variabl
 - biases: Se corresponde con un conjunto de bias, cada uno aplicado a una de las capas de las red. Existe una correspondencias 1 a 1 entre los elementos de la lista weights y la lista biases. 
 
 ```
-n_input = size
+n_input = size x size #784 = 28 x 28
 n_output = len(LABELS) 
 weights = list()
 biases = list()
@@ -351,7 +351,7 @@ Una vez que hemos definido la función de generación, podemos construir nuestra
 ```
 tf.reset_default_graph()
 
-x = tf.placeholder("float", [None, n_input, n_input, 1])
+x = tf.placeholder("float", [None, n_input])
 y = tf.placeholder("float", [None, n_output])
 
 #Capa convolucional 32 filtro 3x3
