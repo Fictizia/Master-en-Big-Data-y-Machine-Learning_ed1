@@ -497,6 +497,6 @@ Aprendizaje finalizado
 Exactitud test: 0.89510
 ```
 
-<img src="./img/regresion_conv_neurons_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
+<img src="../img/regresion_conv_neurons_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
 
 Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[../ejercicio_3/convolutional_networks_1.ipynb]
