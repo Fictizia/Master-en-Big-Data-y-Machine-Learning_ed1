@@ -123,11 +123,11 @@ Executing the command: jupyter lab
 
 Una vez que hemos desplegado nuestro servidor Jupyter Notebook y hemos accedido a la consola de inicio. Podremos trabajar con el interfaz:
 
-<img src="./img/jupyter_1.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
+<img src="../img/Jupyter_1.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
 
 Como podemos observar en la imagen, el posible crear diferentes tipos de elementos (notebooks, scripts, etc). Para la realización de este ejercicio vamos a utilizar un notebook de tipo Python 3. De forma que una vez que pulsemos sobre el botón de python 3 crearemos un nuevo notebook, como se muestra en la siguiente imagen:
 
-<img src="./img/jupyter_3.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
+<img src="../img/Jupyter_2.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
 
 Este interfaz nos permite crear incluir fragmentos de código python y analizar su resultado una vez que ha sido ejecutado el fragmento de código, cada uno de estos fragmento es representado mediante un id entre corchetes, siendo su significado el siguiente:
 
@@ -378,9 +378,9 @@ Iteración: 75: Coste=75.92339 con a=0.16129795 y b=15.364909
 Iteración: 100: Coste=71.00587 con a=0.12281656 y b=18.73176
 ```
 
-<img src="./img/regresion_results_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
+<img src="../img/regresion_results_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[../ejercicio_1/regresion_lineal_simple.ipynb]
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión simple sobre el dataset elegido de forma sencilla. Puedes ver el código completo en la (solución)[./ejercicio_1/regresion_lineal_simple.ipynb]
 
 ### 2. Construyendo nuestra regresión lineal múltiple
 
@@ -629,6 +629,6 @@ Iteración: 75: Loss=25638.203 con as=[[-0.01295658  2.999957]], b=3.7998881
 Iteración: 100: Loss=21568.828 con as=[[-0.06754547  3.6055403]], b=4.2649207
 ```
 
-<img src="./img/regresion_results_2.png" alt="Resultado de regresión lineal multiple (2 variables) tras 100 iteraciones" width="800"/>
+<img src="../img/regresion_results_2.png" alt="Resultado de regresión lineal multiple (2 variables) tras 100 iteraciones" width="800"/>
 
-Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión multiple sobre el dataset elegido de forma sencilla. Además es posible añadir mas variables independientes al proceso de aprendizaje, aunque sería necesario modificar la función de visualización. Puedes ver el código completo en la (solución)[../ejercicio_1/regresion_lineal_multiple.ipynb]
+Ahora podemos modificar el número de iteraciones y la tasa de aprendizaje con el fin de aplicar todos los procesos de regresión multiple sobre el dataset elegido de forma sencilla. Además es posible añadir mas variables independientes al proceso de aprendizaje, aunque sería necesario modificar la función de visualización. Puedes ver el código completo en la (solución)[./ejercicio_1/regresion_lineal_multiple.ipynb]
