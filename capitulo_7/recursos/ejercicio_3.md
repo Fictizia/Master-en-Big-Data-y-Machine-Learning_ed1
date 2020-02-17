@@ -123,11 +123,11 @@ Executing the command: jupyter lab
 
 Una vez que hemos desplegado nuestro servidor Jupyter Notebook y hemos accedido a la consola de inicio. Podremos trabajar con el interfaz:
 
-<img src="./img/jupyter_1.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
+<img src="../img/Jupyter_1.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
 
 Como podemos observar en la imagen, el posible crear diferentes tipos de elementos (notebooks, scripts, etc). Para la realización de este ejercicio vamos a utilizar un notebook de tipo Python 3. De forma que una vez que pulsemos sobre el botón de python 3 crearemos un nuevo notebook, como se muestra en la siguiente imagen:
 
-<img src="./img/jupyter_3.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
+<img src="../img/Jupyter_2.png" alt="Interfaz inicial Jupyter Notebook" width="800"/>
 
 Este interfaz nos permite crear incluir fragmentos de código python y analizar su resultado una vez que ha sido ejecutado el fragmento de código, cada uno de estos fragmento es representado mediante un id entre corchetes, siendo su significado el siguiente:
 
