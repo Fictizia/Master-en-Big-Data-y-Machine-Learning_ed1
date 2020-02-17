@@ -473,7 +473,7 @@ def print_results(train_loss, test_loss):
     plt.plot(range(len(train_loss)), train_loss, 'b', label='Loss entrenamiento')
     plt.plot(range(len(test_loss)), test_loss, 'r', label='Loss test')
     plt.title('Entrenamiento y test')
-    plt.xlabel('Iteraciones,fontsize=16)
+    plt.xlabel('Iteraciones',fontsize=16)
     plt.ylabel('Loss',fontsize=16)
     plt.legend()
     plt.figure()
