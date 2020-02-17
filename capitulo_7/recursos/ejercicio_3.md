@@ -492,9 +492,9 @@ print_results(results[0], results[1])
 Siendo el resultado obtenido tras ejecutar el codígo el siguiente:
 
 ```
-Iteración 10, Loss= 0.054120, Training Accuracy= 0.99219
-Aprendizaje finalizado!
-Exactitud test: 0.89920
+Iteración 10, Loss= 0.091082, Exactitud= 0.94531
+Aprendizaje finalizado
+Exactitud test: 0.89510
 ```
 
 <img src="./img/regresion_conv_neurons_1.png" alt="Resultado de regresión lineal simple tras 100 iteraciones" width="800"/>
