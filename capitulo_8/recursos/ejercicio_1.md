@@ -183,9 +183,136 @@ Enter passphrase (empty for no passphrase):
 
 ### Entrenando mi modelo desde el cloud (Machine Learning)
 
+Este ejercicio consiste en el despliegue de un proceso de entrenamiento que almacena la información en google cloud storage. Para ello utilizaremos uno de los modelos en lo que hemos trabajado en el capitulo anterior y generaremos uno nuevo. 
+
+**Paso 1.1: Construcción de nuestro entorno de trabajo**
+
+Para el desarrollo de este ejercicio vamos a utilizar una imagen de ubuntu 18.4 (En caso de que hayamos utilizado una versión diferente al configurar nuestra máquina virtual deberemos utilizar esa version). Antes de preparar nuestra sistema de despliegue basada en docker vamos a construir nuestro entorno. Para ello vamos a crear una carpeta que contendrá los siguiente directorios.
+
+```
+total 12
+drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
+drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
+-rw-rw-r-- 1 momartin momartin    0 dic 10 06:31 docker-compose.yml
+drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 trainer
+```
+
+La carpeta del ejercicio deberá contener los siguiente componentes donde deberemos incluir los diferentes elementos necesarios de cara al contenedor. La carpeta __trainer__ contendrá todo el código de nuestro proceso de entrenamiento y el archivo docker-compose.yml que contendrá la configuración de despliegue con el fin de facilitar el despliegue. Además la carpeta src deberá contener los siguiente elementos:
+
+```
+total 12
+drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
+drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
+drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 credentials
+-rw-rw-r-- 1 momartin momartin    0 dic 10 06:53 Dockerfile
+-rw-rw-r-- 1 momartin momartin    0 dic 10 06:53 requirements.txt
+drwxrwxr-x 2 momartin momartin 4096 dic 10 06:53 src
+drwxrwxr-x 5 momartin momartin 4096 dic 10 06:53 venv
+```
+
+Donde se deberán encontrar el fichero de requisitos del proyecto (requirements.txt), el directorio con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y el directorio venv donde se almacenarar los diferentes directorios del entorno virtual. Una vez creados los diferentes elementos del entorno deberemos instalar los paquetes necesarios para el despliegue de nuestros modelos en tensorflo mediante python utilizando el comando pip3. 
+
+**Paso 1.2: Definición del fichero de compose**
+
+Para facilitar el despliegue y la realización de pruebas en el entorno de desarrollo vamos a definir los contenidos del fichero de despliegue, para ellos añadiremos la configuración de la network (red de comunicaciones) y la configuración del contenedor de entrenamiento.
+
+```
+version: '3.4'
+
+Trainer:
+    restart: always
+    container_name: train_tf    
+    build: './trainer'
+    hostname: trainer
+    networks:
+      fictizia_capitulo_8:
+        ipv4_address: 172.20.1.3
+
+networks:
+  fictizia_capitulo_8:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.1.0/24
+```
+
+**Paso 1.3: Configuración de la comunicación con GCS**
+
+**Paso 1.4: Modificación del entrenamiento para el almacenamiento de checkpoints**
+
+**Paso 1.5: Despliegue en la máquina virtual**
 
 ### Realizando predicciones desde el cloud (Machine Learning)
 
+Este ejercicio consiste en el despliegue de un proceso de entrenamiento que almacena la información en google cloud storage y que despligue los modelos mediante una API REST. Para ello utilizaremos uno de los modelos en lo que hemos trabajado en el capitulo anterior y generaremos uno nuevo. 
+
+**Paso 2.1: Añadiendo nuevo componente de tipo API**
+
+Para el desarrollo de este ejercicio vamos a utiizar la configuración que hemos definido para el caso anterior (En caso de que hayamos utilizado una versión diferente al configurar nuestra máquina virtual deberemos utilizar esa version). Para ello deberemos añadir un nuevo sistema denominado __api__ que será nuestra api de despliegue:
+
+```
+total 16
+drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
+drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
+-rw-rw-r-- 1 momartin momartin    0 dic 10 06:31 docker-compose.yml
+drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 trainer
+drwxrwxr-x 2 momartin momartin 4096 dic 12 08:45 api
+```
+
+**Paso 2.2: Añadiendo nuevos componentes a nuestro fichero de despliegue**
+
+Debemos incluir un nuevo elemento a nuestro fichero de despliegue para incluir nuestra API REST y poder hacer predicciones online. 
+
+```
+version: '3.4'
+
+trainer:
+    restart: always
+    container_name: train_tf    
+    build: './trainer'
+    hostname: trainer
+    networks:
+      fictizia_capitulo_8:
+        ipv4_address: 172.20.1.3
+api:    
+    restart: always
+    container_name: api_tf    
+    build: './api'
+    hostname: api_tf
+    networks:
+      fictizia_capitulo_8:
+        ipv4_address: 172.20.1.4
+
+networks:
+  fictizia_capitulo_8:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.1.0/24
+```
+
+**Paso 2.3: Desarrollo de api REST**
+
+**Paso 2.4: Despligue de la máquina virtual**
+
+**Paso 2.5: Monitorizando nuestro componente**
+
+Una vez que hemos desplegado nuestros elementos podemos analizar los elementos básicos de nuestra máquina virtual mediante la pestaña de detalle:
+
+<img src="../img/gcp_vm_10.png" alt="Acceso via ssh con gcloud" width="800"/>
+
+Además esta pantalla de datalle nos permite visualizar estadisticas básicas acerca del uso de CPU y de red pulsando en la pestaña __monitoring__. 
+
+<img src="../img/gcp_vm_11.png" alt="Estadísticas del uso de cpu" width="800"/>
+
+<img src="../img/gcp_vm_12.png" alt="Estadísticas del uso de red" width="800"/>
 
 ### Accediendo a nuestro datos desde una API (Acceso a los datos)
 
+En este ejercicio vamos a almacenar la información que utiliza nuestro algoritmo de Machine Learning en el Cloud y vamos a modificar el proceso de entrenamiento para poder recoger la información desde el almacenamiento online. 
