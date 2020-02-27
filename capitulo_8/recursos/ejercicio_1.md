@@ -183,123 +183,413 @@ Enter passphrase (empty for no passphrase):
 
 ### Entrenando mi modelo desde el cloud (Machine Learning)
 
-Este ejercicio consiste en el despliegue de un proceso de entrenamiento que almacena la información en google cloud storage. Para ello utilizaremos uno de los modelos en lo que hemos trabajado en el capitulo anterior y generaremos uno nuevo. 
+Este ejercicio consiste en el despliegue de un proceso de entrenamiento que almacena la información en google cloud storage. Para ello utilizaremos uno de los modelos en lo que hemos trabajado en el capitulo anterior y generaremos uno nuevo. La primera parte del ejercicio consiste en construir el proceso de entrenamiento. 
 
 **Paso 1.1: Construcción de nuestro entorno de trabajo**
 
 Para el desarrollo de este ejercicio vamos a utilizar una imagen de ubuntu 18.4 (En caso de que hayamos utilizado una versión diferente al configurar nuestra máquina virtual deberemos utilizar esa version). Antes de preparar nuestra sistema de despliegue basada en docker vamos a construir nuestro entorno. Para ello vamos a crear una carpeta que contendrá los siguiente directorios.
 
 ```
-total 12
-drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
-drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
--rw-rw-r-- 1 momartin momartin    0 dic 10 06:31 docker-compose.yml
-drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 trainer
-```
-
-La carpeta del ejercicio deberá contener los siguiente componentes donde deberemos incluir los diferentes elementos necesarios de cara al contenedor. La carpeta __trainer__ contendrá todo el código de nuestro proceso de entrenamiento y el archivo docker-compose.yml que contendrá la configuración de despliegue con el fin de facilitar el despliegue. Además la carpeta src deberá contener los siguiente elementos:
-
-```
-total 12
-drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
-drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
-drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 credentials
--rw-rw-r-- 1 momartin momartin    0 dic 10 06:53 Dockerfile
--rw-rw-r-- 1 momartin momartin    0 dic 10 06:53 requirements.txt
-drwxrwxr-x 2 momartin momartin 4096 dic 10 06:53 src
-drwxrwxr-x 5 momartin momartin 4096 dic 10 06:53 venv
-```
-
-Donde se deberán encontrar el fichero de requisitos del proyecto (requirements.txt), el directorio con el código fuente (src), el fichero de creación del contenedor (Dockerfile) y el directorio venv donde se almacenarar los diferentes directorios del entorno virtual. Una vez creados los diferentes elementos del entorno deberemos instalar los paquetes necesarios para el despliegue de nuestros modelos en tensorflo mediante python utilizando el comando pip3. 
-
-**Paso 1.2: Definición del fichero de compose**
-
-Para facilitar el despliegue y la realización de pruebas en el entorno de desarrollo vamos a definir los contenidos del fichero de despliegue, para ellos añadiremos la configuración de la network (red de comunicaciones) y la configuración del contenedor de entrenamiento.
+total 32
+drwxrwxr-x 7 momartin momartin 4096 feb 27 01:53 .
+drwxrwxr-x 6 momartin momartin 4096 feb 27 00:46 ..
+drwxrwxr-x 3 momartin momartin 4096 feb 27 00:48 api
+drwxrwxr-x 2 momartin momartin 4096 feb 27 01:56 credentials
+drwxrwxr-x 2 momartin momartin 4096 feb 27 02:27 models
+-rw-rw-r-- 1 momartin momartin  430 nov 14 17:34 requirements.txt
+drwxrwxr-x 3 momartin momartin 4096 feb 27 00:48 trainer
+drwxrwxr-x 5 momartin momartin 4096 feb 27 01:46 venv
 
 ```
-version: '3.4'
 
-Trainer:
-    restart: always
-    container_name: train_tf    
-    build: './trainer'
-    hostname: trainer
-    networks:
-      fictizia_capitulo_8:
-        ipv4_address: 172.20.1.3
+La carpeta del ejercicio deberá contener los siguiente componentes donde deberemos incluir los diferentes elementos necesarios para construir nuestro sistema de entrenamiento y servicio:
 
-networks:
-  fictizia_capitulo_8:
-    driver: bridge
-    driver_opts:
-      com.docker.network.enable_ipv6: "true"
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.1.0/24
+- api: Este directorio contendrá todos los elementos necesarios para desplegar una api desarrollada en Flask.
+- credentials: Este directorio contendrá los credenciales para acceder a Google Cloud Storage.
+- models: Este directorio será generada automáticamente por el entrenador con el el objetivo de almacenar nuestros modelos. 
+- requirements.txt: Este fichero contendrá las diferentes libreras python para desplegar nuestro sistema. 
+- trainer: Este directorio contendrá todos los elementos necesarios para la realización de proceso de entrenamiento. 
+- venv: Este directorio contendrá los diferentes directorios del entorno virtual de python.
+
+**Paso 1.2: Definición del entrenador**
+
+Para la construcción del entrenador vamos a crear una pequeña infraestructura de directorios con el objetivo de poder modificar el código de manera sencilla. Para ellos crearemos la carpeta __src__ que contendrá el código fuente de nuestro entrenador. 
+
+```
+drwxrwxr-x 3 momartin momartin 4096 feb 27 00:48 .
+drwxrwxr-x 7 momartin momartin 4096 feb 27 01:53 ..
+drwxrwxr-x 2 momartin momartin 4096 feb 27 02:10 src
+```
+Dentro del directorio __src__ crearemos el fichero trainer.py. Este fichero utilizar una serie de librerias en python referentes al algoritmo Kmeans (KMeans) y la generación del modelo (dump).
+
+```
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from sklearn.cluster import KMeans
+from joblib import dump
+import sklearn.datasets as datasets
+
+import pandas as pd
+import numpy as np
+import os
+```
+
+Paara poder utilizar estas librerías es necesario instalar las libreras en nuestro entorno mediante el siguiente comando:
+
+```
+pip3 install sklearn joblib numpy pandas
 ```
 
 **Paso 1.3: Configuración de la comunicación con GCS**
 
-**Paso 1.4: Modificación del entrenamiento para el almacenamiento de checkpoints**
+Para trabajar con Google Cloud Storage sobre python debemos incluir la librería de google-cloud-storage, para ello se debe ejecutar el siguiente comando:
 
-**Paso 1.5: Despliegue en la máquina virtual**
+```
+pip3 install google-cloud-storage
+```
+
+A continuación es necesario importar la librería en nuestro entrenador mediante la siguiente linea:
+
+```
+from google.cloud import storage
+```
+
+Una vez que hayamos importado la librería podemos construir una clase para manejar algunas de las funcionalidades de Google Cloud Storage. Esta clase está formada por cuatro métodos para la carga y descarga de ficheros de Google Cloud Storage
+
+```
+class GCSHandler:
+
+    def __init__(self, credentials_file):
+        self.__client = storage.Client.from_service_account_json(credentials_file)
+        self.__bucket_name_loaded = None
+        self.__bucket = None
+
+    def load_bucket(self, name):
+        if name != self.__bucket_name_loaded:
+            self.__bucket_name_loaded == name
+            self.__bucket = self.__client.get_bucket(name)
+
+    def get_bucket(self):
+        return self.__bucket
+
+    def download_file(self, local_path, blob_path):
+        blob = self.__bucket.get_blob(blob_path)
+        return blob.download_to_filename(local_path)
+
+    def upload_file(self, local_path, blob_path):
+        blob = self.__bucket.get_blob(blob_path)
+        return blob.upload_from_filename(local_path)
+```
+
+**Paso 1.4: Aprendizaje del modelo**
+
+Para la construcción de nuestro modelos vamos a utilizar el dataset Iris el cual puede ser cargado mediante la siguiente instrucción:
+
+```
+raw_data = datasets.load_iris()
+```
+
+Una vez que hemos cargado el dataset vamos a extraer las diferentes características (features) que necesitamos para construir nuestro modelo:
+
+```
+features_names = list()
+
+for feature in raw_data['feature_names']:
+    features_names.append(feature)
+
+features_names.append('FEATURE')
+
+data = pd.DataFrame(data=np.c_[raw_data['data'], raw_data['target']], columns=features_names)
+
+X = np.array(data[["sepal length (cm)", "sepal width (cm)", "petal length (cm)", "petal width (cm)"]])
+y = np.array(data['FEATURE'])
+
+final_model = KMeans(n_clusters=3).fit(X)
+centroids = final_model.cluster_centers_
+```
+
+El modelo generado será almacenado en la variables __final_model__. Para poder almacenar este modelo en un fichero debermos utilizar la función __dump__, pero antes es necesario definir una serie de variables referentes a la localización remota y local de nuestro modelo. Para ello incluiremos el siguiente código en nuestro entrenador (trainer.py):
+
+```
+file_name = TRAINED_MODEL_NAME + '.joblib'
+file_local_path = os.path.join(TRAINED_MODEL_PATH, file_name)
+```
+
+Para poder construir las diferentes rutas, es necesario definir una serie de variables. Estas variables toman sus valores en base a la estructura de directorios que hemos creado para esta solución. 
+
+```
+TRAINED_MODEL_PATH = '../../models'
+TRAINED_MODEL_NAME = 'iris-trained'
+BLOB_FOLDER = 'kmeans_models'
+```
+
+A continuación comprobaremos si el directorio de almacenamiento de nuestro modelo existe y sino lo crearemos para luego utilizar la función dump que permite almacenar el modelo en fichero. 
+
+```
+mode = 0o777
+
+if not os.path.exists(TRAINED_MODEL_PATH):
+    os.mkdir(TRAINED_MODEL_PATH, mode)
+
+error = dump(final_model, file_local_path)
+```
+
+**Paso 1.5: Almacenamiento en Google Cloud Storage**
+
+Una vez que hemos construido nuestro modelo y lo hemos almacenado en una carpeta del nuestro host, vamos a almacenarlo en uno de nuestros buckets. Para ellos utilizaremos las diferentes funciones que hemos incluido en nuestra clase __GCSHandler__.
+
+```
+file_remote_path = os.path.join(BLOB_FOLDER, file_name)
+
+if error is not None:
+    gcs_handler = GCSHandler('../../credentials/credentials.json')
+    gcs_handler.load_bucket('fictizia')
+    gcs_handler.upload_file(file_local_path, file_remote_path)
+```
+
+**Paso 1.6: Desplegando nuestro archivos en la Máquina Virtual**
+
+Una vez finalizado nuestro código de entrenamiento deberemos generar el fichero de requisitos (requirements.txt) mediante el siguiente comando:
+
+```
+pip3 freeze > requirements.txt
+```
+
+A continuación deberemos subir nuestro archivo mediante la utilizar del comando __scp__. El comando scp pertime copiar archivo de forma segura entre dos máquinas. Para ello utilizaremos el siguiente comando (Para más información utilizar el comando man scp)
+
+```
+scp -i ruta_de_clave_privada path_fichero_local host@login:path_fichero_remoto
+```
+
+Una vez que hemos lanzado el fichero podremos conectarnos via ssh a la máquina remota y ejecutar nuestro entrenador mediante el siguiente comando:
+
+```
+ssh -i ruta_de_clave_privada host@login
+```
+
+Si todo ha funcionado correctamente nuestro fichero se habrá almacenado en nuestro google cloud storage. 
+
+<img src="../img/gcp_storage_1.png" alt="Fichero de entrenamiento almacenado en storage" width="800"/>
 
 ### Realizando predicciones desde el cloud (Machine Learning)
 
-Este ejercicio consiste en el despliegue de un proceso de entrenamiento que almacena la información en google cloud storage y que despligue los modelos mediante una API REST. Para ello utilizaremos uno de los modelos en lo que hemos trabajado en el capitulo anterior y generaremos uno nuevo. 
+Este ejercicio consiste en el despliegue de un proceso de entrenamiento que almacena la información en google cloud storage y que despligue los modelos mediante una API REST. Para ello utilizaremos uno de los modelos en lo que hemos trabajado en el capitulo anterior o generaremos uno nuevo. En esta parte del ejercicio construiremos el proceso de despliegue del sistema de predicciones. 
 
 **Paso 2.1: Añadiendo nuevo componente de tipo API**
 
-Para el desarrollo de este ejercicio vamos a utiizar la configuración que hemos definido para el caso anterior (En caso de que hayamos utilizado una versión diferente al configurar nuestra máquina virtual deberemos utilizar esa version). Para ello deberemos añadir un nuevo sistema denominado __api__ que será nuestra api de despliegue:
+Para el desarrollo de este ejercicio vamos a utiizar la configuración que hemos definido para el caso anterior (En caso de que hayamos utilizado una versión diferente al configurar nuestra máquina virtual deberemos utilizar esa version). Para ello deberemos añadir un nuevo componente denominado __api__ que será nuestra api de despliegue del sistema de predición, donde la carpeta __api__ contendrá una carpeta __src__ con los siguiente elementos:
 
 ```
-total 16
-drwxrwxr-x 4 momartin momartin 4096 dic 10 06:31 .
-drwxrwxr-x 3 momartin momartin 4096 dic 10 06:19 ..
--rw-rw-r-- 1 momartin momartin    0 dic 10 06:31 docker-compose.yml
-drwxrwxr-x 2 momartin momartin 4096 dic 10 06:31 trainer
-drwxrwxr-x 2 momartin momartin 4096 dic 12 08:45 api
+total 20
+drwxrwxr-x 3 momartin momartin 4096 feb 27 02:27 .
+drwxrwxr-x 3 momartin momartin 4096 feb 27 00:48 ..
+-rw-rw-r-- 1 momartin momartin 1462 feb 27 02:10 api.json
+-rw-rw-r-- 1 momartin momartin 2751 feb 27 02:27 functions.py
+-rw-rw-r-- 1 momartin momartin  996 feb 27 02:01 server.py
 ```
 
-**Paso 2.2: Añadiendo nuevos componentes a nuestro fichero de despliegue**
+Cada uno de los ficheros de la carpeta __src__ se corresponden con el servidor (server.py), las funciones con la lógica de los diferentes recursos (functions.py), la configuración de la API REST (api.json).
 
-Debemos incluir un nuevo elemento a nuestro fichero de despliegue para incluir nuestra API REST y poder hacer predicciones online. 
+**Paso 2.2: Configuración del servidor**
+
+El primer paso consiste en desarrollar el código de nuestro servidor para ellos vamos a utilizar [Flask](https://flask.palletsprojects.com/en/1.1.x/) que es un paquete de python que nos permite desplegar servidor web de forma sencilla y rápido. Para ello debemos instalar algunos paquetes utilizando pip3 (linux). 
 
 ```
-version: '3.4'
-
-trainer:
-    restart: always
-    container_name: train_tf    
-    build: './trainer'
-    hostname: trainer
-    networks:
-      fictizia_capitulo_8:
-        ipv4_address: 172.20.1.3
-api:    
-    restart: always
-    container_name: api_tf    
-    build: './api'
-    hostname: api_tf
-    networks:
-      fictizia_capitulo_8:
-        ipv4_address: 172.20.1.4
-
-networks:
-  fictizia_capitulo_8:
-    driver: bridge
-    driver_opts:
-      com.docker.network.enable_ipv6: "true"
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.1.0/24
+pip3 install Flask connexion connexion[swagger-ui]
 ```
 
-**Paso 2.3: Desarrollo de api REST**
+Una vez instalados estos paquetes podemos comenzar con la configuración de nuestro servidor en el fichero server.py. Si no creaste este archivo en el paso anterior, es momento de crear e incluir las siguiente lineas de código:
+
+```
+import connexion
+
+server = connexion.App(__name__, options= {"swagger_ui": True})
+server.add_api('api.json', base_path='/fictizia/1.0')
+
+if __name__ == "__main__":
+    server.run(port=5555)
+    exit(0)
+```
+
+1. Para construir nuestra API REST utilizaremos el paquete connexion, para ello tendremos que importar el paquete y a continuación crear un objeto para nuestra aplicación (server) indicando que se debe activar el interfaz de usuario mediante la opción swagger_ui. 
+2. A continuación deberemos definir nuestra API, para ello utilizaremos el archivo __api.json__ donde describiremos los diferentes recursos de nuestra API y además indicaremos cual será la estructura de las URI de acceso a nuestra API indicando el nombre del servicio __fictizia__ y la versión __1.0__. 
+3. Para finalizar debemos arrancar nuestra aplicación mediante el método run de nuestro de nuestro objeto server indicando el puesto a través del cual se desplegará nuestra aplicación. En este caso hemos elegido el puerto 5005. 
+
+**Paso 2.3: Creación de las funciones de predicción**
+
+Para nuestra api debemos construir una única funcialidad que denominaremos predicción. Esta funcionalidad no permitirá introducir los 4 valores que define una flor de tipo iris y nos indicará a que clase pertenece. Para ello, deberemos construir el código de la función de predicción en el archivo __functions.py__ de la siguiente manera:
+
+```
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from sklearn.cluster import KMeans
+from joblib import load
+
+def predict(field_1: float, field_2: float, field_3: float, field_4: float):
+
+    input = [[field_1, field_2, field_3, field_4]]
+    output = dict()
+
+    model: KMeans = load(file_local_path)
+
+    try:
+        output['class'] = int(model.predict(input)[0])
+        return output, 200
+    except Exception as e:
+        return str(e), 300
+```
+
+Esta función carga un modelo que debe haber sido descargado previamente de nuestro espacio en Google Cloud Storage (GCS) y predice la clase a la que corresponde el ejemplo cuyo valores se corresponden con los 4 campos field de entrada. Para poder realizar la descarga desde GCS es necesario incluir el siguiente código previo a la función predict:
+
+```
+from google.cloud import storage
+
+import os
+
+TRAINED_MODEL_PATH = '../../models'
+TRAINED_MODEL_NAME = 'iris-trained'
+DOWNLOADED_MODEL_NAME = 'iris-loaded'
+BLOB_FOLDER = 'kmeans_models'
+
+PATH = os.path.join(os.getcwd())
+
+
+class GCSHandler:
+
+    def __init__(self, credentials_file):
+        self.__client = storage.Client.from_service_account_json(credentials_file)
+        self.__bucket_name_loaded = None
+        self.__bucket = None
+
+    def load_bucket(self, name):
+        if name != self.__bucket_name_loaded:
+            self.__bucket_name_loaded == name
+            self.__bucket = self.__client.get_bucket(name)
+
+    def get_bucket(self):
+        return self.__bucket
+
+    def download_file(self, local_path, blob_path):
+        blob = self.__bucket.get_blob(blob_path)
+        return blob.download_to_filename(local_path)
+
+    def upload_file(self, local_path, blob_path):
+        blob = self.__bucket.get_blob(blob_path)
+        return blob.upload_from_filename(local_path)
+
+
+remote_file_name = TRAINED_MODEL_NAME + '.joblib'
+local_file_name = DOWNLOADED_MODEL_NAME + '.joblib'
+file_local_path = os.path.join(TRAINED_MODEL_PATH, local_file_name)
+file_remote_path = os.path.join(BLOB_FOLDER, remote_file_name)
+
+
+if os.path.exists(file_local_path):
+    os.remove(file_local_path)
+
+gcs_handler = GCSHandler('../../credentials/credentials.json')
+gcs_handler.load_bucket('fictizia')
+gcs_handler.download_file(file_local_path, file_remote_path)
+```
+
+**Paso 2.3: Preparación del método de acceso de la API**
+
+Una vez construido los elementos básicos de nuestro servidor y de nuestro función de predicción vamos a configurar nuestra API REST. Para ellos vamos a definir la estructura del recursos __predict__ que utilizará la función predict definida previamente, cuya URI será la siguiente:
+
+```
+http://localhost:5005/fictizia/1.0/predict
+```
+
+Para construir el recurso, debemos crear la descripción del recursos en fichero api.json mediante el siguiente framento de código:
+
+```
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "Api Rest para la predicción de valores mediante un modelo construido mediante Kmeans",
+      "version": "1.0",
+      "title": "API REST Capítulo 8 - Ejercicio 1"
+    },
+    "paths": {
+      "/predict": {
+        "get": {
+          "operationId": "functions.predict",
+          "tags": [
+            "Prediction, Machine Learning"
+          ],
+          "parameters": [
+            {
+              "name": "field_1",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "field_2",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "field_3",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "field_4",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Se ha procesado la petición correctamente",
+              "schema": {
+                "type": "object"
+              }
+            },
+            "300": {
+              "description": "Se ha producido un error",
+              "schema": {
+                "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Este json define la estructura básica de la API (descripción, versión, title) y la estructura de los diferentes recursos como elementos de path. En ese caso hemos creado un recurso al que se accede a través de __predict__ en la URI mediante una operación de tipo get y que utilizando para generar el contenido de la respuesta el método __predict__ del fichero functions.py.
 
 **Paso 2.4: Despligue de la máquina virtual**
+
+Una vez finalizado nuestro código de entrenamiento deberemos generar el fichero de requisitos (requirements.txt) mediante el siguiente comando:
+
+```
+pip3 freeze > requirements.txt
+```
+
+A continuación deberemos subir nuestro archivo mediante la utilizar del comando __scp__. El comando scp pertime copiar archivo de forma segura entre dos máquinas. Para ello utilizaremos el siguiente comando (Para más información utilizar el comando man scp)
+
+```
+scp -i ruta_de_clave_privada path_fichero_local host@login:path_fichero_remoto
+```
+
+Una vez que hemos lanzado el fichero podremos conectarnos via ssh a la máquina remota y ejecutar nuestro entrenador mediante el siguiente comando:
+
+```
+ssh -i ruta_de_clave_privada host@login
+```
+
+Si todo ha funcionado correctamente nuestro fichero se habrá almacenado en nuestro google cloud storage. 
+
+<img src="../img/api_servicio_1.png" alt="Fichero de entrenamiento almacenado en storage" width="800"/>
 
 **Paso 2.5: Monitorizando nuestro componente**
 
@@ -312,7 +602,3 @@ Además esta pantalla de datalle nos permite visualizar estadisticas básicas ac
 <img src="../img/gcp_vm_11.png" alt="Estadísticas del uso de cpu" width="800"/>
 
 <img src="../img/gcp_vm_12.png" alt="Estadísticas del uso de red" width="800"/>
-
-### Accediendo a nuestro datos desde una API (Acceso a los datos)
-
-En este ejercicio vamos a almacenar la información que utiliza nuestro algoritmo de Machine Learning en el Cloud y vamos a modificar el proceso de entrenamiento para poder recoger la información desde el almacenamiento online. 
