@@ -1,0 +1,58 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "Api Rest para la predicción de valores mediante un modelo construido mediante Kmeans",
+      "version": "1.0",
+      "title": "API REST Capítulo 8 - Ejercicio 1"
+    },
+    "paths": {
+      "/predict": {
+        "get": {
+          "operationId": "functions.predict",
+          "tags": [
+            "Prediction, Machine Learning"
+          ],
+          "parameters": [
+            {
+              "name": "field_1",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "field_2",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "field_3",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "field_4",
+              "in": "query",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Se ha procesado la petición correctamente",
+              "schema": {
+                "type": "object"
+              }
+            },
+            "300": {
+              "description": "Se ha producido un error",
+              "schema": {
+                "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}

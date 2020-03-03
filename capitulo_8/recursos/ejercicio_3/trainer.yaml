@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fictizia-trainer-pod 	
+  labels:
+    name: fictizia-trainer-pod
+spec:
+  containers:
+  - name: fictizia-trainer
+    image: eu.gcr.io/fictizia-259518/fictizia_trainer_8_3:v1

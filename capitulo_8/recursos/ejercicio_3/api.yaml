@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fictizia-api-pod 	
+  labels:
+    name: fictizia-api-pod
+spec:
+  containers:
+  - name: fictizia-api
+    image: eu.gcr.io/fictizia-259518/fictizia_api_8_3:v1
