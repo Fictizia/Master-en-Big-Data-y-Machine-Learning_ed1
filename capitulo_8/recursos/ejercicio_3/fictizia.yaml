@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: fictizia-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fictizia
+  template:
+    metadata:
+      labels:
+        app: fictizia
+    spec:
+      containers:
+      - name: fictizia-container-trainer
+        image: eu.gcr.io/fictizia-259518/fictizia_trainer_8_3:v1
+      - name: fictizia-container_api
+        image: eu.gcr.io/fictizia-259518/fictizia_api_8_3:v5
+        ports:
+        - containerPort: 5555
+          name: http
+        - containerPort: 22
+          name: ssh
