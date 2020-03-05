@@ -23,6 +23,13 @@ Existen otras tecnologías similares a Bokeh:
 
 **Paso 1: Descargo nuestro conjunto de datos**
 
-El primer paso consiste en descargar el conjunto de datos que vamos a utilizar. Para este último ejercicio vamos a crear un sistema de visualización mediante la utilización de los datos disponibles acerca de la epidemia de coronavirus. Para ellos utilizaremos los datos disponibles en Kaggler sobre el (Coronavirus)[https://www.kaggle.com/kimjihoo/coronavirusdataset].
+El primer paso consiste en descargar el conjunto de datos que vamos a utilizar. Para este último ejercicio vamos a crear un sistema de visualización mediante la utilización de los datos disponibles acerca de la epidemia de coronavirus. Para ellos utilizaremos los datos disponibles en Kaggler sobre el [Coronavirus](https://www.kaggle.com/kimjihoo/coronavirusdataset).
+
+Aunque realmente vamos a utilizar un conjunto de datos de los vuelos de 2018 que han despegado del aeropuerto JFk de New York:
+
+- [Información acerca de los vuelos](https://storage.googleapis.com/fictizia/flights_data/flights.csv)
+- [Información acerca de los vuelos en el mapa](https://storage.googleapis.com/fictizia/flights_data/flights_map.csv)
 
 **Paso 2: Almacenamiento de datos en Google Cloud Storage**
+
+Una vez que hemos descargado nuestros datos os tendremos que subir en nuestro Google Cloud Storage. 
