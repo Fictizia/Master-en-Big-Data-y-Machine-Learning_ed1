@@ -51,18 +51,18 @@ Fecha | Cap | Contenido | Recurso | Descripción
 16/01/20 | 7 | Clase 26 | Recurso 26 | Manipulación - Creando modelos con datos en TensorFlow - Parte I
 21/01/20 | 7 | Clase 27 | Recurso 27 | Manipulación - Creando modelos con datos en TensorFlow - Parte II
 23/01/20 | 7 | Clase 28 | Recurso 28 | Manipulación - Creando modelos con keras 
-21/01/20 | 7 | Clase 29 | Recurso 29 | Manipulación - Apache Spark para el procesamiento de datos
-30/01/20 | 8 | Clase 30 | Recurso 30 | Administración - Administración de infraestructuras Big Data
-04/02/20 | 8 | Clase 30 | Recurso 30 | Administración - Diseñando nuestros sistemas Big Data
-06/02/20 | 8 | Clase 31 | Recurso 31 | Administración 
-11/02/20 | 9 | Clase 32 | Recurso 32 | Plataformas Cloud - Conociendo al cloud
-13/02/20 | 9 | Clase 33 | Recurso 33 | Plataformas Cloud - Desplegando servicios
-18/02/20 | 9 | Clase 34 | Recurso 34 | Plataformas Cloud - Kubernetes
-20/02/20 | 9 | Clase 35 | Recurso 35 | Plataformas Cloud - Orquestando procesos en cloud
-25/02/20 | 10 | Clase 36 | Recurso 36 | Visualización
-27/02/20 | 10 | Clase 37 | Recurso 37 | Visualización - Visualizando datos mediante un sistema de BI
-03/03/20 | 10 | Clase 38 | Recurso 38 | Visualización - Visualizando datos en la web
-05/05/20 | 10 | Clase 39 | Recurso 39 | Visualización 
+21/01/20 | 7 | Clase 29 | Recurso 29 | Manipulación - Creando modelos con scikit-learn
+30/01/20 | 8 | Clase 30 | Recurso 30 | Admin & Platforms - Administración de infraestructuras Big Data
+04/02/20 | 8 | Clase 30 | Recurso 30 | Admin & Platforms - Herramientas y plataformas
+06/02/20 | 8 | Clase 31 | Recurso 31 | Admin & Platforms - Máquinas Virtuales
+11/02/20 | 8 | Clase 32 | Recurso 32 | Admin & Platforms - Máquinas Virtuales
+13/02/20 | 8 | Clase 33 | Recurso 33 | Admin & Platforms - Kubernetes
+18/02/20 | 8 | Clase 34 | Recurso 34 | Admin & Platforms - Kubernetes
+20/02/20 | 8 | Clase 35 | Recurso 35 | Admin & Platforms - Orquestando procesos en cloud
+25/02/20 | 9 | Clase 36 | Recurso 36 | Visualización
+27/02/20 | 9 | Clase 37 | Recurso 37 | Visualización - Visualizando datos mediante un sistema de BI
+03/03/20 | 9 | Clase 38 | Recurso 38 | Visualización - Visualizando datos mediante un sistema de BI 
+05/05/20 | 9 | Clase 39 | Recurso 39 | Visualización - Visualizando datos con aplicaciones web
 
 [Programa de estudios]
 =================
@@ -75,21 +75,21 @@ Fecha | Cap | Contenido | Recurso | Descripción
 - Legislación y normativa 
 - Ética en el uso de la información 
 
-**Capítulo 2 - Preparando el entorno**
+**Capítulo 2 - Preparando el entorno (Entrada y Salida)**
 - Introducción a Dockers
 - Trabajando con contenedores
-- Apificando el acceso a los datos y servicios
+- Apificando el acceso a los datos y servicios.
     - API REST
     - GraphQL
 
 **Capítulo 3 - Representación de la información**
 - El concepto del dato 
 - Modos de almacenamiento 
-    - Ficheros (Apache Hadoop)
-    - Bases de datos relacionales (MySQL, PostgreSQL)
-    - Bases de datos no relacionales 
+    - Ficheros (Google Cloud Storage)
+    - Bases de datos relacionales (MySQL)
+    - Bases de datos no relacionales (Documental, Clave:Valor, Columares y Grafos)
 - DataLakes: Almacenando todos mis datos 
-- DataMarts: Almacenando mucho más
+- DataMarts: Dividiendo la información
 
 **Capítulo 4 - Arquitecturas Big Data**
 - Arquitectura híbridas
@@ -97,13 +97,13 @@ Fecha | Cap | Contenido | Recurso | Descripción
     - Arquitectura Kappa
     - Arquitectura Zeta 
 - Procesamiento de datos
-    - El concepto del tiempo real 
+    - El concepto del tiempo en Big Data
     - Procesamiento Batch
     - Procesamiento Streaming
 
 **Capítulo 5 - Ingestión de datos**
 - Procesos de ingestión de datos
-- Sistema de ingestión externos (scrapers and co)
+- Sistema de ingestión externos (Scrapers & Co)
 - Sistema de ingestión internos (Colas de mensajes)
 
 **Capítulo 6 - Procesamiento y manipulación**
@@ -113,6 +113,7 @@ Fecha | Cap | Contenido | Recurso | Descripción
     - Generación de datos derivados
 - El concepto de ETL (Extract, Transform and Load)
 - Procesamiento y manipulación
+- Diseñando nuestrs ETLs
 
 **Capítulo 7 - Machine Learning**
 - Aprendizaje automático
@@ -120,29 +121,28 @@ Fecha | Cap | Contenido | Recurso | Descripción
     - Aprendizaje no supervisado
     - Aprendizaje profundo (Deep Learning)
 - Generando nuestros modelos
-    - Apache Spark
-    - Keras y TensorFlow
+    - TensorFlow
+    - Keras
+    - scikit-learn
+- Gestión de modelos
 
-**Capítulo 8 - Administración**
-- Definiendo nuestra arquitectura
-- Monitorización mis nodos
-- Seguridad
-    - Gobernanza del dato
-    - Seguridad de los datos
-
-**Capítulo 9 - Plataformas Cloud "Llevando nuestro servicios a la nube"**
-- Plataformas: ¿todo o nada?
+**Capítulo 8 - Administración y uso de plataformas Cloud**
+- Diseñando Arquitecturas
+    - Plataformas en el cloud
+    - Virtual Machines
+    - Kubernetes
+- Modelos de despliegue
     - Software as a Service (SaaS)
     - Platform as a Service (PaaS)
     - Infraestructure as a Service (IaaS)
-- Kubernetes
-- Google Cloud Platform (GCP)
-- Otras plataformas
+- Manipulación del dato
+    - Gobernanza
+    - Seguridad
 
-**Capítulo 10**
-- Introducción a la visualización de datos
-- Visualización mediante sistemas de BI
-- Visualización mediante aplicaciones web
+**Capítulo 9 - Visulizando datos**
+- Introducción a la visualización de datos.
+- Visualización mediante sistemas de BI (Google Data Studio).
+- Visualización mediante aplicaciones web (Python).
 
 
 [Enfoque y objetivos de Máster]
