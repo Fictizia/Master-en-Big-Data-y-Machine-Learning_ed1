@@ -21,7 +21,7 @@ cloudpickle==1.2.1
 command-not-found==0.3
 connexion==2.4.0
 contextlib2==0.5.5
-cryptography==2.7
+cryptography==3.2
 cupshelpers==1.0
 cycler==0.10.0
 Cython==0.29.6
