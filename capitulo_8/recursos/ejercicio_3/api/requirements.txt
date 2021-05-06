@@ -38,7 +38,7 @@ esptool==2.8
 et-xmlfile==1.0.1
 filterpy==1.4.5
 Flask==1.1.1
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 Flask-GraphQL==1.4.1
 gast==0.3.3
 google-api-core==1.14.3
