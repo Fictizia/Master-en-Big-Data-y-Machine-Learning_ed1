@@ -115,7 +115,7 @@ oauth==1.0.1
 oauthlib==3.1.0
 olefile==0.45.1
 openapi-spec-validator==0.2.8
-opencv-python==4.1.2.30
+opencv-python==4.2.0.32
 openpyxl==3.0.3
 opt-einsum==3.1.0
 packaging==19.2
