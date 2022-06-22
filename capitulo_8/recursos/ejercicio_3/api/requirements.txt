@@ -110,7 +110,7 @@ nbformat==4.4.0
 netifaces==0.10.4
 notebook==5.7.7
 numba==0.47.0
-numpy==1.18.1
+numpy==1.22.0
 oauth==1.0.1
 oauthlib==3.1.0
 olefile==0.45.1
