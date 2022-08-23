@@ -105,7 +105,7 @@ mock==3.0.5
 more-itertools==8.0.2
 msgpack==0.6.2
 mysql-connector-python==8.0.18
-nbconvert==5.4.1
+nbconvert==6.5.1
 nbformat==4.4.0
 netifaces==0.10.4
 notebook==5.7.7
