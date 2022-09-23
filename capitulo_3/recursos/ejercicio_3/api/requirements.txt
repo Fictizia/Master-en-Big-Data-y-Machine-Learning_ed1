@@ -21,7 +21,7 @@ jsonschema==3.2.0
 MarkupSafe==1.1.1
 more-itertools==7.2.0
 openapi-spec-validator==0.2.8
-protobuf==3.10.0
+protobuf==3.18.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.7
 pyrsistent==0.15.5
